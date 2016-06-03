@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * lib veersion: 3.8.15
+ * library version: 3.9.1
  *
  * Created on:  2009-01-14
- * Last edited: 2015-12-08
+ * Last edited: 2015-11-24
  *
  * Author: D-Logic
  */
@@ -15,16 +15,21 @@
 #include <stdint.h>
 #include <stddef.h>
 
-typedef const char * chr_ptr;
+////////////////////////////////////////////////////////////////////
+/**
+ * Type for representing null terminated char array ( aka C-String )
+ * Array is always one byte longer ( for null character ) then string
+ * Memory space for array must be allocated before use.
+ */
+typedef const char * c_string;
+////////////////////////////////////////////////////////////////////
 
 #if __linux__
 #	define DL_API
 #else
 // WINDOWS
 #	ifdef DL_uFC_STATIC_LIB
-#		define DL_API __stdcall
-#	elif defined DL_uFC_GCC_DLL_IMPORT
-#		define DL_API __stdcall
+#		define DL_API
 #	else
 #		ifndef DL_uFC_EXPORTS
 #			define DL_API __declspec(dllimport) __stdcall
@@ -153,6 +158,7 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_DEVICE_INDEX_OUT_OF_BOUND,
 	UFR_DEVICE_ALREADY_OPENED,
 	UFR_DEVICE_ALREADY_CLOSED,
+	UFR_DEVICE_IS_NOT_CONNECTED,
 
 	MAX_UFR_STATUS = 0xFFFFFFFF
 } UFR_STATUS;
@@ -206,16 +212,6 @@ extern "C"
 #endif
 
 //--------------------------------------------------------------------------------------------------
-
-/**
- * EnableXRC() enable or disable work with XRC in Open and List functions.
- * Call this function before ReaderOpen() or ReaderOpenM()
- * 	                  or ReaderList_UpdateAndGetCount()
- *
- * @param on : if 0 then XRC is disabled, otherwise enable
- * @return UFR_STATUS
- */
-DL_API UFR_STATUS EnableXRC(int on);
 
 DL_API UFR_STATUS ReaderOpen(void);
 DL_API UFR_STATUS ReaderReset(void);
@@ -819,8 +815,6 @@ DL_API UFR_STATUS UfrGetBadSelectCardNrMax(uint8_t *bad_select_nr_max);
 
 DL_API UFR_STATUS UfrEnterSleepMode(void);
 DL_API UFR_STATUS UfrLeaveSleepMode(void);
-DL_API UFR_STATUS AutoSleepSet(uint8_t seconds_wait);
-DL_API UFR_STATUS AutoSleepGet(uint8_t *seconds_wait);
 
 DL_API UFR_STATUS SetSpeedPermanently(unsigned char tx_speed, unsigned char rx_speed);
 DL_API UFR_STATUS GetSpeedParameters(unsigned char *tx_speed, unsigned char *rx_speed);
@@ -1007,7 +1001,7 @@ UFR_STATUS uFR_int_DesfireWriteStdDataFile_no_auth(uint32_t aid, uint8_t aid_key
 		uint16_t *card_status, uint16_t *exec_time);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
+// XXX: Support for multiple readers with same DLL
 //#############################################################################
 //#############################################################################
 //#############################################################################
@@ -1040,7 +1034,15 @@ UFR_STATUS uFR_int_DesfireWriteStdDataFile_no_auth(uint32_t aid, uint8_t aid_key
 //#############################################################################
 
 //--------------------------------------------------------------------------------------------------
-
+/**
+ * This is the main function of the multi-reader support.
+ * ReaderList_UpdateAndGetCount() scan all communication ports for compatible devices.
+ * Function probes opened readers if still connected, if not close and mark them handles for deletion.
+ * If some device is disconnected from system this function should remove its handle.
+ *
+ * @param NumberOfDevices
+ * @return status of execution
+ */
 DL_API UFR_STATUS ReaderList_UpdateAndGetCount(int32_t * NumberOfDevices);
 
 DL_API UFR_STATUS ReaderList_GetSerialByIndex(int32_t DeviceIndex, uint32_t *lpulSerialNumber);
@@ -1055,6 +1057,51 @@ DL_API UFR_STATUS ReaderList_OpenByIndex(const int32_t DeviceIndex, UFR_HANDLE *
 
 // not implemented
 //DL_API UFR_STATUS ReaderList_OpenBySerial(const char Device_SN[16], UFR_HANDLE *hndUFR);
+
+
+/**
+ * Function for getting all relevant information about connected readers.
+ *
+ * Eg. If you have tree connected readers, detected by ReaderList_UpdateAndGetCount(),
+ * you should call this function tree times.
+ *
+ * @param DeviceHandle
+ * @param DeviceSerialNumber
+ * @param DeviceType
+ * @param DeviceFWver
+ * @param DeviceCommID
+ * @param DeviceCommSpeed
+ * @param DeviceCommFTDISerial
+ * @param DeviceCommFTDIDescription
+ * @param DeviceIsOpened
+ * @param DeviceStatus
+ * @return
+ */
+DL_API UFR_STATUS ReaderList_GetInformation( //
+		UFR_HANDLE *DeviceHandle, //// assigned Handle
+		c_string *DeviceSerialNumber, //// device serial number
+		int *DeviceType, //// device type - device identification in AIS database
+		int *DeviceFWver, //// version of firmware
+		int *DeviceCommID, //// device identification number (master)
+		int *DeviceCommSpeed, //// communication speed
+		c_string *DeviceCommFTDISerial, //// FTDI COM port identification
+		c_string *DeviceCommFTDIDescription, //// FTDI COM port description
+		int *DeviceIsOpened, //// is Device opened
+		int *DeviceStatus //// actual device status
+);
+
+/**
+ * If the handle exists in the list of opened devices,
+ * function would try to close communication port and destroy the handle.
+ * ( ReaderList_UpdateAndGetCount() will do that automatically in next execution)
+ *
+ * Good when you identify that the reader is no longer connected, and want to release the handle.
+ *
+ * @param DeviceHandle the handle that will be destroyed
+ * @return
+ */
+DL_API UFR_STATUS ReaderList_Destroy(UFR_HANDLE DeviceHandle);
+
 //--------------------------------------------------------------------------------------------------
 
 // open first/next Reader and return handle - better to use ReaderList_OpenByIndex()
@@ -1602,8 +1649,6 @@ DL_API UFR_STATUS UfrGetBadSelectCardNrMaxM(UFR_HANDLE hndUFR, uint8_t *bad_sele
 
 DL_API UFR_STATUS UfrEnterSleepModeM(UFR_HANDLE hndUFR);
 DL_API UFR_STATUS UfrLeaveSleepModeM(UFR_HANDLE hndUFR);
-DL_API UFR_STATUS AutoSleepSetM(UFR_HANDLE hndUFR, uint8_t seconds_wait);
-DL_API UFR_STATUS AutoSleepGetM(UFR_HANDLE hndUFR, uint8_t *seconds_wait);
 
 DL_API UFR_STATUS SetSpeedPermanentlyM(UFR_HANDLE hndUFR, unsigned char tx_speed, unsigned char rx_speed);
 DL_API UFR_STATUS GetSpeedParametersM(UFR_HANDLE hndUFR, unsigned char *tx_speed, unsigned char *rx_speed);
@@ -1854,14 +1899,14 @@ DL_API uint32_t GetDllVersion(void);
 
 //// debug function
 
-DL_API chr_ptr GetDllVersionStr(void);
+DL_API c_string GetDllVersionStr(void);
 
-DL_API chr_ptr UFR_Status2String(const UFR_STATUS status);
+DL_API c_string UFR_Status2String(const UFR_STATUS status);
 
 DL_API void error_get(void *out, int32_t *size);
 
-DL_API chr_ptr GetReaderDescription(void);
-DL_API chr_ptr GetReaderDescriptionM(UFR_HANDLE hndUFR);
+DL_API c_string GetReaderDescription(void);
+DL_API c_string GetReaderDescriptionM(UFR_HANDLE hndUFR);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
