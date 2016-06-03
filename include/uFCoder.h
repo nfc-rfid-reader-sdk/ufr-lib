@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.9.1
+ * library version: 3.9.4
  *
  * Created on:  2009-01-14
- * Last edited: 2015-11-24
+ * Last edited: 2016-01-12
  *
  * Author: D-Logic
  */
@@ -15,6 +15,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
+typedef const char * chr_ptr;
 ////////////////////////////////////////////////////////////////////
 /**
  * Type for representing null terminated char array ( aka C-String )
@@ -29,7 +30,9 @@ typedef const char * c_string;
 #else
 // WINDOWS
 #	ifdef DL_uFC_STATIC_LIB
-#		define DL_API
+#		define DL_API __stdcall
+#	elif defined DL_uFC_GCC_DLL_IMPORT
+#		define DL_API __stdcall
 #	else
 #		ifndef DL_uFC_EXPORTS
 #			define DL_API __declspec(dllimport) __stdcall
@@ -55,6 +58,7 @@ typedef const char * c_string;
 #define MF1ICS20                        0x09
 
 //DLOGIC CARD TYPE
+#define TAG_UNKNOWN						0
 #define DL_MIFARE_ULTRALIGHT			0x01
 #define DL_MIFARE_ULTRALIGHT_EV1_11		0x02
 #define DL_MIFARE_ULTRALIGHT_EV1_21		0x03
@@ -126,6 +130,7 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_CAN_NOT_UNLOCK_DEVICE = 0x7A,
 	UFR_DEVICE_EEPROM_BUSY = 0x7B,
 	UFR_RTC_SET_ERROR = 0x7C,
+	UFR_TAG_UNKNOWN = 0x7D,
 
 	UFR_COMMUNICATION_BREAK = 0x50,
 	UFR_NO_MEMORY_ERROR = 0x51,
@@ -632,6 +637,7 @@ DL_API UFR_STATUS GetAntiCollStatus(int8_t *lpcIsAntiCollEnabled,
 
 
 DL_API UFR_STATUS GetDlogicCardType(uint8_t *lpucCardType);
+DL_API UFR_STATUS GetCardSize(uint32_t *lpulLinearSize, uint32_t *lpulRawSize);
 
 // uFCoder PRO MODE
 DL_API UFR_STATUS GetReaderProMode(uint32_t *pReaderProMode, uint32_t *pReaderProConfig);
@@ -817,6 +823,8 @@ DL_API UFR_STATUS UfrGetBadSelectCardNrMax(uint8_t *bad_select_nr_max);
 
 DL_API UFR_STATUS UfrEnterSleepMode(void);
 DL_API UFR_STATUS UfrLeaveSleepMode(void);
+DL_API UFR_STATUS AutoSleepSet(uint8_t seconds_wait);
+DL_API UFR_STATUS AutoSleepGet(uint8_t *seconds_wait);
 
 DL_API UFR_STATUS SetSpeedPermanently(unsigned char tx_speed, unsigned char rx_speed);
 DL_API UFR_STATUS GetSpeedParameters(unsigned char *tx_speed, unsigned char *rx_speed);
@@ -1524,6 +1532,7 @@ DL_API UFR_STATUS GetAntiCollStatusM(UFR_HANDLE hndUFR, int8_t *lpcIsAntiCollEna
 
 
 DL_API UFR_STATUS GetDlogicCardTypeM(UFR_HANDLE hndUFR, uint8_t *lpucCardType);
+DL_API UFR_STATUS GetCardSizeM(UFR_HANDLE hndUFR, uint32_t *lpulLinearSize, uint32_t *lpulRawSize);
 
 // uFCoder PRO MODE
 DL_API UFR_STATUS GetReaderProModeM(UFR_HANDLE hndUFR, uint32_t *pReaderProMode, uint32_t *pReaderProConfig);
@@ -1651,6 +1660,8 @@ DL_API UFR_STATUS UfrGetBadSelectCardNrMaxM(UFR_HANDLE hndUFR, uint8_t *bad_sele
 
 DL_API UFR_STATUS UfrEnterSleepModeM(UFR_HANDLE hndUFR);
 DL_API UFR_STATUS UfrLeaveSleepModeM(UFR_HANDLE hndUFR);
+DL_API UFR_STATUS AutoSleepSetM(UFR_HANDLE hndUFR, uint8_t seconds_wait);
+DL_API UFR_STATUS AutoSleepGetM(UFR_HANDLE hndUFR, uint8_t *seconds_wait);
 
 DL_API UFR_STATUS SetSpeedPermanentlyM(UFR_HANDLE hndUFR, unsigned char tx_speed, unsigned char rx_speed);
 DL_API UFR_STATUS GetSpeedParametersM(UFR_HANDLE hndUFR, unsigned char *tx_speed, unsigned char *rx_speed);
