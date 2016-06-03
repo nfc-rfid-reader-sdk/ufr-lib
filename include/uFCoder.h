@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.9.9
+ * library version: 3.9.10
  *
  * Created on:  2009-01-14
- * Last edited: 2016-03-11
+ * Last edited: 2016-03-16
  *
  * Author: D-Logic
  */
@@ -25,17 +25,15 @@ typedef const char * c_string;
 typedef const char * chr_ptr; // deprecated
 ////////////////////////////////////////////////////////////////////
 
-#if __linux__
+#if __linux__ || __APPLE__
 #	define DL_API
 #else
 // WINDOWS
 #	ifdef DL_uFC_STATIC_LIB
 #		define DL_API __stdcall
-#	elif defined DL_uFC_GCC_DLL_IMPORT
-#		define DL_API __stdcall
 #	else
 #		ifndef DL_uFC_EXPORTS
-#			define DL_API __declspec(dllimport) __stdcall
+#			define DL_API /* __declspec(dllimport) */ __stdcall
 #		else
 #			define DL_API __declspec(dllexport) __stdcall
 #		endif
@@ -624,6 +622,8 @@ DL_API UFR_STATUS SetReaderSerialDescription(const uint8_t pSerialDescription[8]
 // New since version 2.0:
 DL_API UFR_STATUS GetBuildNumber(uint8_t *build);
 DL_API UFR_STATUS GetCardIdEx(uint8_t *lpucSak, uint8_t *aucUid,
+		uint8_t *lpucUidSize);
+DL_API UFR_STATUS GetLastCardIdEx(uint8_t *lpucSak, uint8_t *aucUid,
 		uint8_t *lpucUidSize);
 DL_API UFR_STATUS EnableAntiColl(void);
 DL_API UFR_STATUS DisableAntiColl(void);
@@ -1519,6 +1519,8 @@ DL_API UFR_STATUS GetReaderSerialDescriptionM(UFR_HANDLE hndUFR, uint8_t pSerial
 // New since version 2.0:
 DL_API UFR_STATUS GetBuildNumberM(UFR_HANDLE hndUFR, uint8_t *build);
 DL_API UFR_STATUS GetCardIdExM(UFR_HANDLE hndUFR, uint8_t *lpucSak,
+		uint8_t *aucUid, uint8_t *lpucUidSize);
+DL_API UFR_STATUS GetLastCardIdExM(UFR_HANDLE hndUFR, uint8_t *lpucSak,
 		uint8_t *aucUid, uint8_t *lpucUidSize);
 DL_API UFR_STATUS EnableAntiCollM(UFR_HANDLE hndUFR);
 DL_API UFR_STATUS DisableAntiCollM(UFR_HANDLE hndUFR);
