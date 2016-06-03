@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.9.10
+ * library version: 3.9.11
  *
  * Created on:  2009-01-14
- * Last edited: 2016-03-16
+ * Last edited: 2016-04-14
  *
  * Author: D-Logic
  */
@@ -220,6 +220,18 @@ extern "C"
 //--------------------------------------------------------------------------------------------------
 
 DL_API UFR_STATUS ReaderOpen(void);
+
+/**
+ * Useful for speed up opening for non uFR basic reader type
+ *
+ * @param reader_type : 0 : auto > same as call ReaderOpen()
+ *                      1 : uFR type (1 Mbps)
+ *                      2 : uFR RS232 type (115200 bps)
+ *                      3 : XRC type (250 Kbps)
+ * @return
+ */
+DL_API UFR_STATUS ReaderOpenByType(uint32_t reader_type);
+
 DL_API UFR_STATUS ReaderReset(void);
 DL_API UFR_STATUS ReaderClose(void);
 DL_API UFR_STATUS ReaderSoftRestart(void);
