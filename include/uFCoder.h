@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.9.6
+ * library version: 3.9.7
  *
- * Created on:  2009-01-26
- * Last edited: 2016-01-26
+ * Created on:  2009-01-14
+ * Last edited: 2016-02-01
  *
  * Author: D-Logic
  */
@@ -682,7 +682,7 @@ DL_API UFR_STATUS WriteEmulationNdef(uint8_t tnf,
 		uint8_t payload_length);
 DL_API UFR_STATUS TagEmulationStart(void);
 DL_API UFR_STATUS TagEmulationStop(void);
-
+DL_API UFR_STATUS CombinedModeEmulationStart(void);
 
 DL_API UFR_STATUS EnterShareRamCommMode(void);
 DL_API UFR_STATUS ExitShareRamCommMode(void);
@@ -1578,6 +1578,7 @@ DL_API UFR_STATUS WriteEmulationNdefM(UFR_HANDLE hndUFR,
 		uint8_t payload_length);
 DL_API UFR_STATUS TagEmulationStartM(UFR_HANDLE hndUFR);
 DL_API UFR_STATUS TagEmulationStopM(UFR_HANDLE hndUFR);
+DL_API UFR_STATUS CombinedModeEmulationStartM(UFR_HANDLE hndUFR);
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
