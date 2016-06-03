@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.9.4
+ * library version: 3.9.6
  *
- * Created on:  2009-01-14
- * Last edited: 2016-01-12
+ * Created on:  2009-01-26
+ * Last edited: 2016-01-26
  *
  * Author: D-Logic
  */
@@ -70,6 +70,7 @@ typedef const char * c_string;
 #define DL_NTAG_215						0x09
 #define DL_NTAG_216						0x0A
 #define DL_MIKRON_MIK640D				0x0B
+#define NFC_T2T_GENERIC					0x0C
 
 #define DL_MIFARE_MINI					0x20
 #define	DL_MIFARE_CLASSIC_1K			0x21
@@ -637,6 +638,7 @@ DL_API UFR_STATUS GetAntiCollStatus(int8_t *lpcIsAntiCollEnabled,
 
 
 DL_API UFR_STATUS GetDlogicCardType(uint8_t *lpucCardType);
+DL_API UFR_STATUS GetNfcT2TVersion(uint8_t lpucVersionResponse[8]);
 DL_API UFR_STATUS GetCardSize(uint32_t *lpulLinearSize, uint32_t *lpulRawSize);
 
 // uFCoder PRO MODE
@@ -689,26 +691,26 @@ DL_API UFR_STATUS ReadShareRam(uint8_t *ram_data, uint8_t addr, uint8_t data_len
 
 //------------------------------------------------------------------------------
 
+// GetNfcT2TVersion() returns 8 bytes (see T2T documentation):
+typedef struct t2t_version_struct {
+	uint8_t header;
+	uint8_t vendor_id;
+	uint8_t product_type;
+	uint8_t product_subtype;
+	uint8_t major_product_version;
+	uint8_t minor_product_version;
+	uint8_t storage_size;
+	uint8_t protocol_type;
+} t2t_version_t;
+
+// NfcT2TSafeConvertVersion() returns converts version_record that returned from GetNfcT2TVersion()
+// or GetNfcT2TVersionM(). Conversion is "alignment safe"
+// (you don't need to pay attention on structure byte alignment):
+DL_API void NfcT2TSafeConvertVersion(t2t_version_t *version, const uint8_t *version_record);
+
 //------------------------------------------------------------------------------
 // NTAG 21x specific:
 //------------------------------------------------------------------------------
-typedef struct ntag_version_struct {
-	unsigned char header;
-	unsigned char vendor_id;
-	unsigned char product_type;
-	unsigned char product_subtype;
-	unsigned char major_product_version;
-	unsigned char minor_product_version;
-	unsigned char storage_size;
-	unsigned char protocol_type;
-} ntag_version_t;
-
-// NTAG_GetVersion() returns 8 bytes (see NTAG21x documentation):
-DL_API UFR_STATUS NTAG_GetVersion(uint8_t *version_record);
-// NTAG_SafeConvertVersion() returns converts version_record that returned from NTAG_GetVersion()
-// or NTAG_GetVersionM(). Conversion is "alignment safe"
-// (you don't need to pay attention on structure byte alignment):
-DL_API void NTAG_SafeConvertVersion(ntag_version_t *version, const uint8_t *version_record);
 // NTAG_FastRead() - data must point to a (end_block_addr - start_block_addr) * 4 allocated bytes.
 // If you want to read only n bytes allocated use NTAG_FastReadBytes(ptr_n_bytes_allocated, n);
 DL_API UFR_STATUS NTAG_FastRead(uint8_t *data, uint8_t start_block_addr, uint8_t end_block_addr);
@@ -1532,6 +1534,7 @@ DL_API UFR_STATUS GetAntiCollStatusM(UFR_HANDLE hndUFR, int8_t *lpcIsAntiCollEna
 
 
 DL_API UFR_STATUS GetDlogicCardTypeM(UFR_HANDLE hndUFR, uint8_t *lpucCardType);
+DL_API UFR_STATUS GetNfcT2TVersionM(UFR_HANDLE hndUFR, uint8_t lpucVersionResponse[8]);
 DL_API UFR_STATUS GetCardSizeM(UFR_HANDLE hndUFR, uint32_t *lpulLinearSize, uint32_t *lpulRawSize);
 
 // uFCoder PRO MODE
@@ -1580,7 +1583,6 @@ DL_API UFR_STATUS TagEmulationStopM(UFR_HANDLE hndUFR);
 //------------------------------------------------------------------------------
 // NTAG 21x specific:
 //------------------------------------------------------------------------------
-DL_API UFR_STATUS NTAG_GetVersionM(UFR_HANDLE hndUFR, uint8_t *version_record);
 DL_API UFR_STATUS NTAG_FastReadM(UFR_HANDLE hndUFR, uint8_t *data, uint8_t start_block_addr, uint8_t end_block_addr);
 DL_API UFR_STATUS NTAG_FastReadBytesM(UFR_HANDLE hndUFR, uint8_t *data, uint8_t start_block_addr, uint8_t data_size);
 DL_API UFR_STATUS NTAG_ReadNFCCounterM(UFR_HANDLE hndUFR, uint32_t *nfc_counter_value);
