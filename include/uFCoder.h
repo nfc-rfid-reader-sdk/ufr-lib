@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.8.13
+ * lib veersion: 3.8.15
  *
  * Created on:  2009-01-14
- * Last edited: 2015-11-24
+ * Last edited: 2015-12-08
  *
  * Author: D-Logic
  */
@@ -22,7 +22,9 @@ typedef const char * chr_ptr;
 #else
 // WINDOWS
 #	ifdef DL_uFC_STATIC_LIB
-#		define DL_API
+#		define DL_API __stdcall
+#	elif defined DL_uFC_GCC_DLL_IMPORT
+#		define DL_API __stdcall
 #	else
 #		ifndef DL_uFC_EXPORTS
 #			define DL_API __declspec(dllimport) __stdcall
@@ -204,6 +206,16 @@ extern "C"
 #endif
 
 //--------------------------------------------------------------------------------------------------
+
+/**
+ * EnableXRC() enable or disable work with XRC in Open and List functions.
+ * Call this function before ReaderOpen() or ReaderOpenM()
+ * 	                  or ReaderList_UpdateAndGetCount()
+ *
+ * @param on : if 0 then XRC is disabled, otherwise enable
+ * @return UFR_STATUS
+ */
+DL_API UFR_STATUS EnableXRC(int on);
 
 DL_API UFR_STATUS ReaderOpen(void);
 DL_API UFR_STATUS ReaderReset(void);
@@ -807,6 +819,8 @@ DL_API UFR_STATUS UfrGetBadSelectCardNrMax(uint8_t *bad_select_nr_max);
 
 DL_API UFR_STATUS UfrEnterSleepMode(void);
 DL_API UFR_STATUS UfrLeaveSleepMode(void);
+DL_API UFR_STATUS AutoSleepSet(uint8_t seconds_wait);
+DL_API UFR_STATUS AutoSleepGet(uint8_t *seconds_wait);
 
 DL_API UFR_STATUS SetSpeedPermanently(unsigned char tx_speed, unsigned char rx_speed);
 DL_API UFR_STATUS GetSpeedParameters(unsigned char *tx_speed, unsigned char *rx_speed);
@@ -1588,6 +1602,8 @@ DL_API UFR_STATUS UfrGetBadSelectCardNrMaxM(UFR_HANDLE hndUFR, uint8_t *bad_sele
 
 DL_API UFR_STATUS UfrEnterSleepModeM(UFR_HANDLE hndUFR);
 DL_API UFR_STATUS UfrLeaveSleepModeM(UFR_HANDLE hndUFR);
+DL_API UFR_STATUS AutoSleepSetM(UFR_HANDLE hndUFR, uint8_t seconds_wait);
+DL_API UFR_STATUS AutoSleepGetM(UFR_HANDLE hndUFR, uint8_t *seconds_wait);
 
 DL_API UFR_STATUS SetSpeedPermanentlyM(UFR_HANDLE hndUFR, unsigned char tx_speed, unsigned char rx_speed);
 DL_API UFR_STATUS GetSpeedParametersM(UFR_HANDLE hndUFR, unsigned char *tx_speed, unsigned char *rx_speed);
