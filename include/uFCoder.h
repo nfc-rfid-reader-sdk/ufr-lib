@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.9.8
+ * library version: 3.9.9
  *
  * Created on:  2009-01-14
- * Last edited: 2016-03-10
+ * Last edited: 2016-03-11
  *
  * Author: D-Logic
  */
@@ -15,7 +15,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-typedef const char * chr_ptr;
 ////////////////////////////////////////////////////////////////////
 /**
  * Type for representing null terminated char array ( aka C-String )
@@ -23,6 +22,7 @@ typedef const char * chr_ptr;
  * Memory space for array must be allocated before use.
  */
 typedef const char * c_string;
+typedef const char * chr_ptr; // deprecated
 ////////////////////////////////////////////////////////////////////
 
 #if __linux__
