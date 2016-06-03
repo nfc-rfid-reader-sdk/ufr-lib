@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.9.12
+ * library version: 3.9.13
  *
  * Created on:  2009-01-14
- * Last edited: 2016-04-26
+ * Last edited: 2016-05-18
  *
  * Author: D-Logic
  */
@@ -25,9 +25,7 @@ typedef const char * c_string;
 typedef const char * chr_ptr; // deprecated
 ////////////////////////////////////////////////////////////////////
 
-#if __linux__ || __APPLE__
-#	define DL_API
-#else
+#ifdef _WIN32
 // WINDOWS
 #	ifdef DL_uFC_STATIC_LIB
 #		define DL_API __stdcall
@@ -38,7 +36,10 @@ typedef const char * chr_ptr; // deprecated
 #			define DL_API __declspec(dllexport) __stdcall
 #		endif
 #	endif
-#endif // __linux__
+#else
+// Linux & OS X
+#	define DL_API
+#endif // _WIN32
 
 #if defined(DL_uFC_EXPORTS) || defined(DL_uFC_STATIC_LIB)
 	typedef struct S_UFR_HANDLE * UFR_HANDLE;
@@ -81,9 +82,9 @@ typedef const char * chr_ptr; // deprecated
 #define DL_MIFARE_DESFIRE_EV1_2K		0x28
 #define DL_MIFARE_DESFIRE_EV1_4K		0x29
 #define DL_MIFARE_DESFIRE_EV1_8K		0x2A
-#define DL_MIFARE_DESFIRE_EV2_2K        0x2B
-#define DL_MIFARE_DESFIRE_EV2_4K        0x2C
-#define DL_MIFARE_DESFIRE_EV2_8K        0x2D
+#define DL_MIFARE_DESFIRE_EV2_2K		0x2B
+#define DL_MIFARE_DESFIRE_EV2_4K		0x2C
+#define DL_MIFARE_DESFIRE_EV2_8K		0x2D
 
 #define DL_IMEI_UID						0x80
 
@@ -1960,6 +1961,14 @@ UFR_STATUS OriginalityCheck(const uint8_t *signature, const uint8_t *uid, uint8_
 DL_API c_string GetDllVersionStr(void);
 DL_API c_string UFR_Status2String(const UFR_STATUS status);
 DL_API void error_get(void *out, int32_t *size);
+
+//// Helper functions:
+#ifndef _WIN32
+
+unsigned long GetTickCount(void);
+
+#endif // #ifndef _WIN32
+
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 DL_API c_string GetReaderDescription(void);
