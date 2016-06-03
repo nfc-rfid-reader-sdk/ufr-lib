@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.9.11
+ * library version: 3.9.12
  *
  * Created on:  2009-01-14
- * Last edited: 2016-04-14
+ * Last edited: 2016-04-26
  *
  * Author: D-Logic
  */
@@ -81,6 +81,11 @@ typedef const char * chr_ptr; // deprecated
 #define DL_MIFARE_DESFIRE_EV1_2K		0x28
 #define DL_MIFARE_DESFIRE_EV1_4K		0x29
 #define DL_MIFARE_DESFIRE_EV1_8K		0x2A
+#define DL_MIFARE_DESFIRE_EV2_2K        0x2B
+#define DL_MIFARE_DESFIRE_EV2_4K        0x2C
+#define DL_MIFARE_DESFIRE_EV2_8K        0x2D
+
+#define DL_IMEI_UID						0x80
 
 // MIFARE CLASSIC Authentication Modes:
 enum MIFARE_AUTHENTICATION
@@ -94,6 +99,9 @@ enum ADDRESS_MODE
 	ADDRESS_MODE_BLOCK = 0,
 	ADDRESS_MODE_SECTOR,
 };
+
+#define MAX_UID_LEN		10
+#define ECC_SIG_LEN		32
 
 // API Status Codes Type:
 typedef enum UFCODER_ERROR_CODES
@@ -115,6 +123,7 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_AUTH_ERROR = 0x0E,
 	UFR_PARAMETERS_ERROR = 0x0F, // ToDo, point 5.
 	UFR_MAX_SIZE_EXCEEDED = 0x10,
+	UFR_UNSUPPORTED_CARD_TYPE,
 
 	UFR_WRITE_VERIFICATION_ERROR = 0x70,
 	UFR_BUFFER_SIZE_EXCEEDED = 0x71,
@@ -165,6 +174,11 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_DEVICE_ALREADY_OPENED,
 	UFR_DEVICE_ALREADY_CLOSED,
 	UFR_DEVICE_IS_NOT_CONNECTED,
+
+	// Originality Check Error Codes:
+	UFR_NOT_NXP_GENUINE = 0x200,
+	UFR_OPEN_SSL_DYNAMIC_LIB_FAILED,
+	UFR_OPEN_SSL_DYNAMIC_LIB_NOT_FOUND,
 
 	MAX_UFR_STATUS = 0xFFFFFFFF
 } UFR_STATUS;
@@ -719,6 +733,8 @@ typedef struct t2t_version_struct {
 // or GetNfcT2TVersionM(). Conversion is "alignment safe"
 // (you don't need to pay attention on structure byte alignment):
 DL_API void NfcT2TSafeConvertVersion(t2t_version_t *version, const uint8_t *version_record);
+DL_API UFR_STATUS ReadECCSignature(uint8_t lpucECCSignature[ECC_SIG_LEN],
+		uint8_t lpucUid[MAX_UID_LEN], uint8_t *lpucUidLen, uint8_t *lpucDlogicCardType);
 
 //------------------------------------------------------------------------------
 // NTAG 21x specific:
@@ -1594,6 +1610,8 @@ DL_API UFR_STATUS TagEmulationStartM(UFR_HANDLE hndUFR);
 DL_API UFR_STATUS TagEmulationStopM(UFR_HANDLE hndUFR);
 DL_API UFR_STATUS CombinedModeEmulationStartM(UFR_HANDLE hndUFR);
 //------------------------------------------------------------------------------
+DL_API UFR_STATUS ReadECCSignatureM(UFR_HANDLE hndUFR, uint8_t lpucECCSignature[ECC_SIG_LEN],
+		uint8_t lpucUid[MAX_UID_LEN], uint8_t *lpucUidLen, uint8_t *lpucDlogicCardType);
 
 //------------------------------------------------------------------------------
 // NTAG 21x specific:
@@ -1926,14 +1944,23 @@ DL_API uint32_t GetDllVersion(void);
  *
  */
 
+#if (defined (__WIN32) || defined(__WIN64))
+//(Only for Windows for now)
+// Originality Check (performs the check is the chip on the card/tag NXP genuine):
+DL_API
+UFR_STATUS OriginalityCheck(const uint8_t *signature, const uint8_t *uid, uint8_t uid_len, uint8_t DlogicCardType);
+// Returns:
+// UFR_OPEN_SSL_DYNAMIC_LIB_NOT_FOUND in case there is no OpenSSL library (libeay32.dll) in current folder or path
+// UFR_OPEN_SSL_DYNAMIC_LIB_FAILED    in case of OpenSSL library error (e.g. wrong OpenSSL version)
+// UFR_NOT_NXP_GENUINE                if chip on the card/tag is NOT NXP genuine
+// UFR_OK                             is chip on the card/tag is NXP GENUINE
+#endif // (defined (__WIN32) || defined(__WIN64))
 
-//// debug function
-
+//// debug functions:
 DL_API c_string GetDllVersionStr(void);
-
 DL_API c_string UFR_Status2String(const UFR_STATUS status);
-
 DL_API void error_get(void *out, int32_t *size);
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 DL_API c_string GetReaderDescription(void);
 DL_API c_string GetReaderDescriptionM(UFR_HANDLE hndUFR);
