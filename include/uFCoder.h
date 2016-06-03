@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 3.9.14
+ * library version: 4.0.1
  *
  * Created on:  2009-01-14
- * Last edited: 2016-05-24
+ * Last edited: 2016-05-31
  *
  * Author: D-Logic
  */
@@ -22,7 +22,6 @@
  * Memory space for array must be allocated before use.
  */
 typedef const char * c_string;
-typedef const char * chr_ptr; // deprecated
 ////////////////////////////////////////////////////////////////////
 
 #ifdef _WIN32
@@ -181,6 +180,9 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_OPEN_SSL_DYNAMIC_LIB_FAILED,
 	UFR_OPEN_SSL_DYNAMIC_LIB_NOT_FOUND,
 
+	UFR_NOT_IMPLEMENTED = 0x1000,
+	UFR_COMMAND_FAILED,
+
 	MAX_UFR_STATUS = 0xFFFFFFFF
 } UFR_STATUS;
 
@@ -246,6 +248,31 @@ DL_API UFR_STATUS ReaderOpen(void);
  * @return
  */
 DL_API UFR_STATUS ReaderOpenByType(uint32_t reader_type);
+
+/**
+ * ReaderOpenEx() is a function for opening port with
+ *
+ * @param reader_type : 0 : auto > same as call ReaderOpen()
+ *                      1 : uFR type (1 Mbps)
+ *                      2 : uFR RS232 type (115200 bps)
+ *                      3 : XRC type (250 Kbps)
+ * @param port_name : serial port name, identifier, like
+ *                      "COM3" on Window or
+ *                      "/dev/ttyS0" on Linux or
+ *                      "/dev/tty.serial1" on OS X
+ *                      or if you select FTDI
+ *                      "UN123456" if Reader have integrated FTDI interface
+ * @param port_interface : type of communication interfaces
+ *                      0 : auto - first try FTDI than serial if no port_name defined
+ *                      1 : try serial / virtual COM port / interfaces
+ *                      2 : try only FTDI communication interfaces
+ * @param arg : for future purpose
+ * @return
+ */
+DL_API UFR_STATUS ReaderOpenEx(uint32_t reader_type,
+							   c_string port_name,
+		                       uint32_t port_interface,
+							   void *arg);
 
 DL_API UFR_STATUS ReaderReset(void);
 DL_API UFR_STATUS ReaderClose(void);
@@ -1945,6 +1972,8 @@ DL_API uint32_t GetDllVersion(void);
  *
  */
 
+#if (defined (__WIN32) || defined(__WIN64))
+//(Only for Windows for now)
 // Originality Check (performs the check is the chip on the card/tag NXP genuine):
 DL_API
 UFR_STATUS OriginalityCheck(const uint8_t *signature, const uint8_t *uid, uint8_t uid_len, uint8_t DlogicCardType);
@@ -1953,11 +1982,11 @@ UFR_STATUS OriginalityCheck(const uint8_t *signature, const uint8_t *uid, uint8_
 // UFR_OPEN_SSL_DYNAMIC_LIB_FAILED    in case of OpenSSL library error (e.g. wrong OpenSSL version)
 // UFR_NOT_NXP_GENUINE                if chip on the card/tag is NOT NXP genuine
 // UFR_OK                             is chip on the card/tag is NXP GENUINE
+#endif // (defined (__WIN32) || defined(__WIN64))
 
 //// debug functions:
 DL_API c_string GetDllVersionStr(void);
 DL_API c_string UFR_Status2String(const UFR_STATUS status);
-DL_API void error_get(void *out, int32_t *size);
 
 //// Helper functions:
 #ifndef _WIN32
