@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.1
+ * library version: 4.0.2
  *
  * Created on:  2009-01-14
- * Last edited: 2016-05-31
+ * Last edited: 2016-06-03
  *
  * Author: D-Logic
  */
@@ -1972,8 +1972,6 @@ DL_API uint32_t GetDllVersion(void);
  *
  */
 
-#if (defined (__WIN32) || defined(__WIN64))
-//(Only for Windows for now)
 // Originality Check (performs the check is the chip on the card/tag NXP genuine):
 DL_API
 UFR_STATUS OriginalityCheck(const uint8_t *signature, const uint8_t *uid, uint8_t uid_len, uint8_t DlogicCardType);
@@ -1982,7 +1980,6 @@ UFR_STATUS OriginalityCheck(const uint8_t *signature, const uint8_t *uid, uint8_
 // UFR_OPEN_SSL_DYNAMIC_LIB_FAILED    in case of OpenSSL library error (e.g. wrong OpenSSL version)
 // UFR_NOT_NXP_GENUINE                if chip on the card/tag is NOT NXP genuine
 // UFR_OK                             is chip on the card/tag is NXP GENUINE
-#endif // (defined (__WIN32) || defined(__WIN64))
 
 //// debug functions:
 DL_API c_string GetDllVersionStr(void);
