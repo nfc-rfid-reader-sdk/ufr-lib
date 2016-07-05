@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.3
+ * library version: 4.0.4
  *
  * Created on:  2009-01-14
- * Last edited: 2016-06-24
+ * Last edited: 2016-07-05
  *
  * Author: D-Logic
  */
@@ -26,8 +26,8 @@ typedef const char * c_string;
 
 #ifdef _WIN32
 // WINDOWS
-#	ifdef DL_uFC_STATIC_LIB
-#		define DL_API __stdcall
+#	if defined(DL_CREATE_STATIC_LIB) || defined(DL_USE_STATIC_LIB)
+#		define DL_API
 #	else
 #		ifndef DL_uFC_EXPORTS
 #			define DL_API /* __declspec(dllimport) */ __stdcall
@@ -40,7 +40,7 @@ typedef const char * c_string;
 #	define DL_API
 #endif // _WIN32
 
-#if defined(DL_uFC_EXPORTS) || defined(DL_uFC_STATIC_LIB)
+#if defined(DL_uFC_EXPORTS) || defined(DL_CREATE_STATIC_LIB)
 	typedef struct S_UFR_HANDLE * UFR_HANDLE;
 #else
 	typedef void * UFR_HANDLE;
