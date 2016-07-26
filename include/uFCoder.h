@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.5
+ * library version: 4.0.6
  *
  * Created on:  2009-01-14
- * Last edited: 2016-07-20
+ * Last edited: 2016-07-26
  *
  * Author: D-Logic
  */
@@ -766,11 +766,11 @@ UFR_STATUS DL_API ReadECCSignature(uint8_t lpucECCSignature[ECC_SIG_LEN],
 		uint8_t lpucUid[MAX_UID_LEN], uint8_t *lpucUidLen, uint8_t *lpucDlogicCardType);
 
 //------------------------------------------------------------------------------
-DL_API UFR_STATUS ReadCounter(uint8_t counter_address, uint32_t *value);
-DL_API UFR_STATUS IncrementCounter(uint8_t counter_address, uint32_t inc_value);
-DL_API UFR_STATUS ReadNFCCounter(uint32_t *value); // Same as ReadCounter(2, &value);
-DL_API UFR_STATUS ReadNFCCounterPwdAuth_RK(uint32_t *value, uint8_t reader_key_index);
-DL_API UFR_STATUS ReadNFCCounterPwdAuth_PK(uint32_t *value, const uint8_t *key);
+UFR_STATUS DL_API ReadCounter(uint8_t counter_address, uint32_t *value);
+UFR_STATUS DL_API IncrementCounter(uint8_t counter_address, uint32_t inc_value);
+UFR_STATUS DL_API ReadNFCCounter(uint32_t *value); // Same as ReadCounter(2, &value);
+UFR_STATUS DL_API ReadNFCCounterPwdAuth_RK(uint32_t *value, uint8_t reader_key_index);
+UFR_STATUS DL_API ReadNFCCounterPwdAuth_PK(uint32_t *value, const uint8_t *key);
 
 //------------------------------------------------------------------------------
 
@@ -1595,11 +1595,11 @@ UFR_STATUS DL_API ReadECCSignatureM(UFR_HANDLE hndUFR, uint8_t lpucECCSignature[
 		uint8_t lpucUid[MAX_UID_LEN], uint8_t *lpucUidLen, uint8_t *lpucDlogicCardType);
 
 //------------------------------------------------------------------------------
-DL_API UFR_STATUS ReadCounterM(UFR_HANDLE hndUFR, uint8_t counter_address, uint32_t *value);
-DL_API UFR_STATUS IncrementCounterM(UFR_HANDLE hndUFR, uint8_t counter_address, uint32_t inc_value);
-DL_API UFR_STATUS ReadNFCCounterM(UFR_HANDLE hndUFR, uint32_t *value); // Same as ReadCounter(2, &value);
-DL_API UFR_STATUS ReadNFCCounterPwdAuth_RKM(UFR_HANDLE hndUFR, uint32_t *value, uint8_t reader_key_index);
-DL_API UFR_STATUS ReadNFCCounterPwdAuth_PKM(UFR_HANDLE hndUFR, uint32_t *value, const uint8_t *key);
+UFR_STATUS DL_API ReadCounterM(UFR_HANDLE hndUFR, uint8_t counter_address, uint32_t *value);
+UFR_STATUS DL_API IncrementCounterM(UFR_HANDLE hndUFR, uint8_t counter_address, uint32_t inc_value);
+UFR_STATUS DL_API ReadNFCCounterM(UFR_HANDLE hndUFR, uint32_t *value); // Same as ReadCounter(2, &value);
+UFR_STATUS DL_API ReadNFCCounterPwdAuth_RKM(UFR_HANDLE hndUFR, uint32_t *value, uint8_t reader_key_index);
+UFR_STATUS DL_API ReadNFCCounterPwdAuth_PKM(UFR_HANDLE hndUFR, uint32_t *value, const uint8_t *key);
 //------------------------------------------------------------------------------
 
 UFR_STATUS DL_API SetAsyncCardIdSendConfigM(UFR_HANDLE hndUFR,
