@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.8
+ * library version: 4.0.9
  *
  * Created on:  2009-01-14
- * Last edited: 2016-07-28
+ * Last edited: 2016-08-02
  *
  * Author: D-Logic
  */
@@ -778,9 +778,19 @@ UFR_STATUS DL_API SetAsyncCardIdSendConfig(uint8_t send_enable,
 		uint8_t prefix_enable, uint8_t prefix, uint8_t suffix,
 		uint8_t send_removed_enable, uint32_t async_baud_rate);
 
+UFR_STATUS DL_API SetAsyncCardIdSendConfigEx(uint8_t send_enable,
+		uint8_t prefix_enable, uint8_t prefix, uint8_t suffix,
+		uint8_t send_removed_enable, uint8_t reverse_byte_order,
+		uint8_t decimal_representation, uint32_t async_baud_rate);
+
 UFR_STATUS DL_API GetAsyncCardIdSendConfig(uint8_t *send_enable,
 		uint8_t *prefix_enable, uint8_t *prefix, uint8_t *suffix,
 		uint8_t *send_removed_enable, uint32_t *async_baud_rate);
+
+UFR_STATUS DL_API GetAsyncCardIdSendConfigEx(uint8_t *send_enable,
+		uint8_t *prefix_enable, uint8_t *prefix, uint8_t *suffix,
+		uint8_t *send_removed_enable, uint8_t *reverse_byte_order,
+		uint8_t *decimal_representation, uint32_t *async_baud_rate);
 
 /*****************************************************************************
  * AIS FUNCTIONS
@@ -1606,9 +1616,19 @@ UFR_STATUS DL_API SetAsyncCardIdSendConfigM(UFR_HANDLE hndUFR,
 		uint8_t send_enable, uint8_t prefix_enable, uint8_t prefix,
 		uint8_t suffix, uint8_t send_removed_enable, uint32_t async_baud_rate);
 
+UFR_STATUS DL_API SetAsyncCardIdSendConfigExM(UFR_HANDLE hndUFR,
+		uint8_t send_enable, uint8_t prefix_enable, uint8_t prefix,
+		uint8_t suffix, uint8_t send_removed_enable, uint8_t reverse_byte_order,
+		uint8_t decimal_representation, uint32_t async_baud_rate);
+
 UFR_STATUS DL_API GetAsyncCardIdSendConfigM(UFR_HANDLE hndUFR,
 		uint8_t *send_enable, uint8_t *prefix_enable, uint8_t *prefix,
 		uint8_t *suffix, uint8_t *send_removed_enable, uint32_t *async_baud_rate);
+
+UFR_STATUS DL_API GetAsyncCardIdSendConfigExM(UFR_HANDLE hndUFR,
+		uint8_t *send_enable, uint8_t *prefix_enable, uint8_t *prefix,
+		uint8_t *suffix, uint8_t *send_removed_enable, uint8_t *reverse_byte_order,
+		uint8_t *decimal_representation, uint32_t *async_baud_rate);
 
 /*****************************************************************************
  * AIS FUNCTIONS
