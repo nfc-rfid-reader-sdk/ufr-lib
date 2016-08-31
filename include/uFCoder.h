@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.9
+ * library version: 4.0.10
  *
  * Created on:  2009-01-14
- * Last edited: 2016-08-02
+ * Last edited: 2016-08-31
  *
  * Author: D-Logic
  */
@@ -904,6 +904,8 @@ UFR_STATUS DL_API GetDisplayIntensity(uint8_t *intensity);
 UFR_STATUS DL_API uFR_i_block_transceive(uint8_t chaining, uint8_t timeout,
 		uint8_t block_length, uint8_t *snd_data_array, size_t *rcv_length,
 		uint8_t *rcv_data_array, uint32_t *ufr_status);
+UFR_STATUS DL_API uFR_APDU_Transceive(uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
+		uint8_t *data_out, uint8_t data_out_len, uint8_t *data_in, uint8_t *response_len, uint8_t send_le);
 
 UFR_STATUS DL_API DES_to_AES_key_type(void);
 
@@ -1707,6 +1709,8 @@ UFR_STATUS DL_API GetDisplayIntensityM(UFR_HANDLE hndUFR, uint8_t *intensity);
 UFR_STATUS DL_API uFR_i_block_transceiveM(UFR_HANDLE hndUFR, uint8_t chaining,
 		uint8_t timeout, uint8_t block_length, uint8_t *snd_data_array,
 		size_t *rcv_length, uint8_t *rcv_data_array, uint32_t *ufr_status);
+UFR_STATUS DL_API uFR_APDU_TransceiveM(UFR_HANDLE hndUFR, uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
+		uint8_t *data_out, uint8_t data_out_len, uint8_t *data_in, uint8_t *response_len, uint8_t send_le);
 
 //#############################################################################
 
@@ -1716,8 +1720,13 @@ UFR_STATUS DL_API uFR_i_block_transceiveM(UFR_HANDLE hndUFR, uint8_t chaining,
 typedef void * HND;
 
 UFR_STATUS DL_API uFR_DESFIRE_Start(void);
-
+UFR_STATUS DL_API uFR_DESFIRE_StartM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API uFR_DESFIRE_Stop(void);
+UFR_STATUS DL_API uFR_DESFIRE_StopM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API uFR_APDU_Start(void);                 // Alias for uFR_DESFIRE_Start()
+UFR_STATUS DL_API uFR_APDU_StartM(UFR_HANDLE hndUFR);   // Alias for uFR_DESFIRE_StartM()
+UFR_STATUS DL_API uFR_APDU_Stop(void);                  // Alias for uFR_DESFIRE_Stop()
+UFR_STATUS DL_API uFR_APDU_StopM(UFR_HANDLE hndUFR);    // Alias for uFR_DESFIRE_StopM()
 
 HND DL_API uFR_mifare_desfire_tag_new (void);
 
