@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.11
+ * library version: 4.0.14
  *
  * Created on:  2009-01-14
- * Last edited: 2016-11-15
+ * Last edited: 2017-01-31
  *
  * Author: D-Logic
  */
@@ -867,6 +867,13 @@ UFR_STATUS DL_API ais_set_credit_and_period_validity(int32_t credit,
 		uint32_t begin_minute, //
 		uint32_t end_year, uint32_t end_month, uint32_t end_day,
 		uint32_t end_hour, uint32_t end_minute);
+
+DL_API UFR_STATUS ais_set_right_type_record(uint8_t record_number,
+		uint8_t right_record_type, uint8_t *right_data);
+
+DL_API UFR_STATUS ais_get_right_type_record(uint8_t record_number,
+		uint8_t *right_record_type, uint8_t *right_data);
+
 //=============================================================================
 
 UFR_STATUS DL_API UfrXrcLockOn(uint16_t pulse_duration);
@@ -1031,6 +1038,24 @@ UFR_STATUS DL_API uFR_int_DesfireWriteStdDataFile_no_auth(uint32_t aid, uint8_t 
 		uint16_t offset, uint16_t data_length,
 		uint8_t communication_settings, uint8_t *data,
 		uint16_t *card_status, uint16_t *exec_time);
+
+////////////////////////////////////////////////////////////////////
+///
+////////////////////////////////////////////////////////////////////
+///
+////////////////////////////////////////////////////////////////////
+
+DL_API
+UFR_STATUS EE_Password_Change(const char old_password[8], const char new_password[8]);
+
+DL_API
+UFR_STATUS EE_Lock(const char password[8], uint32_t lock);
+
+DL_API
+UFR_STATUS EE_Write(uint32_t address, uint32_t size, void *data);
+
+DL_API
+UFR_STATUS EE_Read(uint32_t address, uint32_t size, void *data);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
@@ -1680,6 +1705,13 @@ UFR_STATUS DL_API ais_set_credit_and_period_validityM(UFR_HANDLE hndUFR,
 		uint32_t begin_day, uint32_t begin_hour, uint32_t begin_minute, //
 		uint32_t end_year, uint32_t end_month, uint32_t end_day,
 		uint32_t end_hour, uint32_t end_minute);
+
+DL_API UFR_STATUS ais_set_right_type_recordM(UFR_HANDLE hndUFR, uint8_t record_number,
+		uint8_t right_record_type, uint8_t *right_data);
+
+DL_API UFR_STATUS ais_get_right_type_recordM(UFR_HANDLE hndUFR,uint8_t record_number,
+		uint8_t *right_record_type, uint8_t *right_data);
+
 //=============================================================================
 
 UFR_STATUS DL_API UfrXrcLockOnM(UFR_HANDLE hndUFR, uint16_t pulse_duration);
