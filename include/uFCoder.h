@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.14
+ * library version: 4.0.15
  *
  * Created on:  2009-01-14
- * Last edited: 2017-01-31
+ * Last edited: 2017-02-13
  *
  * Author: D-Logic
  */
@@ -1046,10 +1046,10 @@ UFR_STATUS DL_API uFR_int_DesfireWriteStdDataFile_no_auth(uint32_t aid, uint8_t 
 ////////////////////////////////////////////////////////////////////
 
 DL_API
-UFR_STATUS EE_Password_Change(const char old_password[8], const char new_password[8]);
+UFR_STATUS EE_Password_Change(const uint8_t old_password[8], const uint8_t new_password[8]);
 
 DL_API
-UFR_STATUS EE_Lock(const char password[8], uint32_t lock);
+UFR_STATUS EE_Lock(const uint8_t password[8], uint32_t lock);
 
 DL_API
 UFR_STATUS EE_Write(uint32_t address, uint32_t size, void *data);
