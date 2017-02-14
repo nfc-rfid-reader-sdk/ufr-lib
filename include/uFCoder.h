@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.15
+ * library version: 4.0.18
  *
  * Created on:  2009-01-14
- * Last edited: 2017-02-13
+ * Last edited: 2017-02-14
  *
  * Author: D-Logic
  */
@@ -735,6 +735,16 @@ UFR_STATUS DL_API WriteEmulationNdef(uint8_t tnf,
 		uint8_t id_length,
 		uint8_t* payload,
 		uint8_t payload_length);
+UFR_STATUS DL_API WriteEmulationNdefWithAAR(
+		uint8_t tnf,
+		uint8_t *type_record,
+		uint8_t type_length,
+		uint8_t *id,
+		uint8_t id_length,
+		uint8_t *payload,
+		uint8_t payload_length,
+		uint8_t *aar,
+		uint8_t aar_length);
 UFR_STATUS DL_API TagEmulationStart(void);
 UFR_STATUS DL_API TagEmulationStop(void);
 UFR_STATUS DL_API CombinedModeEmulationStart(void);
@@ -873,6 +883,16 @@ DL_API UFR_STATUS ais_set_right_type_record(uint8_t record_number,
 
 DL_API UFR_STATUS ais_get_right_type_record(uint8_t record_number,
 		uint8_t *right_record_type, uint8_t *right_data);
+
+DL_API UFR_STATUS ais_set_right_record_type_max_daily_counter(uint8_t record_number,
+		uint16_t first_reader_nr, uint16_t last_reader_nr, uint8_t start_hour,
+		uint8_t start_minute, uint8_t end_hour, uint8_t end_minute,
+		uint8_t *days, uint8_t max_daily_counter);
+
+DL_API UFR_STATUS ais_get_right_record_type_max_daily_counter(uint8_t record_number,
+		uint16_t *first_reader_nr, uint16_t *last_reader_nr,
+		uint8_t *start_hour, uint8_t *start_minute, uint8_t *end_hour,
+		uint8_t *end_minute, uint8_t *days, uint8_t *max_daily_counter);
 
 //=============================================================================
 
@@ -1711,6 +1731,16 @@ DL_API UFR_STATUS ais_set_right_type_recordM(UFR_HANDLE hndUFR, uint8_t record_n
 
 DL_API UFR_STATUS ais_get_right_type_recordM(UFR_HANDLE hndUFR,uint8_t record_number,
 		uint8_t *right_record_type, uint8_t *right_data);
+
+DL_API UFR_STATUS ais_set_right_record_type_max_daily_counterM(UFR_HANDLE hndUFR, uint8_t record_number,
+		uint16_t first_reader_nr, uint16_t last_reader_nr, uint8_t start_hour,
+		uint8_t start_minute, uint8_t end_hour, uint8_t end_minute,
+		uint8_t *days, uint8_t max_daily_counter);
+
+DL_API UFR_STATUS ais_set_right_record_type_max_daily_counterM(UFR_HANDLE hndUFR, uint8_t record_number,
+		uint16_t first_reader_nr, uint16_t last_reader_nr, uint8_t start_hour,
+		uint8_t start_minute, uint8_t end_hour, uint8_t end_minute,
+		uint8_t *days, uint8_t max_daily_counter);
 
 //=============================================================================
 
