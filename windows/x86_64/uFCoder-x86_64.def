@@ -55,22 +55,22 @@ EXPORTS
     DES_to_AES_key_type @54
     DeslectCard @55
     DeslectCardM @56
-    DisableAntiColl @57
-    DisableAntiCollM @58
+    DisableAntiCollision @57
+    DisableAntiCollisionM @58
     EE_Lock @59
     EE_Password_Change @60
     EE_Read @61
     EE_Write @62
-    EnableAntiColl @63
-    EnableAntiCollM @64
+    EnableAntiCollision @63
+    EnableAntiCollisionM @64
     EnterShareRamCommMode @65
     EnterShareRamCommModeM @66
     EnumCards @67
-    EnumCardsMM @68
+    EnumCardsM @68
     ExitShareRamCommMode @69
     ExitShareRamCommModeM @70
-    GetAntiCollStatus @71
-    GetAntiCollStatusMM @72
+    GetAntiCollisionStatus @71
+    GetAntiCollisionStatusM @72
     GetAsyncCardIdSendConfig @73
     GetAsyncCardIdSendConfigEx @74
     GetAsyncCardIdSendConfigExM @75
@@ -146,7 +146,7 @@ EXPORTS
     LinearWrite_PK @145
     LinearWrite_PKM @146
     ListCards @147
-    ListCardsMM @148
+    ListCardsM @148
     NfcT2TSafeConvertVersion @149
     OriginalityCheck @150
     ReadCounter @151
@@ -215,7 +215,7 @@ EXPORTS
     SectorTrailerWrite_PK @214
     SectorTrailerWrite_PKM @215
     SelectCard @216
-    SelectCardMM @217
+    SelectCardM @217
     SetAsyncCardIdSendConfig @218
     SetAsyncCardIdSendConfigEx @219
     SetAsyncCardIdSendConfigExM @220

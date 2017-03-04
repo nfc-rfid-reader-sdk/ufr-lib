@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.18
+ * library version: 4.0.19
  *
  * Created on:  2009-01-14
- * Last edited: 2017-02-14
+ * Last edited: 2017-03-04
  *
  * Author: D-Logic
  */
@@ -679,18 +679,17 @@ UFR_STATUS DL_API GetCardIdEx(uint8_t *lpucSak, uint8_t *aucUid,
 		uint8_t *lpucUidSize);
 UFR_STATUS DL_API GetLastCardIdEx(uint8_t *lpucSak, uint8_t *aucUid,
 		uint8_t *lpucUidSize);
-UFR_STATUS DL_API EnableAntiColl(void);
-UFR_STATUS DL_API DisableAntiColl(void);
-UFR_STATUS DL_API EnumCards(uint8_t *lpucCardsNumber,
-		uint8_t *lpucUidListSize);
+//------------------------------------------------------------------------------
+//Multi-card (anti collision) mode:
+//------------------------------------------------------------------------------
+UFR_STATUS DL_API EnableAntiCollision(void);
+UFR_STATUS DL_API DisableAntiCollision(void);
+UFR_STATUS DL_API EnumCards(uint8_t *lpucCardsNumber, uint8_t *lpucUidListSize); // Card pointer is on the first card in list
 UFR_STATUS DL_API ListCards(uint8_t *aucUidList, uint8_t ucUidListSize); // Before calling this function you must call EnumCards() first.
-UFR_STATUS DL_API SelectCard(const uint8_t *aucUid, uint8_t ucUidSize,
-		uint8_t *lpucSak);
+UFR_STATUS DL_API SelectCard(const uint8_t *aucUid, uint8_t ucUidSize, uint8_t *lpucSelctedCardType);
 UFR_STATUS DL_API DeslectCard(void);
-UFR_STATUS DL_API GetAntiCollStatus(int8_t *lpcIsAntiCollEnabled,
-		int8_t *lpcIsAnyCardSelected);
-
-
+UFR_STATUS DL_API GetAntiCollisionStatus(int8_t *lpcIsAntiCollEnabled, int8_t *lpcIsAnyCardSelected);
+//------------------------------------------------------------------------------
 UFR_STATUS DL_API GetDlogicCardType(uint8_t *lpucCardType);
 UFR_STATUS DL_API GetNfcT2TVersion(uint8_t lpucVersionResponse[8]);
 UFR_STATUS DL_API GetCardSize(uint32_t *lpulLinearSize, uint32_t *lpulRawSize);
@@ -698,7 +697,6 @@ UFR_STATUS DL_API GetCardSize(uint32_t *lpulLinearSize, uint32_t *lpulRawSize);
 // uFCoder PRO MODE
 UFR_STATUS DL_API GetReaderProMode(uint32_t *pReaderProMode, uint32_t *pReaderProConfig);
 UFR_STATUS DL_API SetReaderProMode(const uint32_t ReaderProMode);
-
 
 // QR barcode crypt algorithm
 // initialization. with TB serial like 'TB123456'
@@ -1587,19 +1585,18 @@ UFR_STATUS DL_API GetCardIdExM(UFR_HANDLE hndUFR, uint8_t *lpucSak,
 		uint8_t *aucUid, uint8_t *lpucUidSize);
 UFR_STATUS DL_API GetLastCardIdExM(UFR_HANDLE hndUFR, uint8_t *lpucSak,
 		uint8_t *aucUid, uint8_t *lpucUidSize);
-UFR_STATUS DL_API EnableAntiCollM(UFR_HANDLE hndUFR);
-UFR_STATUS DL_API DisableAntiCollM(UFR_HANDLE hndUFR);
-UFR_STATUS DL_API EnumCardsM(UFR_HANDLE hndUFR, uint8_t *lpucCardsNumber,
-		uint8_t *lpucUidListSize);
-UFR_STATUS DL_API ListCardsM(UFR_HANDLE hndUFR, uint8_t *aucUidList,
-		uint8_t ucUidListSize); // Before calling this function you must call EnumCardsM() first.
-UFR_STATUS DL_API SelectCardM(UFR_HANDLE hndUFR, const uint8_t *aucUid,
-		uint8_t ucUidSize, uint8_t *lpucSak);
+
+//------------------------------------------------------------------------------
+//Multi card mode:
+//------------------------------------------------------------------------------
+UFR_STATUS DL_API EnableAntiCollisionM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API DisableAntiCollisionM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API EnumCardsM(UFR_HANDLE hndUFR, uint8_t *lpucCardsNumber, uint8_t *lpucUidListSize); // Card pointer is on the first card in list
+UFR_STATUS DL_API ListCardsM(UFR_HANDLE hndUFR, uint8_t *aucUidList, uint8_t ucUidListSize); // Before calling this function you must call EnumCards() first.
+UFR_STATUS DL_API SelectCardM(UFR_HANDLE hndUFR, const uint8_t *aucUid, uint8_t ucUidSize, uint8_t *lpucSelctedCardType);
 UFR_STATUS DL_API DeslectCardM(UFR_HANDLE hndUFR);
-UFR_STATUS DL_API GetAntiCollStatusM(UFR_HANDLE hndUFR, int8_t *lpcIsAntiCollEnabled,
-		int8_t *lpcIsAnyCardSelected);
-
-
+UFR_STATUS DL_API GetAntiCollisionStatusM(UFR_HANDLE hndUFR, int8_t *lpcIsAntiCollEnabled, int8_t *lpcIsAnyCardSelected);
+//------------------------------------------------------------------------------
 UFR_STATUS DL_API GetDlogicCardTypeM(UFR_HANDLE hndUFR, uint8_t *lpucCardType);
 UFR_STATUS DL_API GetNfcT2TVersionM(UFR_HANDLE hndUFR, uint8_t lpucVersionResponse[8]);
 UFR_STATUS DL_API GetCardSizeM(UFR_HANDLE hndUFR, uint32_t *lpulLinearSize, uint32_t *lpulRawSize);
