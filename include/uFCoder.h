@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.21
+ * library version: 4.0.22
  *
  * Created on:  2009-01-14
- * Last edited: 2017-03-09
+ * Last edited: 2017-03-23
  *
  * Author: D-Logic
  */
@@ -929,8 +929,19 @@ UFR_STATUS DL_API GetDisplayIntensity(uint8_t *intensity);
 UFR_STATUS DL_API uFR_i_block_transceive(uint8_t chaining, uint8_t timeout,
 		uint8_t block_length, uint8_t *snd_data_array, size_t *rcv_length,
 		uint8_t *rcv_data_array, uint32_t *ufr_status);
-UFR_STATUS DL_API uFR_APDU_Transceive(uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
+UFR_STATUS DL_API uFR_APDU_TransceiveOld(uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
 		uint8_t *data_out, uint8_t data_out_len, uint8_t *data_in, uint8_t *response_len, uint8_t send_le);
+
+UFR_STATUS DL_API uFR_APDU_Transceive(uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
+		uint8_t *data_out, uint8_t data_out_len, uint8_t *data_in, uint32_t max_data_in_len, uint32_t *response_len,
+		uint8_t send_le, uint8_t *apdu_status);
+
+UFR_STATUS DL_API i_block_trans_rcv_chain(uint8_t chaining,	uint8_t timeout,
+		uint8_t block_length, uint8_t *snd_data_array,
+		uint8_t *rcv_length, uint8_t *rcv_data_array, uint8_t *rcv_chained, uint32_t *ufr_status);
+UFR_STATUS DL_API r_block_transceive(uint8_t ack, uint8_t timeout,
+		uint8_t *rcv_length, uint8_t *rcv_data_array, uint8_t *rcv_chained, uint32_t *ufr_status);
+UFR_STATUS DL_API s_block_deselect(uint8_t timeout);
 
 UFR_STATUS DL_API DES_to_AES_key_type(void);
 
@@ -1768,8 +1779,20 @@ UFR_STATUS DL_API GetDisplayIntensityM(UFR_HANDLE hndUFR, uint8_t *intensity);
 UFR_STATUS DL_API uFR_i_block_transceiveM(UFR_HANDLE hndUFR, uint8_t chaining,
 		uint8_t timeout, uint8_t block_length, uint8_t *snd_data_array,
 		size_t *rcv_length, uint8_t *rcv_data_array, uint32_t *ufr_status);
-UFR_STATUS DL_API uFR_APDU_TransceiveM(UFR_HANDLE hndUFR, uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
+UFR_STATUS DL_API uFR_APDU_TransceiveOldM(UFR_HANDLE hndUFR, uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
 		uint8_t *data_out, uint8_t data_out_len, uint8_t *data_in, uint8_t *response_len, uint8_t send_le);
+UFR_STATUS DL_API uFR_APDU_TransceiveM(UFR_HANDLE hndUFR, uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
+		uint8_t *data_out, uint8_t data_out_len, uint8_t *data_in, uint32_t max_data_in_len, uint32_t *response_len,
+		uint8_t send_le, uint8_t *apdu_status);
+
+UFR_STATUS DL_API i_block_trans_rcv_chainM(UFR_HANDLE hndUFR, uint8_t chaining,	uint8_t timeout,
+		uint8_t block_length, uint8_t *snd_data_array,
+		uint8_t *rcv_length, uint8_t *rcv_data_array, uint8_t *rcv_chained, uint32_t *ufr_status);
+
+UFR_STATUS DL_API r_block_transceiveM(UFR_HANDLE hndUFR, uint8_t ack, uint8_t timeout,
+		uint8_t *rcv_length, uint8_t *rcv_data_array, uint8_t *rcv_chained, uint32_t *ufr_status);
+
+UFR_STATUS DL_API s_block_deselectM(UFR_HANDLE hndUFR, uint8_t timeout);
 
 //#############################################################################
 
