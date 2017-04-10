@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.22
+ * library version: 4.2.2
  *
  * Created on:  2009-01-14
- * Last edited: 2017-03-23
+ * Last edited: 2017-04-07
  *
  * Author: D-Logic
  */
@@ -26,21 +26,25 @@ typedef const char * c_string;
 
 #ifdef _WIN32
 // WINDOWS
-#	if defined(DL_CREATE_STATIC_LIB) || defined(DL_USE_STATIC_LIB)
+#	ifdef DL_uFC_STATIC_LIB
 #		define DL_API
 #	else
 #		ifndef DL_uFC_EXPORTS
-#			define DL_API /* __declspec(dllimport) */ __stdcall
+#			ifdef _WIN_IOT
+#				define DL_API __declspec(dllimport)						// Win IoT
+#			else
+#				define DL_API /*__declspec(dllimport) */ __stdcall		// STDCALL - GCC - .NET
+#			endif //  _WIN_IOT
 #		else
 #			define DL_API __declspec(dllexport) __stdcall
-#		endif
-#	endif
+#		endif // DL_uFC_EXPORTS
+#	endif // DL_uFC_STATIC_LIB
 #else
-// Linux & OS X
+// Linux & MAC OS
 #	define DL_API
 #endif // _WIN32
 
-#if defined(DL_uFC_EXPORTS) || defined(DL_CREATE_STATIC_LIB)
+#if defined(DL_uFC_EXPORTS) || defined(DL_uFC_STATIC_LIB)
 	typedef struct S_UFR_HANDLE * UFR_HANDLE;
 #else
 	typedef void * UFR_HANDLE;
@@ -876,18 +880,18 @@ UFR_STATUS DL_API ais_set_credit_and_period_validity(int32_t credit,
 		uint32_t end_year, uint32_t end_month, uint32_t end_day,
 		uint32_t end_hour, uint32_t end_minute);
 
-DL_API UFR_STATUS ais_set_right_type_record(uint8_t record_number,
+UFR_STATUS DL_API ais_set_right_type_record(uint8_t record_number,
 		uint8_t right_record_type, uint8_t *right_data);
 
-DL_API UFR_STATUS ais_get_right_type_record(uint8_t record_number,
+UFR_STATUS DL_API ais_get_right_type_record(uint8_t record_number,
 		uint8_t *right_record_type, uint8_t *right_data);
 
-DL_API UFR_STATUS ais_set_right_record_type_max_daily_counter(uint8_t record_number,
+UFR_STATUS DL_API ais_set_right_record_type_max_daily_counter(uint8_t record_number,
 		uint16_t first_reader_nr, uint16_t last_reader_nr, uint8_t start_hour,
 		uint8_t start_minute, uint8_t end_hour, uint8_t end_minute,
 		uint8_t *days, uint8_t max_daily_counter);
 
-DL_API UFR_STATUS ais_get_right_record_type_max_daily_counter(uint8_t record_number,
+UFR_STATUS DL_API ais_get_right_record_type_max_daily_counter(uint8_t record_number,
 		uint16_t *first_reader_nr, uint16_t *last_reader_nr,
 		uint8_t *start_hour, uint8_t *start_minute, uint8_t *end_hour,
 		uint8_t *end_minute, uint8_t *days, uint8_t *max_daily_counter);
@@ -1074,17 +1078,13 @@ UFR_STATUS DL_API uFR_int_DesfireWriteStdDataFile_no_auth(uint32_t aid, uint8_t 
 ///
 ////////////////////////////////////////////////////////////////////
 
-DL_API
-UFR_STATUS EE_Password_Change(const uint8_t old_password[8], const uint8_t new_password[8]);
+UFR_STATUS DL_API EE_Password_Change(const uint8_t old_password[8], const uint8_t new_password[8]);
 
-DL_API
-UFR_STATUS EE_Lock(const uint8_t password[8], uint32_t lock);
+UFR_STATUS DL_API EE_Lock(const uint8_t password[8], uint32_t lock);
 
-DL_API
-UFR_STATUS EE_Write(uint32_t address, uint32_t size, void *data);
+UFR_STATUS DL_API EE_Write(uint32_t address, uint32_t size, void *data);
 
-DL_API
-UFR_STATUS EE_Read(uint32_t address, uint32_t size, void *data);
+UFR_STATUS DL_API EE_Read(uint32_t address, uint32_t size, void *data);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
@@ -1734,18 +1734,18 @@ UFR_STATUS DL_API ais_set_credit_and_period_validityM(UFR_HANDLE hndUFR,
 		uint32_t end_year, uint32_t end_month, uint32_t end_day,
 		uint32_t end_hour, uint32_t end_minute);
 
-DL_API UFR_STATUS ais_set_right_type_recordM(UFR_HANDLE hndUFR, uint8_t record_number,
+UFR_STATUS DL_API ais_set_right_type_recordM(UFR_HANDLE hndUFR, uint8_t record_number,
 		uint8_t right_record_type, uint8_t *right_data);
 
-DL_API UFR_STATUS ais_get_right_type_recordM(UFR_HANDLE hndUFR,uint8_t record_number,
+UFR_STATUS DL_API ais_get_right_type_recordM(UFR_HANDLE hndUFR,uint8_t record_number,
 		uint8_t *right_record_type, uint8_t *right_data);
 
-DL_API UFR_STATUS ais_set_right_record_type_max_daily_counterM(UFR_HANDLE hndUFR, uint8_t record_number,
+UFR_STATUS DL_API ais_set_right_record_type_max_daily_counterM(UFR_HANDLE hndUFR, uint8_t record_number,
 		uint16_t first_reader_nr, uint16_t last_reader_nr, uint8_t start_hour,
 		uint8_t start_minute, uint8_t end_hour, uint8_t end_minute,
 		uint8_t *days, uint8_t max_daily_counter);
 
-DL_API UFR_STATUS ais_set_right_record_type_max_daily_counterM(UFR_HANDLE hndUFR, uint8_t record_number,
+UFR_STATUS DL_API ais_set_right_record_type_max_daily_counterM(UFR_HANDLE hndUFR, uint8_t record_number,
 		uint16_t first_reader_nr, uint16_t last_reader_nr, uint8_t start_hour,
 		uint8_t start_minute, uint8_t end_hour, uint8_t end_minute,
 		uint8_t *days, uint8_t max_daily_counter);
@@ -1796,10 +1796,7 @@ UFR_STATUS DL_API s_block_deselectM(UFR_HANDLE hndUFR, uint8_t timeout);
 
 //#############################################################################
 
-//DL_API
-//void print_desfire_version(struct mifare_desfire_version_info *desfire_version);
-
-typedef void * HND;
+//void DL_API print_desfire_version(struct mifare_desfire_version_info *desfire_version);
 
 UFR_STATUS DL_API uFR_DESFIRE_Start(void);
 UFR_STATUS DL_API uFR_DESFIRE_StartM(UFR_HANDLE hndUFR);
@@ -1810,23 +1807,32 @@ UFR_STATUS DL_API uFR_APDU_StartM(UFR_HANDLE hndUFR);   // Alias for uFR_DESFIRE
 UFR_STATUS DL_API uFR_APDU_Stop(void);                  // Alias for uFR_DESFIRE_Stop()
 UFR_STATUS DL_API uFR_APDU_StopM(UFR_HANDLE hndUFR);    // Alias for uFR_DESFIRE_StopM()
 
-HND DL_API uFR_mifare_desfire_tag_new (void);
+// PVOID
+typedef void * MifareTag_t;
+typedef void * MifareDESFireKey_t;
 
-void DL_API uFR_mifare_desfire_tag_free (HND tag);
+MifareTag_t DL_API uFR_mifare_desfire_tag_new(void);
 
-HND DL_API uFR_mifare_desfire_des_key_new (uint8_t value[8]);
+void DL_API uFR_mifare_desfire_tag_free(MifareTag_t tag);
 
-int DL_API uFR_mifare_desfire_get_key_settings (HND tag, uint8_t *settings, uint8_t *max_keys);
+MifareDESFireKey_t DL_API uFR_mifare_desfire_des_key_new(uint8_t value[8]);
 
-void DL_API uFR_mifare_desfire_key_free (HND key);
+int DL_API uFR_mifare_desfire_get_key_settings(MifareTag_t tag,
+		uint8_t *settings, uint8_t *max_keys);
 
-HND DL_API uFR_mifare_desfire_aes_key_new_with_version (uint8_t value[16], uint8_t version);
+void DL_API uFR_mifare_desfire_key_free(MifareDESFireKey_t key);
 
-int DL_API uFR_mifare_desfire_change_key (HND tag, uint8_t key_no, HND new_key, HND old_key);
+MifareDESFireKey_t DL_API uFR_mifare_desfire_aes_key_new_with_version(
+		uint8_t value[16], uint8_t version);
 
-int DL_API uFR_mifare_desfire_authenticate (HND tag, uint8_t key_no, HND key);
+int DL_API uFR_mifare_desfire_change_key(MifareTag_t tag, uint8_t key_no,
+		MifareDESFireKey_t new_key, MifareDESFireKey_t old_key);
 
-int DL_API uFR_mifare_desfire_authenticate_aes (HND tag, uint8_t key_no, HND key);
+int DL_API uFR_mifare_desfire_authenticate(MifareTag_t tag, uint8_t key_no,
+		MifareDESFireKey_t key);
+
+int DL_API uFR_mifare_desfire_authenticate_aes(MifareTag_t tag, uint8_t key_no,
+		MifareDESFireKey_t key);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
