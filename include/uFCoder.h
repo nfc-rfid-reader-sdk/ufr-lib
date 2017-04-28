@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.23
+ * library version: 4.0.24
  *
  * Created on:  2009-01-14
- * Last edited: 2017-04-24
+ * Last edited: 2017-04-28
  *
  * Author: D-Logic
  */
@@ -759,6 +759,10 @@ UFR_STATUS DL_API TagEmulationStop(void);
 UFR_STATUS DL_API CombinedModeEmulationStart(void);
 UFR_STATUS DL_API AdHocEmulationStart(void);
 UFR_STATUS DL_API AdHocEmulationStop(void);
+UFR_STATUS DL_API GetAdHocEmulationParams(uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+											uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API SetAdHocEmulationParams(uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+											uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
 UFR_STATUS DL_API GetExternalFieldState(uint8_t *is_field_present);
 UFR_STATUS DL_API EnterShareRamCommMode(void);
 UFR_STATUS DL_API ExitShareRamCommMode(void);
@@ -1670,6 +1674,12 @@ UFR_STATUS DL_API TagEmulationStopM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API CombinedModeEmulationStartM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API AdHocEmulationStartM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API AdHocEmulationStopM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API GetAdHocEmulationParamsM(UFR_HANDLE hndUFR,
+											uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+											uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API SetAdHocEmulationParamsM(UFR_HANDLE hndUFR,
+											uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+											uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
 UFR_STATUS DL_API GetExternalFieldStateM(UFR_HANDLE hndUFR, uint8_t *is_field_present);
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API ReadECCSignatureM(UFR_HANDLE hndUFR, uint8_t lpucECCSignature[ECC_SIG_LEN],
