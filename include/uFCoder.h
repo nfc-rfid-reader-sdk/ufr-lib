@@ -4,7 +4,7 @@
  * library version: 4.0.25
  *
  * Created on:  2009-01-14
- * Last edited: 2017-05-29
+ * Last edited: 2017-06-02
  *
  * Author: D-Logic
  */
@@ -943,6 +943,7 @@ UFR_STATUS DL_API GetDisplayIntensity(uint8_t *intensity);
  * @param ufr_status
  * @return
  */
+UFR_STATUS DL_API SetISO14443_4_Mode(void);
 UFR_STATUS DL_API uFR_i_block_transceive(uint8_t chaining, uint8_t timeout,
 		uint8_t block_length, uint8_t *snd_data_array, size_t *rcv_length,
 		uint8_t *rcv_data_array, uint32_t *ufr_status);
@@ -1801,7 +1802,7 @@ UFR_STATUS DL_API GetDisplayIntensityM(UFR_HANDLE hndUFR, uint8_t *intensity);
 //#############################################################################
 //#############################################################################
 
-
+UFR_STATUS DL_API SetISO14443_4_ModeM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API uFR_i_block_transceiveM(UFR_HANDLE hndUFR, uint8_t chaining,
 		uint8_t timeout, uint8_t block_length, uint8_t *snd_data_array,
 		size_t *rcv_length, uint8_t *rcv_data_array, uint32_t *ufr_status);
