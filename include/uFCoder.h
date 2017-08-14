@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.26
+ * library version: 4.0.29
  *
  * Created on:  2009-01-14
- * Last edited: 2017-06-28
+ * Last edited: 2017-08-14
  *
  * Author: D-Logic
  */
@@ -950,13 +950,13 @@ UFR_STATUS DL_API uFR_i_block_transceive(uint8_t chaining, uint8_t timeout,
 		uint8_t block_length, uint8_t *snd_data_array, size_t *rcv_length,
 		uint8_t *rcv_data_array, uint32_t *ufr_status);
 
-UFR_STATUS DL_API uFR_APDU_Transceive(uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
+UFR_STATUS DL_API uFR_APDU_Transceive(uint8_t cls, uint8_t ins, uint8_t p1, uint8_t p2,
 		uint8_t *data_out, uint8_t data_out_len, uint8_t *data_in, uint32_t max_data_in_len, uint32_t *response_len,
 		uint8_t send_le, uint8_t *apdu_status);
 
 UFR_STATUS DL_API APDUHexStrTransceive(const char *c_apdu, char **r_apdu);
 UFR_STATUS DL_API APDUPlainTransceive(const uint8_t *c_apdu, uint32_t c_apdu_len, uint8_t *r_apdu, uint32_t *r_apdu_len);
-UFR_STATUS DL_API APDUTransceive(uint8_t cls, uint8_t ins, uint8_t p0, uint8_t p1,
+UFR_STATUS DL_API APDUTransceive(uint8_t cls, uint8_t ins, uint8_t p1, uint8_t p2,
 		const uint8_t *data_out, uint32_t Nc, uint8_t *data_in, uint32_t *Ne,
 		uint8_t send_le, uint8_t *apdu_status);
 UFR_STATUS DL_API i_block_trans_rcv_chain(uint8_t chaining,	uint8_t timeout,
