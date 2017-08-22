@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.2.2
+ * library version: 4.2.4
  *
  * Created on:  2009-01-14
- * Last edited: 2017-04-07
+ * Last edited: 2017-08-22
  *
  * Author: D-Logic
  */
@@ -89,7 +89,18 @@ typedef const char * c_string;
 #define DL_MIFARE_DESFIRE_EV2_4K		0x2C
 #define DL_MIFARE_DESFIRE_EV2_8K		0x2D
 
+#define DL_UNKNOWN_ISO_14443_4			0x40
 #define DL_IMEI_UID						0x80
+
+// ST Product ID-s:
+#define M24SR02							0x82
+#define M24SR02_AUTOMOTIVE				0x8A
+#define M24SR04							0x86
+#define M24SR04_AUTOMOTIVE				0x8E
+#define M24SR16							0x85
+#define M24SR16_AUTOMOTIVE				0x8D
+#define M24SR64							0x84
+#define M24SR64_AUTOMOTIVE				0x8C
 
 // MIFARE CLASSIC Authentication Modes:
 enum MIFARE_AUTHENTICATION
@@ -750,7 +761,13 @@ UFR_STATUS DL_API WriteEmulationNdefWithAAR(
 UFR_STATUS DL_API TagEmulationStart(void);
 UFR_STATUS DL_API TagEmulationStop(void);
 UFR_STATUS DL_API CombinedModeEmulationStart(void);
-
+UFR_STATUS DL_API AdHocEmulationStart(void);
+UFR_STATUS DL_API AdHocEmulationStop(void);
+UFR_STATUS DL_API GetAdHocEmulationParams(uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+											uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API SetAdHocEmulationParams(uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+											uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+UFR_STATUS DL_API GetExternalFieldState(uint8_t *is_field_present);
 UFR_STATUS DL_API EnterShareRamCommMode(void);
 UFR_STATUS DL_API ExitShareRamCommMode(void);
 UFR_STATUS DL_API WriteShareRam(uint8_t *ram_data, uint8_t addr, uint8_t data_len);
@@ -930,6 +947,7 @@ UFR_STATUS DL_API GetDisplayIntensity(uint8_t *intensity);
  * @param ufr_status
  * @return
  */
+UFR_STATUS DL_API SetISO14443_4_Mode(void);
 UFR_STATUS DL_API uFR_i_block_transceive(uint8_t chaining, uint8_t timeout,
 		uint8_t block_length, uint8_t *snd_data_array, size_t *rcv_length,
 		uint8_t *rcv_data_array, uint32_t *ufr_status);
@@ -1655,6 +1673,15 @@ UFR_STATUS DL_API WriteEmulationNdefM(UFR_HANDLE hndUFR,
 UFR_STATUS DL_API TagEmulationStartM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API TagEmulationStopM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API CombinedModeEmulationStartM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API AdHocEmulationStartM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API AdHocEmulationStopM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API GetAdHocEmulationParamsM(UFR_HANDLE hndUFR,
+											uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+											uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API SetAdHocEmulationParamsM(UFR_HANDLE hndUFR,
+											uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+											uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+UFR_STATUS DL_API GetExternalFieldStateM(UFR_HANDLE hndUFR, uint8_t *is_field_present);
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API ReadECCSignatureM(UFR_HANDLE hndUFR, uint8_t lpucECCSignature[ECC_SIG_LEN],
 		uint8_t lpucUid[MAX_UID_LEN], uint8_t *lpucUidLen, uint8_t *lpucDlogicCardType);
@@ -1775,7 +1802,7 @@ UFR_STATUS DL_API GetDisplayIntensityM(UFR_HANDLE hndUFR, uint8_t *intensity);
 //#############################################################################
 //#############################################################################
 
-
+UFR_STATUS DL_API SetISO14443_4_ModeM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API uFR_i_block_transceiveM(UFR_HANDLE hndUFR, uint8_t chaining,
 		uint8_t timeout, uint8_t block_length, uint8_t *snd_data_array,
 		size_t *rcv_length, uint8_t *rcv_data_array, uint32_t *ufr_status);
