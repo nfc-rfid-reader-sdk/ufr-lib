@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.0.30
+ * library version: 4.3.0
  *
  * Created on:  2009-01-14
- * Last edited: 2017-08-15
+ * Last edited: 2017-10-05
  *
  * Author: D-Logic
  */
@@ -98,6 +98,54 @@ typedef const char * c_string;
 #define M24SR64							0x84
 #define M24SR64_AUTOMOTIVE				0x8C
 
+// DLJavaCardTypes:
+#define DL_J3D		0xA0
+#define DL_A22CR	0xA1
+#define DL_JC30		0xA2
+#define DL_JC10		0xA3
+
+// DLJavaCardSignerAlgorithmTypes:
+enum E_SIGNER_CIPHERS {
+	SIG_CIPHER_RSA = 0,
+	SIG_CIPHER_ECDSA,
+
+	SIG_CIPHER_MAX_SUPPORTED
+};
+
+enum E_SIGNER_PADDINGS {
+	PAD_NULL = 0,
+	PAD_PKCS1,
+
+	SIG_PAD_MAX_SUPPORTED
+};
+
+enum E_SIGNER_DIGESTS {
+	ALG_NULL = 0,
+	ALG_SHA,
+	ALG_SHA_256,
+	ALG_SHA_384,
+	ALG_SHA_512,
+	ALG_SHA_224,
+
+	SIG_DIGEST_MAX_SUPPORTED
+};
+
+enum E_KEY_TYPES {
+	TYPE_RSA_PRIVATE = 0,
+	TYPE_RSA_CRT_PRIVATE,
+	TYPE_EC_F2M_PRIVATE,
+	TYPE_EC_FP_PRIVATE
+};
+
+// JCApp instructions:
+#define INS_SET_RSA_PRIKEY			0x51
+#define INS_SET_EC_PRIKEY			0x61
+#define INS_GET_SIGNATURE			0x71
+
+// JCApp max. consts:
+#define JC_APP_MAX_KEY_INDEX		((3) - 1)
+#define JC_APP_MAX_SIGNATURE_LEN	256
+
 // MIFARE CLASSIC Authentication Modes:
 enum MIFARE_AUTHENTICATION
 {
@@ -171,7 +219,7 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_FT_STATUS_ERROR_8 = 0xA7,
 	UFR_FT_STATUS_ERROR_9 = 0xA8,
 
-	//NDEF error codes
+	// NDEF error codes
 	UFR_WRONG_NDEF_CARD_FORMAT = 0x80,
 	UFR_NDEF_MESSAGE_NOT_FOUND = 0x81,
 	UFR_NDEF_UNSUPPORTED_CARD_TYPE = 0x82,
@@ -193,6 +241,19 @@ typedef enum UFCODER_ERROR_CODES
 
 	UFR_NOT_IMPLEMENTED = 0x1000,
 	UFR_COMMAND_FAILED,
+
+	// APDU Error Codes:
+	UFR_APDU_JC_APP_NOT_SELECTED  = 0x6000,
+	UFR_APDU_JC_APP_BUFF_EMPTY,
+	UFR_APDU_WRONG_SELECT_RESPONSE,
+	UFR_APDU_WRONG_KEY_TYPE,
+	UFR_APDU_WRONG_KEY_SIZE,
+	UFR_APDU_WRONG_KEY_PARAMS,
+	UFR_APDU_WRONG_ALGORITHM,
+	UFR_APDU_PLAIN_TEXT_SIZE_EXCEEDED,
+	UFR_APDU_UNSUPPORTED_KEY_SIZE,
+	UFR_APDU_UNSUPPORTED_ALGORITHMS,
+	UFR_APDU_SW_TAG = 0x0A0000,
 
 	MAX_UFR_STATUS = 0x7FFFFFFF
 } UFR_STATUS;
@@ -241,6 +302,12 @@ typedef enum UFCODER_ERROR_CODES
 #define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_NOT_CHANGE_KEY_NOT_CHANGE		0x00
 #define DESFIRE_KEY_SET_CREATE_WITHOUT_AUTH_SET_NOT_CHANGE_KEY_NOT_CHANGE	0x06
 
+enum E_ASYMMETRIC_KEY_TYPES {
+	RSA_PRIVATE_KEY = 0,
+	ECDSA_PRIVATE_KEY,
+
+	ASYMMETRIC_KEY_TYPES_NUM
+};
 
 #ifdef __cplusplus
 extern "C"
@@ -965,9 +1032,23 @@ UFR_STATUS DL_API i_block_trans_rcv_chain(uint8_t chaining,	uint8_t timeout,
 UFR_STATUS DL_API r_block_transceive(uint8_t ack, uint8_t timeout,
 		uint8_t *rcv_length, uint8_t *rcv_data_array, uint8_t *rcv_chained, uint32_t *ufr_status);
 UFR_STATUS DL_API s_block_deselect(uint8_t timeout);
-
+//==============================================================================
+UFR_STATUS DL_API JCAppSelectByAid(const uint8_t *aid, uint8_t aid_len, uint8_t selection_response[16]);
+UFR_STATUS DL_API JCAppPutPrivateKey(uint8_t key_type, uint8_t key_index,
+		const uint8_t *key, uint16_t key_bit_len, const uint8_t *key_param, uint16_t key_parm_len);
+UFR_STATUS DL_API JCAppSignatureBegin(uint8_t cipher, uint8_t digest, uint8_t padding,
+		uint8_t key_index,
+		const uint8_t *chunk, uint16_t chunk_len, const uint8_t *alg_param, uint16_t alg_parm_len);
+UFR_STATUS DL_API JCAppSignatureUpdate(const uint8_t *chunk, uint16_t chunk_len);
+UFR_STATUS DL_API JCAppSignatureEnd(uint16_t *sig_len);
+UFR_STATUS DL_API JCAppGenerateSignature(uint8_t cipher, uint8_t digest, uint8_t padding,
+		uint8_t key_index,
+		const uint8_t *plain_data, uint16_t plain_data_len, uint16_t *sig_len,
+		const uint8_t *alg_param, uint16_t alg_parm_len);
+//------------------------------------------------------------------------------
+UFR_STATUS DL_API JCAppGetSignature(uint8_t *sig, uint16_t sig_len);
+//==============================================================================
 UFR_STATUS DL_API DES_to_AES_key_type(void);
-
 UFR_STATUS DL_API AES_to_DES_key_type(void);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -1879,6 +1960,19 @@ UFR_STATUS DL_API r_block_transceiveM(UFR_HANDLE hndUFR, uint8_t ack, uint8_t ti
 		uint8_t *rcv_length, uint8_t *rcv_data_array, uint8_t *rcv_chained, uint32_t *ufr_status);
 
 UFR_STATUS DL_API s_block_deselectM(UFR_HANDLE hndUFR, uint8_t timeout);
+//------------------------------------------------------------------------------
+UFR_STATUS DL_API JCAppSelectByAidM(UFR_HANDLE hndUFR, const uint8_t *aid, uint8_t aid_len, uint8_t selection_response[16]);
+UFR_STATUS DL_API JCAppPutPrivateKeyM(UFR_HANDLE hndUFR, uint8_t key_type, uint8_t key_index,
+		const uint8_t *key, uint16_t key_bit_len, const uint8_t *key_param, uint16_t key_parm_len);
+UFR_STATUS DL_API JCAppSignatureBeginM(UFR_HANDLE hndUFR, uint8_t cipher, uint8_t digest, uint8_t padding,
+		uint8_t key_index,
+		const uint8_t *chunk, uint16_t chunk_len, const uint8_t *alg_param, uint16_t alg_parm_len);
+UFR_STATUS DL_API JCAppSignatureUpdateM(UFR_HANDLE hndUFR, const uint8_t *chunk, uint16_t chunk_len);
+UFR_STATUS DL_API JCAppSignatureEndM(UFR_HANDLE hndUFR, uint16_t *sig_len);
+UFR_STATUS DL_API JCAppGenerateSignatureM(UFR_HANDLE hndUFR, uint8_t cipher, uint8_t digest, uint8_t padding,
+		uint8_t key_index,
+		const uint8_t *plain_data, uint16_t plain_data_len, uint16_t *sig_len,
+		const uint8_t *alg_param, uint16_t alg_parm_len);
 
 //#############################################################################
 
