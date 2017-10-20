@@ -86,6 +86,8 @@ typedef const char * c_string;
 #define DL_MIFARE_DESFIRE_EV2_8K		0x2D
 
 #define DL_UNKNOWN_ISO_14443_4			0x40
+#define DL_GENERIC_ISO14443_4			0x40
+#define DL_GENERIC_ISO14443_TYPE_B		0x41
 #define DL_IMEI_UID						0x80
 
 // ST Product ID-s:
