@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.0
+ * library version: 4.3.1
  *
  * Created on:  2009-01-14
- * Last edited: 2017-10-05
+ * Last edited: 2017-11-01
  *
  * Author: D-Logic
  */
@@ -86,8 +86,6 @@ typedef const char * c_string;
 #define DL_MIFARE_DESFIRE_EV2_8K		0x2D
 
 #define DL_UNKNOWN_ISO_14443_4			0x40
-#define DL_GENERIC_ISO14443_4			0x40
-#define DL_GENERIC_ISO14443_TYPE_B		0x41
 #define DL_IMEI_UID						0x80
 
 // ST Product ID-s:
@@ -787,6 +785,19 @@ UFR_STATUS DL_API CardEncryption_Initialize(const uint8_t *TBSerialString, uint1
 // You must define 25 bytes array in memory for CardSerialString[]
 UFR_STATUS DL_API CardEncryption_GetNextEncryptedCard(const uint32_t from_timestamp, const uint32_t to_timestamp,
 		uint8_t CardSerialString[25]);
+
+/**
+ * Same function like CardEncryption_GetNextEncryptedCard() with an additional byte
+ * to set master byte on the encrypted card ID
+ *
+ * @param from_timestamp start date-time validity of the generated card
+ * @param to_timestamp end date-time validity of the generated card
+ * @param additional_data master byte on the encrypted card ID
+ * @param out_card_data pointer to the allocated byte array in memory (minimal size of 20 bytes) for the output data
+ * @return
+ */
+UFR_STATUS DL_API CardEncryption_GetNext(const uint32_t from_timestamp, const uint32_t to_timestamp,
+		const uint32_t additional_data, uint8_t out_card_data[25]);
 
 UFR_STATUS DL_API CardEncryption_GetActualCardSN(uint32_t *ActualCard_SN, uint32_t *ActualCard_SN_LOG);
 UFR_STATUS DL_API CardEncryption_GetJobSN(uint32_t *JobSN);
@@ -1778,6 +1789,10 @@ UFR_STATUS DL_API CardEncryption_InitializeM(UFR_HANDLE hndUFR, const uint8_t *T
 
 // You must define 25 bytes array in memory for CardSerialString[]
 UFR_STATUS DL_API CardEncryption_GetNextEncryptedCardM(UFR_HANDLE hndUFR, const uint32_t from_timestamp, const uint32_t to_timestamp,
+		uint8_t CardSerialString[25]);
+
+UFR_STATUS DL_API CardEncryption_GetNextM(UFR_HANDLE hndUFR, const uint32_t from_timestamp, const uint32_t to_timestamp,
+		const uint32_t additional_data,
 		uint8_t CardSerialString[25]);
 
 UFR_STATUS DL_API CardEncryption_GetActualCardSNM(UFR_HANDLE hndUFR, uint32_t *ActualCard_SN, uint32_t *ActualCard_SN_LOG);
