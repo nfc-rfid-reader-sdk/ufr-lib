@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.1
+ * library version: 4.3.2
  *
  * Created on:  2009-01-14
- * Last edited: 2017-11-01
+ * Last edited: 2017-11-06
  *
  * Author: D-Logic
  */
@@ -1045,6 +1045,8 @@ UFR_STATUS DL_API i_block_trans_rcv_chain(uint8_t chaining,	uint8_t timeout,
 UFR_STATUS DL_API r_block_transceive(uint8_t ack, uint8_t timeout,
 		uint8_t *rcv_length, uint8_t *rcv_data_array, uint8_t *rcv_chained, uint32_t *ufr_status);
 UFR_STATUS DL_API s_block_deselect(uint8_t timeout);
+UFR_STATUS DL_API open_ISO7816_interface(uint8_t *atr_data, uint8_t *atr_len);
+UFR_STATUS DL_API close_ISO7816_interface(void);
 //==============================================================================
 UFR_STATUS DL_API JCAppSelectByAid(const uint8_t *aid, uint8_t aid_len, uint8_t selection_response[16]);
 UFR_STATUS DL_API JCAppPutPrivateKey(uint8_t key_type, uint8_t key_index,
@@ -1252,6 +1254,11 @@ UFR_STATUS DL_API EE_Write(uint32_t address, uint32_t size, void *data);
 
 
 UFR_STATUS DL_API EE_Read(uint32_t address, uint32_t size, void *data);
+
+/////////////////////////////////////////////////////////////////////
+
+UFR_STATUS DL_API GreenLedBlinkingTurnOn(void);
+UFR_STATUS DL_API GreenLedBlinkingTurnOff(void);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
@@ -1977,6 +1984,11 @@ UFR_STATUS DL_API r_block_transceiveM(UFR_HANDLE hndUFR, uint8_t ack, uint8_t ti
 		uint8_t *rcv_length, uint8_t *rcv_data_array, uint8_t *rcv_chained, uint32_t *ufr_status);
 
 UFR_STATUS DL_API s_block_deselectM(UFR_HANDLE hndUFR, uint8_t timeout);
+
+UFR_STATUS DL_API open_ISO7816_interfaceM(UFR_HANDLE hndUFR, uint8_t *atr_data, uint8_t *atr_len);
+
+UFR_STATUS DL_API close_ISO7816_interfaceM(UFR_HANDLE hndUFR);
+
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API JCAppSelectByAidM(UFR_HANDLE hndUFR, const uint8_t *aid, uint8_t aid_len, uint8_t selection_response[16]);
 UFR_STATUS DL_API JCAppPutPrivateKeyM(UFR_HANDLE hndUFR, uint8_t key_type, uint8_t key_index,
@@ -2192,6 +2204,10 @@ UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_PK_M(UFR_HANDLE hndUFR, uint8
 UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_no_auth_M(UFR_HANDLE hndUFR, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 		uint8_t communication_settings, uint32_t value,
 		uint16_t *card_status, uint16_t *exec_time);
+
+
+UFR_STATUS DL_API GreenLedBlinkingTurnOnM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API GreenLedBlinkingTurnOffM(UFR_HANDLE hndUFR);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
