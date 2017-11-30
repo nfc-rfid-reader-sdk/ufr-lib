@@ -1262,6 +1262,47 @@ UFR_STATUS DL_API EE_Read(uint32_t address, uint32_t size, void *data);
 UFR_STATUS DL_API GreenLedBlinkingTurnOn(void);
 UFR_STATUS DL_API GreenLedBlinkingTurnOff(void);
 
+/////////////////////////////////////////////////////////////////////
+
+UFR_STATUS DL_API SetRfAnalogRegistersTypeA(uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+UFR_STATUS DL_API SetRfAnalogRegistersTypeB(uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+UFR_STATUS DL_API SetRfAnalogRegistersISO14443_212(uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+UFR_STATUS DL_API SetRfAnalogRegistersISO14443_424(uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+
+UFR_STATUS DL_API SetRfAnalogRegistersTypeADefault(void);
+UFR_STATUS DL_API SetRfAnalogRegistersTypeBDefault(void);
+UFR_STATUS DL_API SetRfAnalogRegistersISO14443_212Default(void);
+UFR_STATUS DL_API SetRfAnalogRegistersISO14443_424Default(void);
+
+UFR_STATUS DL_API GetRfAnalogRegistersTypeA(uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API GetRfAnalogRegistersTypeB(uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API GetRfAnalogRegistersISO14443_212(uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API GetRfAnalogRegistersISO14443_424(uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+
+UFR_STATUS DL_API SetRfAnalogRegistersTypeATrans(uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel,
+										uint8_t CWGsNOn, uint8_t ModGsNOn, uint8_t CWGsP,
+										uint8_t CWGsNOff, uint8_t ModGsNOff);
+UFR_STATUS DL_API SetRfAnalogRegistersTypeBTrans(uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel,
+										uint8_t CWGsNOn, uint8_t ModGsNOn, uint8_t CWGsP, uint8_t ModGsP);
+
+UFR_STATUS DL_API GetRfAnalogRegistersTypeATrans(uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel,
+					uint8_t *CWGsNOn, uint8_t *ModGsNOn, uint8_t *CWGsP,
+					uint8_t *CWGsNOff, uint8_t *ModGsNOff);
+UFR_STATUS DL_API GetRfAnalogRegistersTypeBTrans(uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel,
+					uint8_t *CWGsNOn, uint8_t *ModGsNOn, uint8_t *CWGsP, uint8_t *ModGsP);
+
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
 //#############################################################################
@@ -2210,6 +2251,49 @@ UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_no_auth_M(UFR_HANDLE hndUFR, 
 
 UFR_STATUS DL_API GreenLedBlinkingTurnOnM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API GreenLedBlinkingTurnOffM(UFR_HANDLE hndUFR);
+
+/////////////////////////////////////////////////////////////////////
+
+UFR_STATUS DL_API SetRfAnalogRegistersTypeAM(UFR_HANDLE hndUFR, uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+UFR_STATUS DL_API SetRfAnalogRegistersTypeBM(UFR_HANDLE hndUFR, uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+UFR_STATUS DL_API SetRfAnalogRegistersISO14443_212M(UFR_HANDLE hndUFR, uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+UFR_STATUS DL_API SetRfAnalogRegistersISO14443_424M(UFR_HANDLE hndUFR, uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel);
+
+UFR_STATUS DL_API SetRfAnalogRegistersTypeADefaultM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API SetRfAnalogRegistersTypeBDefaultM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API SetRfAnalogRegistersISO14443_212DefaultM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API SetRfAnalogRegistersISO14443_424DefaultM(UFR_HANDLE hndUFR);
+
+UFR_STATUS DL_API GetRfAnalogRegistersTypeAM(UFR_HANDLE hndUFR, uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API GetRfAnalogRegistersTypeBM(UFR_HANDLE hndUFR, uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API GetRfAnalogRegistersISO14443_212M(UFR_HANDLE hndUFR, uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+UFR_STATUS DL_API GetRfAnalogRegistersISO14443_424M(UFR_HANDLE hndUFR, uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel);
+
+
+UFR_STATUS DL_API SetRfAnalogRegistersTypeATransM(UFR_HANDLE hndUFR, uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel,
+										uint8_t CWGsNOn, uint8_t ModGsNOn, uint8_t CWGsP,
+										uint8_t CWGsNOff, uint8_t ModGsNOff);
+UFR_STATUS DL_API SetRfAnalogRegistersTypeBTransM(UFR_HANDLE hndUFR, uint8_t ThresholdMinLevel, uint8_t ThresholdCollLevel,
+										uint8_t RFLevelAmp, uint8_t RxGain, uint8_t RFLevel,
+										uint8_t CWGsNOn, uint8_t ModGsNOn, uint8_t CWGsP, uint8_t ModGsP);
+
+UFR_STATUS DL_API GetRfAnalogRegistersTypeATransM(UFR_HANDLE hndUFR, uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel,
+					uint8_t *CWGsNOn, uint8_t *ModGsNOn, uint8_t *CWGsP,
+					uint8_t *CWGsNOff, uint8_t *ModGsNOff);
+
+UFR_STATUS DL_API GetRfAnalogRegistersTypeBTransM(UFR_HANDLE hndUFR, uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
+					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel,
+					uint8_t *CWGsNOn, uint8_t *ModGsNOn, uint8_t *CWGsP, uint8_t *ModGsP);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
