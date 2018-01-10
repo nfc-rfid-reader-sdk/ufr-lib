@@ -1,7 +1,7 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.4
+ * library version: 4.3.5
  *
  * Created on:  2009-01-14
  * Last edited: 2017-11-06
