@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.6
+ * library version: 4.3.7
  *
  * Created on:  2009-01-14
- * Last edited: 2018-02-13
+ * Last edited: 2018-02-26
  *
  * Author: D-Logic
  */
@@ -139,13 +139,30 @@ enum E_KEY_TYPES {
 	TYPE_EC_FP_PRIVATE
 };
 
+enum E_OBJ_TYPES {
+	OBJ_TYPE_RSA_CERT = 0,
+	OBJ_TYPE_EC_CERT,
+	OBJ_TYPE_CA_CERT,
+
+	OBJ_TYPES_COUNT
+};
+
 // JCApp instructions:
 #define INS_SET_RSA_PRIKEY			0x51
 #define INS_SET_EC_PRIKEY			0x61
 #define INS_GET_SIGNATURE			0x71
+#define INS_PUT_OBJ					0x31
+#define INS_PUT_OBJ_SUBJECT			0x32
+#define INS_INVALIDATE_CERT			0x33
+#define INS_GET_OBJ					0x41
+#define INS_GET_OBJ_ID				0x42
+#define INS_GET_OBJ_SUBJECT			0x43
 
 // JCApp max. consts:
 #define JC_APP_MAX_KEY_INDEX		((3) - 1)
+#define JC_APP_MAX_CA_CERT_INDEX	((12) - 1)
+#define JC_APP_MAX_ID_SIZE			253
+#define JC_APP_MAX_SUBJECT_SIZE		255
 #define JC_APP_MAX_SIGNATURE_LEN	256
 
 // MIFARE CLASSIC Authentication Modes:
@@ -255,6 +272,7 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_APDU_PLAIN_TEXT_SIZE_EXCEEDED,
 	UFR_APDU_UNSUPPORTED_KEY_SIZE,
 	UFR_APDU_UNSUPPORTED_ALGORITHMS,
+	UFR_APDU_RECORD_NOT_FOUND,
 	UFR_APDU_SW_TAG = 0x0A0000,
 
 	MAX_UFR_STATUS = 0x7FFFFFFF
@@ -1062,6 +1080,12 @@ UFR_STATUS DL_API JCAppGenerateSignature(uint8_t cipher, uint8_t digest, uint8_t
 		uint8_t key_index,
 		const uint8_t *plain_data, uint16_t plain_data_len, uint16_t *sig_len,
 		const uint8_t *alg_param, uint16_t alg_parm_len);
+UFR_STATUS DL_API JCAppPutObj(uint8_t obj_type, uint8_t obj_index, uint8_t *obj, int16_t obj_size, uint8_t *id, uint8_t id_size);
+UFR_STATUS DL_API JCAppPutObjSubject(uint8_t obj_type, uint8_t obj_index, uint8_t *subject, uint8_t size);
+UFR_STATUS DL_API JCAppInvalidateCert(uint8_t obj_type, uint8_t obj_index);
+UFR_STATUS DL_API JCAppGetObjId(uint8_t obj_type, uint8_t obj_index, uint8_t *id, uint16_t *id_size); // when id == NULL returns size
+UFR_STATUS DL_API JCAppGetObjSubject(uint8_t obj_type, uint8_t obj_index, uint8_t *subject, uint16_t *size); // when subject == NULL returns size
+UFR_STATUS DL_API JCAppGetObj(uint8_t obj_type, uint8_t obj_index, uint8_t *obj, int16_t size); // when obj == NULL returns size
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API JCAppGetSignature(uint8_t *sig, uint16_t sig_len);
 //==============================================================================
@@ -2045,6 +2069,14 @@ UFR_STATUS DL_API JCAppGenerateSignatureM(UFR_HANDLE hndUFR, uint8_t cipher, uin
 		uint8_t key_index,
 		const uint8_t *plain_data, uint16_t plain_data_len, uint16_t *sig_len,
 		const uint8_t *alg_param, uint16_t alg_parm_len);
+UFR_STATUS DL_API JCAppPutObjM(UFR_HANDLE hndUFR, uint8_t obj_type, uint8_t obj_index, uint8_t *obj, int16_t obj_size, uint8_t *id, uint8_t id_size);
+UFR_STATUS DL_API JCAppPutObjSubjectM(UFR_HANDLE hndUFR, uint8_t obj_type, uint8_t obj_index, uint8_t *subject, uint8_t size);
+UFR_STATUS DL_API JCAppInvalidateCertM(UFR_HANDLE hndUFR, uint8_t obj_type, uint8_t obj_index);
+UFR_STATUS DL_API JCAppGetObjIdM(UFR_HANDLE hndUFR, uint8_t obj_type, uint8_t obj_index,
+		uint8_t *id, uint16_t *id_size); // when id == NULL returns size
+UFR_STATUS DL_API JCAppGetObjSubjectM(UFR_HANDLE hndUFR, uint8_t obj_type, uint8_t obj_index,
+		uint8_t *subject, uint16_t *size); // when subject == NULL returns size
+UFR_STATUS DL_API JCAppGetObjM(UFR_HANDLE hndUFR, uint8_t obj_type, uint8_t obj_index, uint8_t *obj, int16_t size); // when obj == NULL returns size
 
 //#############################################################################
 
