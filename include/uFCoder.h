@@ -77,6 +77,10 @@ typedef const char * c_string;
 #define DL_MIFARE_PLUS_S_4K				0x24
 #define DL_MIFARE_PLUS_X_2K				0x25
 #define DL_MIFARE_PLUS_X_4K				0x26
+#define DL_MIFARE_PLUS_S_2K_SL0			0x23
+#define DL_MIFARE_PLUS_S_4K_SL0			0x24
+#define DL_MIFARE_PLUS_X_2K_SL0			0x25
+#define DL_MIFARE_PLUS_X_4K_SL0			0x26
 #define DL_MIFARE_DESFIRE				0x27
 #define DL_MIFARE_DESFIRE_EV1_2K		0x28
 #define DL_MIFARE_DESFIRE_EV1_4K		0x29
@@ -84,10 +88,26 @@ typedef const char * c_string;
 #define DL_MIFARE_DESFIRE_EV2_2K		0x2B
 #define DL_MIFARE_DESFIRE_EV2_4K		0x2C
 #define DL_MIFARE_DESFIRE_EV2_8K		0x2D
+#define DL_MIFARE_PLUS_S_2K_SL1			0x2E
+#define DL_MIFARE_PLUS_X_2K_SL1			0x2F
+#define DL_MIFARE_PLUS_EV1_2K_SL1       0x30
+#define DL_MIFARE_PLUS_X_2K_SL2			0x31
+#define DL_MIFARE_PLUS_S_2K_SL3			0x32
+#define DL_MIFARE_PLUS_X_2K_SL3			0x33
+#define DL_MIFARE_PLUS_EV1_2K_SL3       0x34
+#define DL_MIFARE_PLUS_S_4K_SL1			0x35
+#define DL_MIFARE_PLUS_X_4K_SL1			0x36
+#define DL_MIFARE_PLUS_EV1_4K_SL1       0x37
+#define DL_MIFARE_PLUS_X_4K_SL2			0x38
+#define DL_MIFARE_PLUS_S_4K_SL3			0x39
+#define DL_MIFARE_PLUS_X_4K_SL3			0x3A
+#define DL_MIFARE_PLUS_EV1_4K_SL3       0x3B
 
 #define DL_UNKNOWN_ISO_14443_4			0x40
 #define DL_GENERIC_ISO14443_4			0x40
 #define DL_GENERIC_ISO14443_TYPE_B		0x41
+#define DL_GENERIC_ISO14443_4_TYPE_B	0x41
+#define DL_GENERIC_ISO14443_3_TYPE_B	0x42
 #define DL_IMEI_UID						0x80
 
 // ST Product ID-s:
