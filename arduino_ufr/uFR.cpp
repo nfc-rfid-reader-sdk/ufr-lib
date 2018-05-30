@@ -151,6 +151,99 @@ uint8_t uFR::getCardID(uint8_t cardID[CARD_ID_EX_SIZE], uint8_t *length, uint8_t
 	return 0;
 }
 
+uint8_t uFR::getDesfireUID(uint8_t cardID[CARD_ID_EX_SIZE], uint8_t *length, uint8_t InternalAESKeyIndexReader, uint32_t AID, uint8_t key_number_in_application) {
+	uint8_t desfire_uid_size = 7; //as I can see in protocol, there are no length definitions. UID is always 7B.
+	*length = desfire_uid_size;
+	uint8_t data_to_send[22];
+	memset(data_to_send, 0, 22);
+	data_to_send[0]=1;
+	data_to_send[1]=InternalAESKeyIndexReader;
+	data_to_send[18] = *((uint8_t *)&AID);
+	data_to_send[19] = *((uint8_t *)&AID+1);
+	data_to_send[20] = *((uint8_t *)&AID+2);
+	data_to_send[21]= key_number_in_application;
+
+/*
+    Serial.print("data_to_send = ");
+    for(int i;i<22;i++)
+    {
+        Serial.print(data_to_send[i], HEX);
+        Serial.print(" ");
+    }
+    Serial.print("\n");
+*/
+
+	flushSerial();
+	sendPacketCMD(GET_DESFIRE_UID, 23);
+	PROCESS_ACK(GET_DESFIRE_UID);
+	sendPacketEXT(data_to_send, 22);
+	PROCESS_RSP(GET_DESFIRE_UID);
+/*
+	Serial.print("RSP:");
+	for(int i;i<7;++i)
+    {
+        Serial.print(rspPacket[i], HEX);
+        Serial.print(" ");
+    }
+    Serial.print("\n");
+
+*/
+    if(rspPacket[3]!=12)
+    {
+        return PARAMETERS_ERROR;
+    }
+	PROCESS_EXT(11);
+	extPacket.copyData(cardID, 0, desfire_uid_size);
+	return 0;
+}
+
+uint8_t uFR::getDesfireUIDPK(uint8_t cardID[CARD_ID_EX_SIZE], uint8_t *length, uint8_t *AESKey, uint32_t AID, uint8_t key_number_in_application) {
+	uint8_t desfire_uid_size = 7; //as I can see in protocol, there are no length definitions. UID is always 7B.
+	*length = desfire_uid_size;
+	uint8_t data_to_send[22];
+	memset(data_to_send, 0, 22);
+	data_to_send[0]=0;
+	data_to_send[1]=0;
+	memcpy(&data_to_send[2], AESKey, 16);
+	data_to_send[18] = *((uint8_t *)&AID);
+	data_to_send[19] = *((uint8_t *)&AID+1);
+	data_to_send[20] = *((uint8_t *)&AID+2);
+	data_to_send[21]= key_number_in_application;
+
+/*
+    Serial.print("data_to_send = ");
+    for(int i;i<22;i++)
+    {
+        Serial.print(data_to_send[i], HEX);
+        Serial.print(" ");
+    }
+    Serial.print("\n");
+*/
+
+	flushSerial();
+	sendPacketCMD(GET_DESFIRE_UID, 23);
+	PROCESS_ACK(GET_DESFIRE_UID);
+	sendPacketEXT(data_to_send, 22);
+	PROCESS_RSP(GET_DESFIRE_UID);
+/*
+	Serial.print("RSP:");
+	for(int i;i<7;++i)
+    {
+        Serial.print(rspPacket[i], HEX);
+        Serial.print(" ");
+    }
+    Serial.print("\n");
+
+*/
+    if(rspPacket[3]!=12)
+    {
+        return PARAMETERS_ERROR;
+    }
+	PROCESS_EXT(11);
+	extPacket.copyData(cardID, 0, desfire_uid_size);
+	return 0;
+}
+
 uint8_t uFR::getCardTypeDLogic(uint8_t *cardType) {
 	flushSerial();
 	sendPacketCMD(GET_DLOGIC_CARD_TYPE);

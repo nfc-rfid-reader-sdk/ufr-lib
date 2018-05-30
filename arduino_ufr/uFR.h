@@ -61,6 +61,7 @@
 #define GET_CARD_ID_SEND_CONF       0x3E
 #define SET_UART_SPEED              0x70
 #define RED_LIGHT_CONTROL           0x71
+#define GET_DESFIRE_UID             0x80
 
 // ERR codes
 #define OK                                      0x00
@@ -88,6 +89,8 @@
 #define VALUE_BLOCK_INVALID                     0x72
 #define VALUE_BLOCK_ADDR_INVALID                0x73
 #define VALUE_BLOCK_MANIPULATION_ERROR          0x74
+
+
 
 // MIFARE CLASSIC type id's:
 #define MIFARE_CLASSIC_1k   0x08
@@ -175,12 +178,18 @@ class uFR {
 
 		// Sends reset command (add 2s delay!)
 		uint8_t softReset();
-		
+
 		// Gets card UID that is present in reader's RF field. Obsolete
 		uint8_t getCardIDSimple(uint8_t cardID[CARD_ID_SIZE], uint8_t *cardType = nullptr);
 
 		// Length - UID size in bytes (4, 7 or 10)
 		uint8_t getCardID(uint8_t cardID[CARD_ID_EX_SIZE], uint8_t *length = nullptr, uint8_t *cardType = nullptr);
+
+		// Gets Desfire UID
+        uint8_t getDesfireUID(uint8_t cardID[CARD_ID_EX_SIZE], uint8_t *length = nullptr, uint8_t InternalAESKeyIndexReader = 0, uint32_t AID = 0, uint8_t key_number_in_application = 0);
+
+        // Gets Desfire UID with provided AES key
+        uint8_t getDesfireUIDPK(uint8_t cardID[CARD_ID_EX_SIZE], uint8_t *length, uint8_t *AESKey = nullptr, uint32_t AID = 0, uint8_t key_number_in_application = 0);
 
 		// Card type per DLogic enumeration
 		uint8_t getCardTypeDLogic(uint8_t *cardType);
@@ -188,7 +197,7 @@ class uFR {
 		// -------------------------------------------------------------
 
 		static const char * TypeDLogicToString(uint8_t type);
-		
+
 	private:
 		SoftwareSerial readerSerial;
 		uint8_t resetPin = 0;
