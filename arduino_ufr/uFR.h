@@ -60,6 +60,7 @@
 #define GET_DLOGIC_CARD_TYPE        0x3C
 #define SET_CARD_ID_SEND_CONF       0x3D
 #define GET_CARD_ID_SEND_CONF       0x3E
+#define SET_LED_CONFIG				0x6E
 #define SET_UART_SPEED              0x70
 #define RED_LIGHT_CONTROL           0x71
 #define GET_DESFIRE_UID             0x80
@@ -180,6 +181,8 @@ class uFR {
 		uint8_t setRedLED(bool state);
 
 		uint8_t setUserInterfaceSignal(uint8_t light_signal_mode = 0, uint8_t beep_signal_mode = 0);
+		
+		uint8_t setGreenLightBlinking(bool state);
 
 		uint8_t getReaderType(uint8_t readerType[READER_TYPE_SIZE]);
 

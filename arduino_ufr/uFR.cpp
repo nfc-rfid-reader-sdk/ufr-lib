@@ -83,6 +83,14 @@ uint8_t uFR::setUserInterfaceSignal(uint8_t light_signal_mode, uint8_t beep_sign
 	return 0;
 }
 
+uint8_t uFR::setGreenLightBlinking(bool state)	{
+	flushSerial();
+	sendPacketCMD(SET_LED_CONFIG, 0, state);
+	PROCESS_RSP(SET_LED_CONFIG);
+	return 0;
+}
+
+
 
 uint8_t uFR::getReaderType(uint8_t readerType[READER_TYPE_SIZE]) {
 	flushSerial();
