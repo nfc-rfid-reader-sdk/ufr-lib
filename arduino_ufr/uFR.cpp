@@ -76,6 +76,14 @@ uint8_t uFR::setRedLED(bool state) {
 	return 0;
 }
 
+uint8_t uFR::setUserInterfaceSignal(uint8_t light_signal_mode, uint8_t beep_signal_mode) {
+	flushSerial();
+	sendPacketCMD(USER_INTERFACE_SIGNAL, 0, light_signal_mode, beep_signal_mode);
+	PROCESS_RSP(USER_INTERFACE_SIGNAL);
+	return 0;
+}
+
+
 uint8_t uFR::getReaderType(uint8_t readerType[READER_TYPE_SIZE]) {
 	flushSerial();
 	sendPacketCMD(GET_READER_TYPE);

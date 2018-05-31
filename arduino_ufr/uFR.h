@@ -53,6 +53,7 @@
 #define VALUE_BLOCK_IN_SECTOR_INC   0x23
 #define VALUE_BLOCK_IN_SECTOR_DEC   0x24
 #define LINEAR_FORMAT_CARD          0x25
+#define USER_INTERFACE_SIGNAL       0x26
 #define GET_CARD_ID_EX              0x2C
 #define SECTOR_TRAILER_WRITE_UNSAFE 0x2F
 #define SELF_RESET                  0x30
@@ -142,6 +143,20 @@
 #define CARD_ID_SIZE       4
 #define CARD_ID_EX_SIZE    10
 
+
+// USER_INTERFACE_SIGNAL
+
+#define NONE                0
+#define LONG_GREEN          1
+#define SHORT_BEEP          1
+#define LONG_RED            2
+#define LONG_BEEP           2
+#define ALTERNATNG_LIGHT    3
+#define DOUBLE_SHORT_BEEP   3
+#define FLASH_LIGHT         4
+#define TRIPLE_SHORT_BEEP   4
+#define TRIPLET_MELODY      5
+
 enum PacketType {
 	PACKET_ACK = ACK_HEADER,
 	PACKET_ERR = ERR_HEADER,
@@ -163,6 +178,8 @@ class uFR {
 
 		// Controls the reader's red LED. Green LED stops flashing while red LED is on
 		uint8_t setRedLED(bool state);
+
+		uint8_t setUserInterfaceSignal(uint8_t light_signal_mode = 0, uint8_t beep_signal_mode = 0);
 
 		uint8_t getReaderType(uint8_t readerType[READER_TYPE_SIZE]);
 
