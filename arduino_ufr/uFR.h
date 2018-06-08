@@ -7,7 +7,11 @@
 
 
 #include <Arduino.h>
+#ifdef ESP32
+#include <HardwareSerial.h>
+#else
 #include <SoftwareSerial.h>
+#endif
 
 #define TIMEOUT_MS 100 // Debugging
 
@@ -166,8 +170,14 @@ enum PacketType {
 
 class uFR {
 	public:
+	#ifdef ESP32
+		uFR(uint8_t uart);
+		uFR(uint8_t uart, uint8_t reset);
+	#else
 		uFR(uint8_t rx, uint8_t tx);
 		uFR(uint8_t rx, uint8_t tx, uint8_t reset);
+	#endif
+		
 
 		void begin(unsigned long baud = 115200); // Resets the reader if reset pin is used; make sure to add delay!
 		inline void end() { readerSerial.end(); }
@@ -219,7 +229,11 @@ class uFR {
 		static const char * TypeDLogicToString(uint8_t type);
 
 	private:
+		#ifdef ESP32
+		HardwareSerial readerSerial;
+		#else
 		SoftwareSerial readerSerial;
+		#endif
 		uint8_t resetPin = 0;
 		void flushSerial(); // Flush serial input buffer
 
@@ -238,7 +252,11 @@ class uFR {
 				inline uint8_t operator[] (uint8_t i) { return data[i]; }
 				friend void uFR::setPacketSerial ();
 			protected:
+				#ifdef ESP32
+				static HardwareSerial *serial;
+				#else
 				static SoftwareSerial *serial;
+				#endif
 				uint8_t errorCode = 0;
 				uint8_t length = PACKET_LENGTH;
 				uint8_t *data;

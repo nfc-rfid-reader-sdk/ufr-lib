@@ -1,6 +1,9 @@
 #include "uFR.h"
-
+#ifdef ESP32
+HardwareSerial* uFR::Packet::serial;
+#else
 SoftwareSerial* uFR::Packet::serial;
+#endif
 
 uFR::CommonPacket::CommonPacket(PacketType type, uint8_t command) {
 	data = new uint8_t[PACKET_LENGTH];

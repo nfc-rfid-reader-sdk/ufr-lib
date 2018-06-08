@@ -12,8 +12,20 @@ if (ackPacket.getErrorCode() != 0) return ackPacket.getErrorCode()
 CommonPacket rspPacket(PACKET_RSP, command); \
 if (rspPacket.getErrorCode() != 0) return rspPacket.getErrorCode()
 
+#ifdef ESP32
+uFR::uFR(uint8_t uart) : readerSerial(HardwareSerial(uart)) {
+	setPacketSerial();
+}
 
-uFR::uFR(uint8_t rx, uint8_t tx) : readerSerial(SoftwareSerial(rx, tx)) {
+uFR::uFR(uint8_t uart, uint8_t reset) : readerSerial(HardwareSerial(uart)) {
+	pinMode(reset, OUTPUT);
+	digitalWrite(reset, HIGH);
+	resetPin = reset;
+	setPacketSerial();
+}
+
+#else
+	uFR::uFR(uint8_t rx, uint8_t tx) : readerSerial(SoftwareSerial(rx, tx)) {
 	setPacketSerial();
 }
 
@@ -23,6 +35,7 @@ uFR::uFR(uint8_t rx, uint8_t tx, uint8_t reset) : readerSerial(SoftwareSerial(rx
 	resetPin = reset;
 	setPacketSerial();
 }
+#endif
 
 void uFR::setPacketSerial() {
 	Packet::serial = &readerSerial;
