@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.9
+ * library version: 4.3.10
  *
  * Created on:  2009-01-14
- * Last edited: 2018-04-13
+ * Last edited: 2018-06-08
  *
  * Author: D-Logic
  */
@@ -832,12 +832,14 @@ UFR_STATUS DL_API CardEncryption_GetNextEncryptedCard(const uint32_t from_timest
  *
  * @param from_timestamp start date-time validity of the generated card
  * @param to_timestamp end date-time validity of the generated card
- * @param additional_data master byte on the encrypted card ID
+ * @param additional_data master byte on the encrypted card ID, or if provide 0xFFFFFFFF additional_data are not used !
+ * @param out_card_data_size returns how many bytes are stored in the out_card_data array
  * @param out_card_data pointer to the allocated byte array in memory (minimal size of 20 bytes) for the output data
  * @return
  */
-UFR_STATUS DL_API CardEncryption_GetNext(const uint32_t from_timestamp, const uint32_t to_timestamp,
-		const uint32_t additional_data, uint8_t out_card_data[25]);
+UFR_STATUS DL_API CardEncryption_GetNext(const uint32_t from_timestamp,
+		const uint32_t to_timestamp, const uint32_t additional_data,
+		uint32_t *out_card_data_size, uint8_t out_card_data[25]);
 
 UFR_STATUS DL_API CardEncryption_GetActualCardSN(uint32_t *ActualCard_SN, uint32_t *ActualCard_SN_LOG);
 UFR_STATUS DL_API CardEncryption_GetJobSN(uint32_t *JobSN);
@@ -1890,8 +1892,9 @@ UFR_STATUS DL_API CardEncryption_InitializeM(UFR_HANDLE hndUFR, const uint8_t *T
 UFR_STATUS DL_API CardEncryption_GetNextEncryptedCardM(UFR_HANDLE hndUFR, const uint32_t from_timestamp, const uint32_t to_timestamp,
 		uint8_t CardSerialString[25]);
 
-UFR_STATUS DL_API CardEncryption_GetNextM(UFR_HANDLE hndUFR, const uint32_t from_timestamp, const uint32_t to_timestamp,
-		const uint32_t additional_data,
+UFR_STATUS DL_API CardEncryption_GetNextM(UFR_HANDLE hndUFR,
+		const uint32_t from_timestamp, const uint32_t to_timestamp,
+		const uint32_t additional_data, uint32_t *out_card_data_size,
 		uint8_t CardSerialString[25]);
 
 UFR_STATUS DL_API CardEncryption_GetActualCardSNM(UFR_HANDLE hndUFR, uint32_t *ActualCard_SN, uint32_t *ActualCard_SN_LOG);
