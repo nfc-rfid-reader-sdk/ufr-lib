@@ -829,8 +829,7 @@ UFR_STATUS DL_API CardEncryption_GetNextEncryptedCard(const uint32_t from_timest
 enum CARD_ENCRYPTION_CODE_TYPE
 {
 	CODE_TYPE_STANDARD,
-	CODE_TYPE_GROUP_MASK,
-	CODE_TYPE_GROUP_VALUE,
+	CODE_TYPE_GROUP,
 	CODE_TYPE_DAILY_RANGE, // valid from, but only to_timestamp / every day
 };
 
