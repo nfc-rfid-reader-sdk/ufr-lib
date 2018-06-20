@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.10
+ * library version: 4.3.11
  *
  * Created on:  2009-01-14
- * Last edited: 2018-06-08
+ * Last edited: 2018-06-19
  *
  * Author: D-Logic
  */
@@ -822,24 +822,35 @@ UFR_STATUS DL_API SetReaderProMode(const uint32_t ReaderProMode);
 // initialization. with TB serial like 'TB123456'
 UFR_STATUS DL_API CardEncryption_Initialize(const uint8_t *TBSerialString, uint16_t job_number);
 
-// You must define 25 bytes array in memory for CardSerialString[]
+// You must define 25 bytes array in memory for out_card_data[]
 UFR_STATUS DL_API CardEncryption_GetNextEncryptedCard(const uint32_t from_timestamp, const uint32_t to_timestamp,
-		uint8_t CardSerialString[25]);
+		uint8_t out_card_data[]);
+
+enum CARD_ENCRYPTION_CODE_TYPE
+{
+	CODE_TYPE_STANDARD,
+	CODE_TYPE_GROUP_MASK,
+	CODE_TYPE_GROUP_VALUE,
+	CODE_TYPE_DAILY_RANGE, // valid from, but only to_timestamp / every day
+};
 
 /**
  * Same function like CardEncryption_GetNextEncryptedCard() with an additional byte
  * to set master byte on the encrypted card ID
  *
+ * @param code_type card type, look in CARD_ENCRYPTION_CODE_TYPE enumeration
  * @param from_timestamp start date-time validity of the generated card
  * @param to_timestamp end date-time validity of the generated card
- * @param additional_data master byte on the encrypted card ID, or if provide 0xFFFFFFFF additional_data are not used !
+ * @param additional_data_size additional data size in bytes
+ * @param additional_data array with additional data - only master byte on the encrypted card ID for now
  * @param out_card_data_size returns how many bytes are stored in the out_card_data array
  * @param out_card_data pointer to the allocated byte array in memory (minimal size of 20 bytes) for the output data
  * @return
  */
-UFR_STATUS DL_API CardEncryption_GetNext(const uint32_t from_timestamp,
-		const uint32_t to_timestamp, const uint32_t additional_data,
-		uint32_t *out_card_data_size, uint8_t out_card_data[25]);
+UFR_STATUS DL_API CardEncryption_GetNext(const uint32_t code_type,
+		const uint32_t from_timestamp, const uint32_t to_timestamp,
+		const uint32_t additional_data_size, const uint8_t additional_data[],
+		uint32_t *out_card_data_size, uint8_t out_card_data[]);
 
 UFR_STATUS DL_API CardEncryption_GetActualCardSN(uint32_t *ActualCard_SN, uint32_t *ActualCard_SN_LOG);
 UFR_STATUS DL_API CardEncryption_GetJobSN(uint32_t *JobSN);
@@ -1888,14 +1899,15 @@ UFR_STATUS DL_API SetReaderProModeM(UFR_HANDLE hndUFR, const uint32_t ReaderProM
 // initialization. with TB serial like 'TB123456'
 UFR_STATUS DL_API CardEncryption_InitializeM(UFR_HANDLE hndUFR, const uint8_t *TBSerialString, uint16_t job_number);
 
-// You must define 25 bytes array in memory for CardSerialString[]
+// You must define 25 bytes array in memory for out_card_data[]
 UFR_STATUS DL_API CardEncryption_GetNextEncryptedCardM(UFR_HANDLE hndUFR, const uint32_t from_timestamp, const uint32_t to_timestamp,
-		uint8_t CardSerialString[25]);
+		uint8_t out_card_data[]);
 
 UFR_STATUS DL_API CardEncryption_GetNextM(UFR_HANDLE hndUFR,
+		const uint32_t code_type, //
 		const uint32_t from_timestamp, const uint32_t to_timestamp,
-		const uint32_t additional_data, uint32_t *out_card_data_size,
-		uint8_t CardSerialString[25]);
+		const uint32_t additional_data_size, const uint8_t additional_data[],
+		uint32_t *out_card_data_size, uint8_t out_card_data[]);
 
 UFR_STATUS DL_API CardEncryption_GetActualCardSNM(UFR_HANDLE hndUFR, uint32_t *ActualCard_SN, uint32_t *ActualCard_SN_LOG);
 UFR_STATUS DL_API CardEncryption_GetJobSNM(UFR_HANDLE hndUFR, uint32_t *JobSN);
