@@ -50,10 +50,10 @@ EXPORTS
     CardEncryption_GetActualCardSNM = CardEncryption_GetActualCardSNM@12 @49
     CardEncryption_GetJobSN = CardEncryption_GetJobSN@4 @50
     CardEncryption_GetJobSNM = CardEncryption_GetJobSNM@8 @51
-    CardEncryption_GetNext = CardEncryption_GetNext@20 @52
+    CardEncryption_GetNext = CardEncryption_GetNext@28 @52
     CardEncryption_GetNextEncryptedCard = CardEncryption_GetNextEncryptedCard@12 @53
     CardEncryption_GetNextEncryptedCardM = CardEncryption_GetNextEncryptedCardM@16 @54
-    CardEncryption_GetNextM = CardEncryption_GetNextM@24 @55
+    CardEncryption_GetNextM = CardEncryption_GetNextM@32 @55
     CardEncryption_GetSalterSN = CardEncryption_GetSalterSN@8 @56
     CardEncryption_GetSalterSNM = CardEncryption_GetSalterSNM@12 @57
     CardEncryption_Initialize = CardEncryption_Initialize@8 @58
