@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.12
+ * library version: 4.3.13
  *
  * Created on:  2009-01-14
- * Last edited: 2018-08-14
+ * Last edited: 2018-08-29
  *
  * Author: D-Logic
  */
@@ -73,10 +73,6 @@ typedef const char * c_string;
 #define DL_MIFARE_MINI					0x20
 #define	DL_MIFARE_CLASSIC_1K			0x21
 #define DL_MIFARE_CLASSIC_4K			0x22
-#define DL_MIFARE_PLUS_S_2K				0x23
-#define DL_MIFARE_PLUS_S_4K				0x24
-#define DL_MIFARE_PLUS_X_2K				0x25
-#define DL_MIFARE_PLUS_X_4K				0x26
 #define DL_MIFARE_PLUS_S_2K_SL0			0x23
 #define DL_MIFARE_PLUS_S_4K_SL0			0x24
 #define DL_MIFARE_PLUS_X_2K_SL0			0x25
@@ -105,9 +101,8 @@ typedef const char * c_string;
 
 #define DL_UNKNOWN_ISO_14443_4			0x40
 #define DL_GENERIC_ISO14443_4			0x40
-#define DL_GENERIC_ISO14443_TYPE_B		0x41
 #define DL_GENERIC_ISO14443_4_TYPE_B	0x41
-#define DL_GENERIC_ISO14443_3_TYPE_B	0x42
+#define	DL_GENERIC_ISO14443_3_TYPE_B	0x42
 #define DL_IMEI_UID						0x80
 
 // ST Product ID-s:
@@ -190,6 +185,23 @@ enum MIFARE_AUTHENTICATION
 {
 	MIFARE_AUTHENT1A = 0x60,
 	MIFARE_AUTHENT1B = 0x61,
+};
+
+//MIFARE PLUS AES Authentication Modes:
+enum MIFARE_PLUS_AES_AUTHENTICATION
+{
+	MIFARE_PLUS_AES_AUTHENT1A = 0x80,
+	MIFARE_PLUS_AES_AUTHENT1B = 0x81,
+};
+
+// T2T authentication constants:
+enum T2T_AUTHENTICATION
+{
+	T2T_NO_PWD_AUTH	= 0,
+	T2T_RKA_PWD_AUTH = 1,
+	T2T_PK_PWD_AUTH = 3,
+	T2T_WITHOUT_PWD_AUTH = 0x60,
+	T2T_WITH_PWD_AUTH = 0x61,
 };
 
 enum ADDRESS_MODE
@@ -281,6 +293,18 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_NOT_IMPLEMENTED = 0x1000,
 	UFR_COMMAND_FAILED,
 
+	//MIFARE PLUS error codes
+	UFR_MFP_COMMAND_OVERFLOW = 0xB0,
+	UFR_MFP_INVALID_MAC = 0xB1,
+	UFR_MFP_INVALID_BLOCK_NR = 0xB2,
+	UFR_MFP_NOT_EXIST_BLOCK_NR = 0xB3,
+	UFR_MFP_COND_OF_USE_ERROR =	0xB4,
+	UFR_MFP_LENGTH_ERROR = 	0xB5,
+	UFR_MFP_GENERAL_MANIP_ERROR = 0xB6,
+	UFR_MFP_SWITCH_TO_ISO14443_4_ERROR = 0xB7,
+	UFR_MFP_ILLEGAL_STATUS_CODE = 0xB8,
+	UFR_MFP_MULTI_BLOCKS_READ = 0xB9,
+
 	// APDU Error Codes:
 	UFR_APDU_JC_APP_NOT_SELECTED  = 0x6000,
 	UFR_APDU_JC_APP_BUFF_EMPTY,
@@ -294,6 +318,8 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_APDU_UNSUPPORTED_ALGORITHMS,
 	UFR_APDU_RECORD_NOT_FOUND,
 	UFR_APDU_SW_TAG = 0x0A0000,
+
+
 
 	MAX_UFR_STATUS = 0x7FFFFFFF
 } UFR_STATUS;
@@ -349,6 +375,15 @@ enum E_ASYMMETRIC_KEY_TYPES {
 	ASYMMETRIC_KEY_TYPES_NUM
 };
 
+//SAM definition
+typedef enum E_SAM_HW_VER {
+	SAM_UNKNOWN_TYPE,
+	SAM_T1AD2060_AV1_MODE ,
+	SAM_T1AD2060_AV2_MODE,
+	SAM_T1AR1070_AV1_MODE,
+	SAM_T1AR1070_AV2_MODE
+}SAM_HW_TYPE;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -397,6 +432,7 @@ UFR_STATUS DL_API ReaderOpenEx(uint32_t reader_type,
 UFR_STATUS DL_API ReaderReset(void);
 UFR_STATUS DL_API ReaderClose(void);
 UFR_STATUS DL_API ReaderSoftRestart(void);
+UFR_STATUS DL_API ReaderHwReset(void);
 UFR_STATUS DL_API GetReaderType(uint32_t *lpulReaderType);
 UFR_STATUS DL_API GetReaderSerialNumber(uint32_t *lpulSerialNumber);
 
@@ -790,6 +826,10 @@ UFR_STATUS DL_API ReaderEepromWrite(uint8_t *data, uint32_t address, uint32_t si
 UFR_STATUS DL_API ReaderEepromRead(uint8_t *data, uint32_t address, uint32_t size);
 UFR_STATUS DL_API ChangeReaderJobId(uint8_t *job_id, uint8_t *new_password);
 
+UFR_STATUS DL_API SubscribeSector(uint8_t block_nr, uint32_t admin_serial);
+UFR_STATUS DL_API SubscribeBlock(uint8_t block_nr, uint32_t admin_serial);
+UFR_STATUS DL_API BusAdminCardMake(uint32_t serial,	uint8_t *password);
+
 UFR_STATUS DL_API GetReaderSerialDescription(uint8_t pSerialDescription[8]);
 UFR_STATUS DL_API SetReaderSerialDescription(const uint8_t pSerialDescription[8]);
 
@@ -1098,12 +1138,21 @@ UFR_STATUS DL_API r_block_transceive(uint8_t ack, uint8_t timeout,
 		uint8_t *rcv_length, uint8_t *rcv_data_array, uint8_t *rcv_chained, uint32_t *ufr_status);
 UFR_STATUS DL_API s_block_deselect(uint8_t timeout);
 
+UFR_STATUS DL_API card_transceive(uint8_t card_activate, uint8_t card_halted, uint8_t tx_crc, uint8_t rx_crc, uint8_t crypto1,
+		uint32_t timeout, uint8_t *tx_data, uint8_t tx_data_len, uint8_t *rx_data, uint8_t *rx_data_len);
 UFR_STATUS DL_API card_transceive_mode_start(uint8_t tx_crc, uint8_t rx_crc, uint32_t rf_timeout, uint32_t uart_timeout);
 UFR_STATUS DL_API card_transceive_mode_stop(void);
+UFR_STATUS DL_API card_halt_enable(void);
+
 UFR_STATUS DL_API uart_transceive(uint8_t *send_data, uint8_t send_len, uint8_t *rcv_data, uint32_t bytes_to_receive, uint32_t *rcv_len);
 
 UFR_STATUS DL_API open_ISO7816_interface(uint8_t *atr_data, uint8_t *atr_len);
-UFR_STATUS DL_API close_ISO7816_interface(void);
+UFR_STATUS DL_API APDU_switch_to_ISO7816_interface(void);
+UFR_STATUS DL_API close_ISO7816_interface_no_APDU(void);
+UFR_STATUS DL_API close_ISO7816_interface_APDU_ISO14443_4(void);
+UFR_STATUS DL_API APDU_switch_to_ISO14443_4_interface(void);
+UFR_STATUS DL_API APDU_switch_off_from_ISO7816_interface(void);
+
 //==============================================================================
 UFR_STATUS DL_API JCAppSelectByAid(const uint8_t *aid, uint8_t aid_len, uint8_t selection_response[16]);
 UFR_STATUS DL_API JCAppPutPrivateKey(uint8_t key_type, uint8_t key_index,
@@ -1301,23 +1350,6 @@ UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_no_auth(uint32_t aid, uint8_t
 		uint8_t communication_settings, uint32_t value,
 		uint16_t *card_status, uint16_t *exec_time);
 
-
-
-////////////////////////////////////////////////////////////////////
-///
-////////////////////////////////////////////////////////////////////
-///
-////////////////////////////////////////////////////////////////////
-
-UFR_STATUS DL_API EE_Password_Change(const uint8_t old_password[8], const uint8_t new_password[8]);
-
-UFR_STATUS DL_API EE_Lock(const uint8_t password[8], uint32_t lock);
-
-UFR_STATUS DL_API EE_Write(uint32_t address, uint32_t size, void *data);
-
-
-UFR_STATUS DL_API EE_Read(uint32_t address, uint32_t size, void *data);
-
 /////////////////////////////////////////////////////////////////////
 
 UFR_STATUS DL_API GreenLedBlinkingTurnOn(void);
@@ -1363,6 +1395,45 @@ UFR_STATUS DL_API GetRfAnalogRegistersTypeATrans(uint8_t *ThresholdMinLevel, uin
 UFR_STATUS DL_API GetRfAnalogRegistersTypeBTrans(uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
 					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel,
 					uint8_t *CWGsNOn, uint8_t *ModGsNOn, uint8_t *CWGsP, uint8_t *ModGsP);
+
+UFR_STATUS DL_API CheckBootFirmware(uint8_t *exec_location);
+UFR_STATUS DL_API FastFlashCheck(void);
+UFR_STATUS DL_API DefaultBaudrateFlashCheck(void);
+
+//SAM
+UFR_STATUS DL_API SAM_get_version_raw(uint8_t *data, uint8_t *length);
+UFR_STATUS DL_API SAM_get_version(SAM_HW_TYPE *sam_type, uint8_t *sam_uid);
+
+//MIFARE PLUS
+UFR_STATUS DL_API MFP_WritePerso(uint16_t address, uint8_t *data);
+UFR_STATUS DL_API MFP_CommitPerso(void);
+UFR_STATUS DL_API MFP_PersonalizationMinimal(uint8_t *card_master_key, uint8_t *card_config_key,
+						uint8_t *level_2_switch_key, uint8_t *level_3_switch_key, uint8_t *level_1_auth_key,
+						uint8_t *select_vc_key, uint8_t *prox_chk_key, uint8_t *vc_poll_enc_key, uint8_t *vc_poll_mac_key);
+UFR_STATUS DL_API MFP_SwitchToSecurityLevel3(uint8_t key_index);
+UFR_STATUS DL_API MFP_SwitchToSecurityLevel3_PK(uint8_t *aes_key);
+UFR_STATUS DL_API MFP_AesAuthSecurityLevel1(uint8_t key_index);
+UFR_STATUS DL_API MFP_AesAuthSecurityLevel1_PK(uint8_t *aes_key);
+UFR_STATUS DL_API MFP_ChangeMasterKey(uint8_t key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeMasterKey_PK(uint8_t *old_key, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeConfigurationKey(uint8_t key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeConfigurationKey_PK(uint8_t *old_key, uint8_t *new_key);
+UFR_STATUS DL_API MFP_FieldConfigurationSet(uint8_t configuration_key_index, uint8_t rid_use, uint8_t prox_check_use);
+UFR_STATUS DL_API MFP_FieldConfigurationSet_PK(uint8_t *configuration_key, uint8_t rid_use, uint8_t prox_check_use);
+UFR_STATUS DL_API MFP_ChangeSectorKey(uint8_t sector_nr, uint8_t auth_mode, uint8_t key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeSectorKey_PK(uint8_t sector_nr, uint8_t auth_mode, uint8_t *old_key, uint8_t *new_key);
+UFR_STATUS DL_API MFP_GetUid(uint8_t key_index_vc_poll_enc_key, uint8_t key_index_vc_poll_mac_key, uint8_t *uid, uint8_t *uid_len);
+UFR_STATUS DL_API MFP_GetUid_PK(uint8_t *vc_poll_enc_key, uint8_t *vc_poll_mac_key, uint8_t *uid, uint8_t *uid_len);
+UFR_STATUS DL_API MFP_ChangeVcPollingEncKey(uint8_t configuration_key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeVcPollingEncKey_PK(uint8_t *configuration_key, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeVcPollingMacKey(uint8_t configuration_key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeVcPollingMacKey_PK(uint8_t *configuration_key, uint8_t *new_key);
+
+//ULTRALIGHT C
+UFR_STATUS DL_API ULC_ExternalAuth_PK(uint8_t *key);
+UFR_STATUS DL_API ULC_write_3des_key_no_auth(uint8_t *new_3des_key);
+UFR_STATUS DL_API ULC_write_3des_key_factory_key(uint8_t *new_3des_key);
+UFR_STATUS DL_API ULC_write_3des_key(uint8_t *new_3des_key, uint8_t *old_3des_key);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
@@ -2091,13 +2162,19 @@ UFR_STATUS DL_API r_block_transceiveM(UFR_HANDLE hndUFR, uint8_t ack, uint8_t ti
 
 UFR_STATUS DL_API s_block_deselectM(UFR_HANDLE hndUFR, uint8_t timeout);
 
-UFR_STATUS DL_API card_transceive_mode_startM(UFR_HANDLE hndUFR,uint8_t tx_crc, uint8_t rx_crc, uint32_t rf_timeout, uint32_t uart_timeout);
+UFR_STATUS DL_API card_transceiveM(UFR_HANDLE hndUFR, uint8_t card_activate, uint8_t card_halted, uint8_t tx_crc, uint8_t rx_crc, uint8_t crypto1,
+		uint32_t timeout, uint8_t *tx_data, uint8_t tx_data_len, uint8_t *rx_data, uint8_t *rx_data_len);
+UFR_STATUS DL_API card_transceive_mode_startM(UFR_HANDLE hndUFR, uint8_t tx_crc, uint8_t rx_crc, uint32_t rf_timeout, uint32_t uart_timeout);
 UFR_STATUS DL_API card_transceive_mode_stopM(UFR_HANDLE hndUFR);
-UFR_STATUS DL_API uart_transceiveM(UFR_HANDLE hndUFR, uint8_t *send_data, uint8_t send_len, uint8_t *rcv_data, uint32_t bytes_to_receive, uint32_t *rcv_len);
+UFR_STATUS DL_API card_halt_enableM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API uart_transceiveM(UFR_HANDLE hndUFR,uint8_t *send_data, uint8_t send_len, uint8_t *rcv_data, uint32_t bytes_to_receive, uint32_t *rcv_len);
 
 UFR_STATUS DL_API open_ISO7816_interfaceM(UFR_HANDLE hndUFR, uint8_t *atr_data, uint8_t *atr_len);
-
-UFR_STATUS DL_API close_ISO7816_interfaceM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API APDU_switch_to_ISO7816_interfaceM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API close_ISO7816_interface_no_APDUM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API close_ISO7816_interface_APDU_ISO14443_4M(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API APDU_switch_to_ISO14443_4_interfaceM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API APDU_switch_off_from_ISO7816_interfaceM(UFR_HANDLE hndUFR);
 
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API JCAppSelectByAidM(UFR_HANDLE hndUFR, const uint8_t *aid, uint8_t aid_len, uint8_t selection_response[16]);
@@ -2369,6 +2446,37 @@ UFR_STATUS DL_API GetRfAnalogRegistersTypeATransM(UFR_HANDLE hndUFR, uint8_t *Th
 UFR_STATUS DL_API GetRfAnalogRegistersTypeBTransM(UFR_HANDLE hndUFR, uint8_t *ThresholdMinLevel, uint8_t *ThresholdCollLevel,
 					uint8_t *RFLevelAmp, uint8_t *RxGain, uint8_t *RFLevel,
 					uint8_t *CWGsNOn, uint8_t *ModGsNOn, uint8_t *CWGsP, uint8_t *ModGsP);
+
+//MIFARE PLUS
+UFR_STATUS DL_API MFP_WritePersoM(UFR_HANDLE hndUFR, uint16_t address, uint8_t *data);
+UFR_STATUS DL_API MFP_CommitPersoM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API MFP_PersonalizationMinimalM(UFR_HANDLE hndUFR, uint8_t *card_master_key, uint8_t *card_config_key,
+						uint8_t *level_2_switch_key, uint8_t *level_3_switch_key, uint8_t *level_1_auth_key,
+						uint8_t *select_vc_key, uint8_t *prox_chk_key, uint8_t *vc_poll_enc_key, uint8_t *vc_poll_mac_key);
+UFR_STATUS DL_API MFP_SwitchToSecurityLevel3M(UFR_HANDLE hndUFR, uint8_t key_index);
+UFR_STATUS DL_API MFP_SwitchToSecurityLevel3_PKM(UFR_HANDLE hndUFR, uint8_t *aes_key);
+UFR_STATUS DL_API MFP_AesAuthSecurityLevel1M(UFR_HANDLE hndUFR, uint8_t key_index);
+UFR_STATUS DL_API MFP_AesAuthSecurityLevel1_PKM(UFR_HANDLE hndUFR, uint8_t *aes_key);
+UFR_STATUS DL_API MFP_ChangeMasterKeyM(UFR_HANDLE hndUFR, uint8_t key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeMasterKey_PKM(UFR_HANDLE hndUFR, uint8_t *old_key, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeConfigurationKeyM(UFR_HANDLE hndUFR, uint8_t key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeConfigurationKey_PKM(UFR_HANDLE hndUFR, uint8_t *old_key, uint8_t *new_key);
+UFR_STATUS DL_API MFP_FieldConfigurationSetM(UFR_HANDLE hndUFR, uint8_t configuration_key_index, uint8_t rid_use, uint8_t prox_check_use);
+UFR_STATUS DL_API MFP_FieldConfigurationSet_PKM(UFR_HANDLE hndUFR, uint8_t *configuration_key, uint8_t rid_use, uint8_t prox_check_use);
+UFR_STATUS DL_API MFP_ChangeSectorKeyM(UFR_HANDLE hndUFR, uint8_t sector_nr, uint8_t auth_mode, uint8_t key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeSectorKey_PKM(UFR_HANDLE hndUFR, uint8_t sector_nr, uint8_t auth_mode, uint8_t *old_key, uint8_t *new_key);
+UFR_STATUS DL_API MFP_GetUidM(UFR_HANDLE hndUFR, uint8_t key_index_vc_poll_enc_key, uint8_t key_index_vc_poll_mac_key, uint8_t *uid, uint8_t *uid_len);
+UFR_STATUS DL_API MFP_GetUid_PKM(UFR_HANDLE hndUFR, uint8_t *vc_poll_enc_key, uint8_t *vc_poll_mac_key, uint8_t *uid, uint8_t *uid_len);
+UFR_STATUS DL_API MFP_ChangeVcPollingEncKeyM(UFR_HANDLE hndUFR, uint8_t configuration_key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeVcPollingEncKey_PKM(UFR_HANDLE hndUFR, uint8_t *configuration_key, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeVcPollingMacKeyM(UFR_HANDLE hndUFR, uint8_t configuration_key_index, uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeVcPollingMacKey_PKM(UFR_HANDLE hndUFR, uint8_t *configuration_key, uint8_t *new_key);
+
+//ULTRALIGHT C
+UFR_STATUS DL_API ULC_ExternalAuth_PKM(UFR_HANDLE hndUFR, uint8_t *key);
+UFR_STATUS DL_API ULC_write_3des_key_no_authM(UFR_HANDLE hndUFR, uint8_t *new_3des_key);
+UFR_STATUS DL_API ULC_write_3des_key_factory_keyM(UFR_HANDLE hndUFR, uint8_t *new_3des_key);
+UFR_STATUS DL_API ULC_write_3des_keyM(UFR_HANDLE hndUFR, uint8_t *new_3des_key, uint8_t *old_3des_key);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
