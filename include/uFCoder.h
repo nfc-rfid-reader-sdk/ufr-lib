@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.13
+ * library version: 4.3.14
  *
  * Created on:  2009-01-14
- * Last edited: 2018-08-29
+ * Last edited: 2018-09-20
  *
  * Author: D-Logic
  */
@@ -164,7 +164,9 @@ enum E_OBJ_TYPES {
 
 // JCApp instructions:
 #define INS_SET_RSA_PRIKEY			0x51
+#define INS_GEN_RSA_KEY_PAIR		0x52
 #define INS_SET_EC_PRIKEY			0x61
+#define INS_GEN_EC_KEY_PAIR			0x62
 #define INS_GET_SIGNATURE			0x71
 #define INS_PUT_OBJ					0x31
 #define INS_PUT_OBJ_SUBJECT			0x32
@@ -172,6 +174,11 @@ enum E_OBJ_TYPES {
 #define INS_GET_OBJ					0x41
 #define INS_GET_OBJ_ID				0x42
 #define INS_GET_OBJ_SUBJECT			0x43
+#define INS_LOGIN					0x20
+#define INS_GET_PIN_TRIES_REMAINING 0x21
+#define INS_PIN_CHANGE				0x22
+#define INS_PIN_UNBLOCK				0x23
+
 
 // JCApp max. consts:
 #define JC_APP_MAX_KEY_INDEX		((3) - 1)
@@ -306,6 +313,7 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_MFP_MULTI_BLOCKS_READ = 0xB9,
 
 	// APDU Error Codes:
+	UFR_APDU_TRANSCEIVE_ERROR = 0xAE,
 	UFR_APDU_JC_APP_NOT_SELECTED  = 0x6000,
 	UFR_APDU_JC_APP_BUFF_EMPTY,
 	UFR_APDU_WRONG_SELECT_RESPONSE,
@@ -323,6 +331,12 @@ typedef enum UFCODER_ERROR_CODES
 
 	MAX_UFR_STATUS = 0x7FFFFFFF
 } UFR_STATUS;
+
+#define UFR_APDU_SW_SECURITY_STATUS_NOT_SATISFIED	0x0A6982
+#define UFR_APDU_SW_CONDITIONS_NOT_SATISFIED		0x0A6985
+#define UFR_APDU_SW_WRONG_DATA						0x0A6A80
+#define UFR_APDU_SW_RECORD_NOT_FOUND				0x0A6A83
+#define UFR_APDU_SW_INS_NOT_SUPPORTED				0x0A6D00
 
 //DESFIRE Card Status Error Codes
 #define READER_ERROR			2999
@@ -374,6 +388,13 @@ enum E_ASYMMETRIC_KEY_TYPES {
 
 	ASYMMETRIC_KEY_TYPES_NUM
 };
+
+typedef enum {
+	USER_PIN = 0,
+	SO_PIN,
+	USER_PUK,
+	SO_PUK
+} dl_sec_code_t;
 
 //SAM definition
 typedef enum E_SAM_HW_VER {
@@ -1157,6 +1178,7 @@ UFR_STATUS DL_API APDU_switch_off_from_ISO7816_interface(void);
 UFR_STATUS DL_API JCAppSelectByAid(const uint8_t *aid, uint8_t aid_len, uint8_t selection_response[16]);
 UFR_STATUS DL_API JCAppPutPrivateKey(uint8_t key_type, uint8_t key_index,
 		const uint8_t *key, uint16_t key_bit_len, const uint8_t *key_param, uint16_t key_parm_len);
+UFR_STATUS DL_API JCAppGenerateKeyPair(uint8_t key_type, uint8_t key_index, uint16_t key_bit_len);
 UFR_STATUS DL_API JCAppSignatureBegin(uint8_t cipher, uint8_t digest, uint8_t padding,
 		uint8_t key_index,
 		const uint8_t *chunk, uint16_t chunk_len, const uint8_t *alg_param, uint16_t alg_parm_len);
@@ -1172,6 +1194,11 @@ UFR_STATUS DL_API JCAppInvalidateCert(uint8_t obj_type, uint8_t obj_index);
 UFR_STATUS DL_API JCAppGetObjId(uint8_t obj_type, uint8_t obj_index, uint8_t *id, uint16_t *id_size); // when id == NULL returns size
 UFR_STATUS DL_API JCAppGetObjSubject(uint8_t obj_type, uint8_t obj_index, uint8_t *subject, uint16_t *size); // when subject == NULL returns size
 UFR_STATUS DL_API JCAppGetObj(uint8_t obj_type, uint8_t obj_index, uint8_t *obj, int16_t size); // when obj == NULL returns size
+c_string DL_API JCAppGetErrorDescription(UFR_STATUS apdu_error_status);
+UFR_STATUS DL_API JCAppLogin(uint8_t SO, uint8_t *pin, uint8_t pinSize);
+UFR_STATUS DL_API JCAppGetPinTriesRemaining(dl_sec_code_t secureCodeType, uint16_t *triesRemaining);
+UFR_STATUS DL_API JCAppPinChange(dl_sec_code_t secureCodeType, uint8_t *newPin, uint8_t newPinSize);
+UFR_STATUS DL_API JCAppPinUnblock(uint8_t SO, uint8_t *puk, uint8_t pukSize);
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API JCAppGetSignature(uint8_t *sig, uint16_t sig_len);
 //==============================================================================
@@ -2180,6 +2207,7 @@ UFR_STATUS DL_API APDU_switch_off_from_ISO7816_interfaceM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API JCAppSelectByAidM(UFR_HANDLE hndUFR, const uint8_t *aid, uint8_t aid_len, uint8_t selection_response[16]);
 UFR_STATUS DL_API JCAppPutPrivateKeyM(UFR_HANDLE hndUFR, uint8_t key_type, uint8_t key_index,
 		const uint8_t *key, uint16_t key_bit_len, const uint8_t *key_param, uint16_t key_parm_len);
+UFR_STATUS DL_API JCAppGenerateKeyPairM(UFR_HANDLE hndUFR, uint8_t key_type, uint8_t key_index, uint16_t key_bit_len);
 UFR_STATUS DL_API JCAppSignatureBeginM(UFR_HANDLE hndUFR, uint8_t cipher, uint8_t digest, uint8_t padding,
 		uint8_t key_index,
 		const uint8_t *chunk, uint16_t chunk_len, const uint8_t *alg_param, uint16_t alg_parm_len);
@@ -2197,6 +2225,10 @@ UFR_STATUS DL_API JCAppGetObjIdM(UFR_HANDLE hndUFR, uint8_t obj_type, uint8_t ob
 UFR_STATUS DL_API JCAppGetObjSubjectM(UFR_HANDLE hndUFR, uint8_t obj_type, uint8_t obj_index,
 		uint8_t *subject, uint16_t *size); // when subject == NULL returns size
 UFR_STATUS DL_API JCAppGetObjM(UFR_HANDLE hndUFR, uint8_t obj_type, uint8_t obj_index, uint8_t *obj, int16_t size); // when obj == NULL returns size
+UFR_STATUS DL_API JCAppLoginM(UFR_HANDLE hndUFR, uint8_t SO, uint8_t *pin, uint8_t pinSize);
+UFR_STATUS DL_API JCAppGetPinTriesRemainingM(UFR_HANDLE hndUFR, dl_sec_code_t secureCodeType, uint16_t *triesRemaining);
+UFR_STATUS DL_API JCAppPinChangeM(UFR_HANDLE hndUFR, dl_sec_code_t secureCodeType, uint8_t *newPin, uint8_t newPinSize);
+UFR_STATUS DL_API JCAppPinUnblockM(UFR_HANDLE hndUFR, uint8_t SO, uint8_t *puk, uint8_t pukSize);
 
 //#############################################################################
 
