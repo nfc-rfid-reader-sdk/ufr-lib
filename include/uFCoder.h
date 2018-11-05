@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.14
+ * library version: 4.3.15
  *
  * Created on:  2009-01-14
- * Last edited: 2018-09-20
+ * Last edited: 2018-11-05
  *
  * Author: D-Logic
  */
@@ -1461,6 +1461,28 @@ UFR_STATUS DL_API ULC_ExternalAuth_PK(uint8_t *key);
 UFR_STATUS DL_API ULC_write_3des_key_no_auth(uint8_t *new_3des_key);
 UFR_STATUS DL_API ULC_write_3des_key_factory_key(uint8_t *new_3des_key);
 UFR_STATUS DL_API ULC_write_3des_key(uint8_t *new_3des_key, uint8_t *old_3des_key);
+
+/**
+ * BalanceGet() gets balance of the AIS SDK formated cards
+ *
+ * @param auth_mode only MIFARE_AUTHENT1A supported for now
+ * @param auth_value pointer to the Crypto1 6-bytes key array, for now
+ * @param credit how many credits is on the card
+ *
+ * @return execution status
+ */
+UFR_STATUS DL_API BalanceGet(uint32_t auth_mode, void *auth_value, int32_t *credit);
+
+/**
+ * BalanceSet() sets balance of the AIS SDK formated cards
+ *
+ * @param auth_mode only MIFARE_AUTHENT1A supported for now
+ * @param auth_value pointer to the Crypto1 6-bytes key array, for now
+ * @param credit new credit balance
+ *
+ * @return execution status
+ */
+UFR_STATUS DL_API BalanceSet(uint32_t auth_mode, void *auth_value, int32_t credit);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
