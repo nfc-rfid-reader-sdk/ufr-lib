@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.3.16
+ * library version: 4.4.1-UDP
  *
  * Created on:  2009-01-14
- * Last edited: 2018-11-08
+ * Last edited: 2018-11-13
  *
  * Author: D-Logic
  */
@@ -446,10 +446,12 @@ UFR_STATUS DL_API ReaderOpenByType(uint32_t reader_type);
  *                      "/dev/tty.serial1" on OS X
  *                      or if you select FTDI
  *                      "UN123456" if Reader have integrated FTDI interface
+ *                      "192.168.1.162:8881" IP adress:port for UDP I/F
  * @param port_interface : type of communication interfaces
  *                      0 : auto - first try FTDI than serial if no port_name defined
  *                      1 : try serial / virtual COM port / interfaces
  *                      2 : try only FTDI communication interfaces
+ *                      85 ('U') : UDP interface
  * @param arg : for future purpose
  * @return
  */
