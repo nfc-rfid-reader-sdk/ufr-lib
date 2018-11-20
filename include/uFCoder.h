@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.4.1-UDP
+ * library version: 4.4.2
  *
  * Created on:  2009-01-14
- * Last edited: 2018-11-13
+ * Last edited: 2018-11-20
  *
  * Author: D-Logic
  */
@@ -446,13 +446,22 @@ UFR_STATUS DL_API ReaderOpenByType(uint32_t reader_type);
  *                      "/dev/tty.serial1" on OS X
  *                      or if you select FTDI
  *                      "UN123456" if Reader have integrated FTDI interface
- *                      "192.168.1.162:8881" IP adress:port for UDP I/F
+ *                      "192.168.1.162:8881" IP adress:port for TCP/IP or UDP I/F
  * @param port_interface : type of communication interfaces
  *                      0 : auto - first try FTDI than serial if no port_name defined
  *                      1 : try serial / virtual COM port / interfaces
  *                      2 : try only FTDI communication interfaces
+ *                      84 ('T') : TCP/IP interface 
  *                      85 ('U') : UDP interface
- * @param arg : for future purpose
+ * @param arg : additional settings in c-string format:
+ *                      "UNIT_OPEN_RESET_DISABLE" : do not reset the reader when opening
+ *                      "UNIT_OPEN_RESET_FORCE"   : force reset the reader when opening
+ *                      "READER_ACTIVE_ON_RTS_LOW"  : (default) Reset the reader when RTS is high - the reader works when RTS is low
+ *                      "READER_ACTIVE_ON_RTS_HIGH" : Reset the reader when RTS is low - the reader works when RTS is high
+ *                      "RTS_ALWAYS_HIGH"           : not implemented yet
+ *                      "RTS_ALWAYS_LOW"            : not implemented yet
+ *                      "RTS_DISCONNECTED"          : disconnect RTS (RTS is not initiate nor use)
+ *
  * @return
  */
 UFR_STATUS DL_API ReaderOpenEx(uint32_t reader_type,
