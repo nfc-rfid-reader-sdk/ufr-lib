@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.4.3
+ * library version: 4.4.4
  *
  * Created on:  2009-01-14
- * Last edited: 2018-11-21
+ * Last edited: 2018-11-23
  *
  * Author: D-Logic
  */
