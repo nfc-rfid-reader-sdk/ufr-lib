@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.4.4
+ * library version: 4.4.5
  *
  * Created on:  2009-01-14
- * Last edited: 2018-11-23
+ * Last edited: 2018-11-27
  *
  * Author: D-Logic
  */
@@ -120,6 +120,7 @@ typedef const char * c_string;
 #define DL_A22CR	0xA1
 #define DL_JC30		0xA2
 #define DL_JC10		0xA3
+#define DL_J3H145	0xAA
 
 // DLJavaCardSignerAlgorithmTypes:
 enum E_SIGNER_CIPHERS {
@@ -170,8 +171,10 @@ enum E_OBJ_TYPES {
 #define INS_SET_EC_PRIKEY			0x61
 #define INS_GEN_EC_KEY_PAIR			0x62
 #define INS_GET_EC_PUBKEY			0x63
-#define INS_GET_EC_A				0x64
-#define INS_GET_EC_B				0x65
+#define INS_GET_EC_FIELD			0x64
+#define INS_GET_EC_AB				0x65
+#define INS_GET_EC_G				0x66
+#define INS_GET_EC_RK_SIZE			0x67
 #define INS_GET_SIGNATURE			0x71
 #define INS_PUT_OBJ					0x31
 #define INS_PUT_OBJ_SUBJECT			0x32
@@ -1224,6 +1227,7 @@ UFR_STATUS DL_API JCAppGetRsaPublicKey(uint8_t key_index, uint8_t *modulus, uint
 UFR_STATUS DL_API JCAppGetEcPublicKey(uint8_t key_index, uint8_t *keyW, uint16_t *kexWSize, // when keyW == NULL, returns size
 		uint8_t *field, uint16_t *field_size, uint8_t *ab , uint16_t *ab_size, uint8_t *g, uint16_t *g_size,
 		uint8_t *r, uint16_t *r_size, uint16_t *k, uint16_t *key_size_bits, uint16_t *key_designator);
+UFR_STATUS DL_API JCAppGetEcKeySizeBits(uint8_t key_index, uint16_t *key_size_bits, uint16_t *key_designator);
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API JCAppGetSignature(uint8_t *sig, uint16_t sig_len);
 //==============================================================================
@@ -2282,6 +2286,7 @@ UFR_STATUS DL_API JCAppGetRsaPublicKeyM(UFR_HANDLE hndUFR, uint8_t key_index, ui
 UFR_STATUS DL_API JCAppGetEcPublicKeyM(UFR_HANDLE hndUFR, uint8_t key_index, uint8_t *keyW, uint16_t *kexWSize, // when keyW == NULL, returns size
 		uint8_t *field, uint16_t *field_size, uint8_t *ab , uint16_t *ab_size, uint8_t *g, uint16_t *g_size,
 		uint8_t *r, uint16_t *r_size, uint16_t *k, uint16_t *key_size_bits, uint16_t *key_designator);
+UFR_STATUS DL_API JCAppGetEcKeySizeBitsM(UFR_HANDLE hndUFR, uint8_t key_index, uint16_t *key_size_bits, uint16_t *key_designator);
 //#############################################################################
 
 //DL_API
