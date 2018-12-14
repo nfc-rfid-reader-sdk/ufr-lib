@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.4.5
+ * library version: 4.4.6
  *
  * Created on:  2009-01-14
- * Last edited: 2018-11-27
+ * Last edited: 2018-12-14
  *
  * Author: D-Logic
  */
@@ -1132,6 +1132,7 @@ UFR_STATUS DL_API UfrXrcLockOn(uint16_t pulse_duration);
 UFR_STATUS DL_API UfrXrcRelayState(uint8_t state);
 UFR_STATUS DL_API UfrXrcGetIoState(uint8_t *intercom, uint8_t *door, uint8_t *relay_state);
 UFR_STATUS DL_API UfrRedLightControl(uint8_t light_status);
+UFR_STATUS DL_API UfrRgbLightControl(uint8_t red, uint8_t green, uint8_t blue, uint8_t intensity, uint8_t enable);
 
 UFR_STATUS DL_API UfrSetBadSelectCardNrMax(uint8_t bad_select_nr_max);
 UFR_STATUS DL_API UfrGetBadSelectCardNrMax(uint8_t *bad_select_nr_max);
@@ -2198,6 +2199,7 @@ UFR_STATUS DL_API UfrXrcLockOnM(UFR_HANDLE hndUFR, uint16_t pulse_duration);
 UFR_STATUS DL_API UfrXrcRelayStateM(UFR_HANDLE hndUFR, uint8_t state);
 UFR_STATUS DL_API UfrXrcGetIoStateM(UFR_HANDLE hndUFR, uint8_t *intercom, uint8_t *door, uint8_t *relay_state);
 UFR_STATUS DL_API UfrRedLightControlM(UFR_HANDLE hndUFR, uint8_t light_status);
+UFR_STATUS DL_API UfrRgbLightControlM(UFR_HANDLE hndUFR, uint8_t red, uint8_t green, uint8_t blue, uint8_t intensity, uint8_t enable);
 
 UFR_STATUS DL_API UfrSetBadSelectCardNrMaxM(UFR_HANDLE hndUFR, uint8_t bad_select_nr_max);
 UFR_STATUS DL_API UfrGetBadSelectCardNrMaxM(UFR_HANDLE hndUFR, uint8_t *bad_select_nr_max);
