@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 4.4.6
+ * library version: 5.0.1
  *
  * Created on:  2009-01-14
- * Last edited: 2018-12-14
+ * Last edited: 2019-01-16
  *
  * Author: D-Logic
  */
@@ -30,13 +30,17 @@ typedef const char * c_string;
 #		define DL_API
 #	else
 #		ifndef DL_uFC_EXPORTS
-#			define DL_API /* __declspec(dllimport) */ __stdcall
+#			ifdef _WIN_IOT
+#				define DL_API __declspec(dllimport)						// Win IoT
+#			else
+#				define DL_API /*__declspec(dllimport) */ __stdcall		// STDCALL - GCC - .NET
+#			endif //  _WIN_IOT
 #		else
 #			define DL_API __declspec(dllexport) __stdcall
-#		endif
-#	endif
+#		endif // DL_uFC_EXPORTS
+#	endif // DL_CREATE_STATIC_LIB
 #else
-// Linux & OS X
+// Linux & MAC OS
 #	define DL_API
 #endif // _WIN32
 
@@ -116,11 +120,11 @@ typedef const char * c_string;
 #define M24SR64_AUTOMOTIVE				0x8C
 
 // DLJavaCardTypes:
-#define DL_J3D		0xA0
-#define DL_A22CR	0xA1
-#define DL_JC30		0xA2
-#define DL_JC10		0xA3
-#define DL_J3H145	0xAA
+#define DLSigner81	0xA0
+#define DLSigner22	0xA1
+#define DLSigner30	0xA2
+#define DLSigner10	0xA3
+#define DLSigner145	0xAA
 
 // DLJavaCardSignerAlgorithmTypes:
 enum E_SIGNER_CIPHERS {
@@ -168,6 +172,7 @@ enum E_OBJ_TYPES {
 #define INS_GEN_RSA_KEY_PAIR		0x52
 #define INS_GET_RSA_PUBKEY_MODULUS	0x53
 #define INS_GET_RSA_PUBKEY_EXPONENT	0x54
+#define INS_DEL_RSA_KEY_PAIR		0x5F
 #define INS_SET_EC_PRIKEY			0x61
 #define INS_GEN_EC_KEY_PAIR			0x62
 #define INS_GET_EC_PUBKEY			0x63
@@ -175,6 +180,7 @@ enum E_OBJ_TYPES {
 #define INS_GET_EC_AB				0x65
 #define INS_GET_EC_G				0x66
 #define INS_GET_EC_RK_SIZE			0x67
+#define INS_DEL_EC_KEY_PAIR			0x6F
 #define INS_GET_SIGNATURE			0x71
 #define INS_PUT_OBJ					0x31
 #define INS_PUT_OBJ_SUBJECT			0x32
@@ -431,7 +437,7 @@ UFR_STATUS DL_API ReaderOpen(void);
  * @param reader_type : 0 : auto > same as call ReaderOpen()
  *                      1 : uFR type (1 Mbps)
  *                      2 : uFR RS232 type (115200 bps)
- *                      3 : XRC type (250 Kbps)
+ *                      3 : BASE HD uFR (XRC) type (250 Kbps)
  * @return
  */
 UFR_STATUS DL_API ReaderOpenByType(uint32_t reader_type);
@@ -442,7 +448,7 @@ UFR_STATUS DL_API ReaderOpenByType(uint32_t reader_type);
  * @param reader_type : 0 : auto > same as call ReaderOpen()
  *                      1 : uFR type (1 Mbps)
  *                      2 : uFR RS232 type (115200 bps)
- *                      3 : XRC type (250 Kbps)
+ *                      3 : BASE HD uFR (XRC) type (250 Kbps)
  * @param port_name : serial port name, identifier, like
  *                      "COM3" on Window or
  *                      "/dev/ttyS0" on Linux or
@@ -454,6 +460,8 @@ UFR_STATUS DL_API ReaderOpenByType(uint32_t reader_type);
  *                      0 : auto - first try FTDI than serial if no port_name defined
  *                      1 : try serial / virtual COM port / interfaces
  *                      2 : try only FTDI communication interfaces
+ *                      // Digital Logic Shields
+ *                      10 : open Digital Logic Shields with RS232 uFReader on Raspberry Pi (serial interfaces with GPIO reset)
  *                      84 ('T') : TCP/IP interface 
  *                      85 ('U') : UDP interface
  * @param arg : additional settings in c-string format:
@@ -867,14 +875,12 @@ UFR_STATUS DL_API SetReaderTime(uint8_t *password, uint8_t *time);
 UFR_STATUS DL_API ChangeReaderPassword(uint8_t *old_password, uint8_t *new_password);
 UFR_STATUS DL_API ReaderEepromWrite(uint8_t *data, uint32_t address, uint32_t size, uint8_t *password);
 UFR_STATUS DL_API ReaderEepromRead(uint8_t *data, uint32_t address, uint32_t size);
-UFR_STATUS DL_API ChangeReaderJobId(uint8_t *job_id, uint8_t *new_password);
 
 UFR_STATUS DL_API SubscribeSector(uint8_t block_nr, uint32_t admin_serial);
 UFR_STATUS DL_API SubscribeBlock(uint8_t block_nr, uint32_t admin_serial);
 UFR_STATUS DL_API BusAdminCardMake(uint32_t serial,	uint8_t *password);
 
 UFR_STATUS DL_API GetReaderSerialDescription(uint8_t pSerialDescription[8]);
-UFR_STATUS DL_API SetReaderSerialDescription(const uint8_t pSerialDescription[8]);
 
 // New since version 2.0:
 UFR_STATUS DL_API GetBuildNumber(uint8_t *build);
@@ -1203,6 +1209,8 @@ UFR_STATUS DL_API JCAppPutPrivateKey(uint8_t key_type, uint8_t key_index,
 		const uint8_t *key, uint16_t key_bit_len, const uint8_t *key_param, uint16_t key_parm_len);
 UFR_STATUS DL_API JCAppGenerateKeyPair(uint8_t key_type, uint8_t key_index, uint8_t key_designator,
 		uint16_t key_bit_len, const uint8_t *params, uint16_t params_size);
+UFR_STATUS DL_API JCAppDeleteRsaKeyPair(uint8_t key_index);
+UFR_STATUS DL_API JCAppDeleteEcKeyPair(uint8_t key_index);
 UFR_STATUS DL_API JCAppSignatureBegin(uint8_t cipher, uint8_t digest, uint8_t padding,
 		uint8_t key_index,
 		const uint8_t *chunk, uint16_t chunk_len, const uint8_t *alg_param, uint16_t alg_parm_len);
@@ -1318,9 +1326,6 @@ UFR_STATUS DL_API uFR_int_DesfireChangeAesKey_A(uint8_t aes_key_nr, uint32_t aid
 UFR_STATUS DL_API uFR_int_DesfireChangeAesKey_PK(uint8_t *aes_key_ext, uint32_t aid, uint8_t aid_key_no_auth,
 		uint8_t new_aes_key[16], uint8_t aid_key_no, uint8_t old_aes_key[16],
 		uint16_t *card_status, uint16_t *exec_time);
-
-UFR_STATUS DL_API uFR_int_SetParam(uint8_t aes_key[16], uint8_t key_no,
-		uint32_t aid_nr, uint8_t file_id);
 
 UFR_STATUS DL_API uFR_int_DesfireWriteAesKey(uint8_t aes_key_no, uint8_t *aes_key);
 
@@ -1559,20 +1564,6 @@ UFR_STATUS DL_API BalanceSet(uint32_t auth_mode, void *auth_value, int32_t credi
  */
 UFR_STATUS DL_API ReaderList_UpdateAndGetCount(int32_t * NumberOfDevices);
 
-UFR_STATUS DL_API ReaderList_GetSerialByIndex(int32_t DeviceIndex, uint32_t *lpulSerialNumber);
-UFR_STATUS DL_API ReaderList_GetSerialDescriptionByIndex(int32_t DeviceIndex, uint8_t pSerialDescription[8]);
-
-UFR_STATUS DL_API ReaderList_GetTypeByIndex(int32_t DeviceIndex, uint32_t *lpulReaderType);
-
-UFR_STATUS DL_API ReaderList_GetFTDISerialByIndex(int32_t DeviceIndex, char ** Device_Serial);
-UFR_STATUS DL_API ReaderList_GetFTDIDescriptionByIndex(int32_t DeviceIndex, char ** Device_Description);
-
-UFR_STATUS DL_API ReaderList_OpenByIndex(const int32_t DeviceIndex, UFR_HANDLE *hndUFR);
-
-// not implemented
-//UFR_STATUS DL_API ReaderList_OpenBySerial(const char Device_SN[16], UFR_HANDLE *hndUFR);
-
-
 /**
  * Function for getting all relevant information about connected readers.
  *
@@ -1615,6 +1606,15 @@ UFR_STATUS DL_API ReaderList_GetInformation( //
  * @return
  */
 UFR_STATUS DL_API ReaderList_Destroy(UFR_HANDLE DeviceHandle);
+
+// XXX: Obsolete functions - remain for backward compatibility
+UFR_STATUS DL_API ReaderList_GetSerialByIndex(int32_t DeviceIndex, uint32_t *lpulSerialNumber);
+UFR_STATUS DL_API ReaderList_GetSerialDescriptionByIndex(int32_t DeviceIndex, uint8_t pSerialDescription[8]);
+UFR_STATUS DL_API ReaderList_GetTypeByIndex(int32_t DeviceIndex, uint32_t *lpulReaderType);
+UFR_STATUS DL_API ReaderList_GetFTDISerialByIndex(int32_t DeviceIndex, char ** Device_Serial);
+UFR_STATUS DL_API ReaderList_GetFTDIDescriptionByIndex(int32_t DeviceIndex, char ** Device_Description);
+UFR_STATUS DL_API ReaderList_OpenByIndex(const int32_t DeviceIndex, UFR_HANDLE *hndUFR);
+UFR_STATUS DL_API ReaderList_OpenBySerial(const char Device_SN[16], UFR_HANDLE *hndUFR); // ! not implemented
 
 //--------------------------------------------------------------------------------------------------
 
@@ -2014,7 +2014,6 @@ UFR_STATUS DL_API SetReaderTimeM(UFR_HANDLE hndUFR, uint8_t *password, uint8_t *
 UFR_STATUS DL_API ChangeReaderPasswordM(UFR_HANDLE hndUFR, uint8_t *old_password, uint8_t *new_password);
 UFR_STATUS DL_API ReaderEepromWriteM(UFR_HANDLE hndUFR, uint8_t *data, uint32_t address, uint32_t size, uint8_t *password);
 UFR_STATUS DL_API ReaderEepromReadM(UFR_HANDLE hndUFR, uint8_t *data, uint32_t address, uint32_t size);
-UFR_STATUS DL_API ChangeReaderJobIdM(UFR_HANDLE hndUFR, uint8_t *job_id, uint8_t *new_password);
 
 UFR_STATUS DL_API GetReaderSerialDescriptionM(UFR_HANDLE hndUFR, uint8_t pSerialDescription[8]);
 
@@ -2262,6 +2261,8 @@ UFR_STATUS DL_API JCAppPutPrivateKeyM(UFR_HANDLE hndUFR, uint8_t key_type, uint8
 		const uint8_t *key, uint16_t key_bit_len, const uint8_t *key_param, uint16_t key_parm_len);
 UFR_STATUS DL_API JCAppGenerateKeyPairM(UFR_HANDLE hndUFR, uint8_t key_type, uint8_t key_index, uint8_t key_designator,
 		uint16_t key_bit_len, const uint8_t *params, uint16_t params_size);
+UFR_STATUS DL_API JCAppDeleteRsaKeyPairM(UFR_HANDLE hndUFR, uint8_t key_index);
+UFR_STATUS DL_API JCAppDeleteEcKeyPairM(UFR_HANDLE hndUFR, uint8_t key_index);
 UFR_STATUS DL_API JCAppSignatureBeginM(UFR_HANDLE hndUFR, uint8_t cipher, uint8_t digest, uint8_t padding,
 		uint8_t key_index,
 		const uint8_t *chunk, uint16_t chunk_len, const uint8_t *alg_param, uint16_t alg_parm_len);
@@ -2291,11 +2292,6 @@ UFR_STATUS DL_API JCAppGetEcPublicKeyM(UFR_HANDLE hndUFR, uint8_t key_index, uin
 UFR_STATUS DL_API JCAppGetEcKeySizeBitsM(UFR_HANDLE hndUFR, uint8_t key_index, uint16_t *key_size_bits, uint16_t *key_designator);
 //#############################################################################
 
-//DL_API
-//void print_desfire_version(struct mifare_desfire_version_info *desfire_version);
-
-typedef void * HND;
-
 UFR_STATUS DL_API uFR_DESFIRE_Start(void);
 UFR_STATUS DL_API uFR_DESFIRE_StartM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API uFR_DESFIRE_Stop(void);
@@ -2304,24 +2300,6 @@ UFR_STATUS DL_API uFR_APDU_Start(void);                 // Alias for uFR_DESFIRE
 UFR_STATUS DL_API uFR_APDU_StartM(UFR_HANDLE hndUFR);   // Alias for uFR_DESFIRE_StartM()
 UFR_STATUS DL_API uFR_APDU_Stop(void);                  // Alias for uFR_DESFIRE_Stop()
 UFR_STATUS DL_API uFR_APDU_StopM(UFR_HANDLE hndUFR);    // Alias for uFR_DESFIRE_StopM()
-
-HND DL_API uFR_mifare_desfire_tag_new (void);
-
-void DL_API uFR_mifare_desfire_tag_free (HND tag);
-
-HND DL_API uFR_mifare_desfire_des_key_new (uint8_t value[8]);
-
-int DL_API uFR_mifare_desfire_get_key_settings (HND tag, uint8_t *settings, uint8_t *max_keys);
-
-void DL_API uFR_mifare_desfire_key_free (HND key);
-
-HND DL_API uFR_mifare_desfire_aes_key_new_with_version (uint8_t value[16], uint8_t version);
-
-int DL_API uFR_mifare_desfire_change_key (HND tag, uint8_t key_no, HND new_key, HND old_key);
-
-int DL_API uFR_mifare_desfire_authenticate (HND tag, uint8_t key_no, HND key);
-
-int DL_API uFR_mifare_desfire_authenticate_aes (HND tag, uint8_t key_no, HND key);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -2403,10 +2381,6 @@ UFR_STATUS DL_API uFR_int_DesfireChangeAesKeyM(UFR_HANDLE hndUFR, uint8_t aes_ke
 UFR_STATUS DL_API uFR_int_DesfireChangeAesKey_PK_M(UFR_HANDLE hndUFR, uint8_t *aes_key_ext, uint32_t aid, uint8_t aid_key_no_auth,
 		uint8_t new_aes_key[16], uint8_t aid_key_no, uint8_t old_aes_key[16],
 		uint16_t *card_status, uint16_t *exec_time);
-
-UFR_STATUS DL_API uFR_int_SetParamM(UFR_HANDLE hndUFR, uint8_t aes_key[16], uint8_t key_no,
-		uint32_t aid_nr, uint8_t file_id);
-
 
 //---------------------------------------------------------------------------
 
@@ -2629,8 +2603,6 @@ c_string DL_API GetReaderDescriptionM(UFR_HANDLE hndUFR);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-UFR_STATUS DL_API test_i_block(void);
-UFR_STATUS DL_API test_desfire_ver(void);
 
 #ifdef __cplusplus
 }
