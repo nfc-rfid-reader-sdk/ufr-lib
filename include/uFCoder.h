@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.1
+ * library version: 5.0.2
  *
  * Created on:  2009-01-14
- * Last edited: 2019-01-16
+ * Last edited: 2019-01-29
  *
  * Author: D-Logic
  */
@@ -73,6 +73,10 @@ typedef const char * c_string;
 #define DL_NTAG_216						0x0A
 #define DL_MIKRON_MIK640D				0x0B
 #define NFC_T2T_GENERIC					0x0C
+#define DL_NT3H_1101                    0x0D
+#define DL_NT3H_1201                    0x0E
+#define DL_NT3H_2111                    0x0F
+#define DL_NT3H_2211                    0x10
 
 #define DL_MIFARE_MINI					0x20
 #define	DL_MIFARE_CLASSIC_1K			0x21
