@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.2
+ * library version: 5.0.3
  *
  * Created on:  2009-01-14
- * Last edited: 2019-01-29
+ * Last edited: 2019-02-05
  *
  * Author: D-Logic
  */
@@ -357,7 +357,9 @@ typedef enum UFCODER_ERROR_CODES
 #define UFR_APDU_SW_CONDITIONS_NOT_SATISFIED		0x0A6985
 #define UFR_APDU_SW_WRONG_DATA						0x0A6A80
 #define UFR_APDU_SW_RECORD_NOT_FOUND				0x0A6A83
+#define UFR_APDU_SW_ENTITY_ALREADY_EXISTS			0x0A6A89
 #define UFR_APDU_SW_INS_NOT_SUPPORTED				0x0A6D00
+#define UFR_APDU_SW_NO_PRECISE_DIAGNOSTIC			0x0A6F00
 
 //DESFIRE Card Status Error Codes
 #define READER_ERROR			2999
