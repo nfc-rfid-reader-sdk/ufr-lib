@@ -716,7 +716,7 @@ UFR_STATUS DL_API LinRowRead_AKM2(OUT uint8_t *data,
                                  uint16_t length,
                                  VAR uint16_t *bytes_returned,
                                  uint8_t auth_mode);
-UFR_STATUS DL_API LinearWrite_AKM2(OUT const uint8_t *data,
+UFR_STATUS DL_API LinearWrite_AKM2(IN const uint8_t *data,
                                   uint16_t linear_address,
                                   uint16_t length,
                                   VAR uint16_t *bytes_written,
