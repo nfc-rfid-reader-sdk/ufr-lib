@@ -1962,7 +1962,7 @@ UFR_STATUS DL_API LinRowRead_AKM2M(UFR_HANDLE hndUFR,
                                    uint8_t auth_mode);
 
 UFR_STATUS DL_API LinearWrite_AKM2M(UFR_HANDLE hndUFR,
-                                    OUT const uint8_t *data,
+                                    IN const uint8_t *data,
                                     uint16_t linear_address,
                                     uint16_t length,
                                     VAR uint16_t *bytes_written,
