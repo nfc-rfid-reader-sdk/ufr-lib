@@ -1648,7 +1648,7 @@ UFR_STATUS DL_API ReaderStillConnectedM(UFR_HANDLE hndUFR,
                                         VAR uint32_t *connected);
 
 UFR_STATUS DL_API ReaderKeyWriteM(UFR_HANDLE hndUFR,
-                                  IN const uint8_t *aucKey
+                                  IN const uint8_t *aucKey,
                                   uint8_t ucKeyIndex);
 
 UFR_STATUS DL_API ReaderKeysLockM(UFR_HANDLE hndUFR,
@@ -1658,7 +1658,7 @@ UFR_STATUS DL_API ReaderKeysUnlockM(UFR_HANDLE hndUFR,
                                     IN const uint8_t *password);
 
 UFR_STATUS DL_API ReaderUISignalM(UFR_HANDLE hndUFR,
-                                  uint8_t light_signal_mode
+                                  uint8_t light_signal_mode,
                                   uint8_t beep_signal_mode);
 
 UFR_STATUS DL_API ReadUserDataM(UFR_HANDLE hndUFR,
@@ -1668,523 +1668,523 @@ UFR_STATUS DL_API WriteUserDataM(UFR_HANDLE hndUFR,
                                  IN const uint8_t *aucData);
 
 UFR_STATUS DL_API GetCardIdM(UFR_HANDLE hndUFR,
-                             VAR uint8_t *lpucCardType
+                             VAR uint8_t *lpucCardType,
                              OUT uint32_t *lpulCardSerial);
 
 UFR_STATUS DL_API BlockReadM(UFR_HANDLE hndUFR,
-                             OUT uint8_t *data
-                             uint8_t block_address
-                             uint8_t auth_mode
+                             OUT uint8_t *data,
+                             uint8_t block_address,
+                             uint8_t auth_mode,
                              uint8_t key_index);
 
 UFR_STATUS DL_API BlockWriteM(UFR_HANDLE hndUFR,
-                              IN const uint8_t *data
-                              uint8_t block_address
-                              uint8_t auth_mode
+                              IN const uint8_t *data,
+                              uint8_t block_address,
+                              uint8_t auth_mode,
                               uint8_t key_index);
 
 UFR_STATUS DL_API BlockInSectorReadM(UFR_HANDLE hndUFR,
-                                     OUT uint8_t *data
-                                     uint8_t sector_address
-                                     uint8_t block_in_sector_address
-                                     uint8_t auth_mode
+                                     OUT uint8_t *data,
+                                     uint8_t sector_address,
+                                     uint8_t block_in_sector_address,
+                                     uint8_t auth_mode,
                                      uint8_t key_index);
 
 UFR_STATUS DL_API BlockInSectorWriteM(UFR_HANDLE hndUFR,
-                                      IN const uint8_t *data
-                                      uint8_t sector_address
-                                      uint8_t block_in_sector_address
-                                      uint8_t auth_mode
+                                      IN const uint8_t *data,
+                                      uint8_t sector_address,
+                                      uint8_t block_in_sector_address,
+                                      uint8_t auth_mode,
                                       uint8_t key_index);
 
 UFR_STATUS DL_API LinearReadM(UFR_HANDLE hndUFR,
-                              OUT uint8_t *aucData
-                              uint16_t usLinearAddress
-                              uint16_t usDataLength
-                              VAR uint16_t *lpusBytesReturned
-                              uint8_t ucKeyMode
+                              OUT uint8_t *aucData,
+                              uint16_t usLinearAddress,
+                              uint16_t usDataLength,
+                              VAR uint16_t *lpusBytesReturned,
+                              uint8_t ucKeyMode,
                               uint8_t ucReaderKeyIndex);
 
 UFR_STATUS DL_API LinRowReadM(UFR_HANDLE hndUFR,
-                              OUT uint8_t *aucData
-                              uint16_t usLinearAddress
-                              uint16_t usDataLength
-                              VAR uint16_t *lpusBytesReturned
-                              uint8_t ucKeyMode
+                              OUT uint8_t *aucData,
+                              uint16_t usLinearAddress,
+                              uint16_t usDataLength,
+                              VAR uint16_t *lpusBytesReturned,
+                              uint8_t ucKeyMode,
                               uint8_t ucReaderKeyIndex);
 
 UFR_STATUS DL_API LinearWriteM(UFR_HANDLE hndUFR,
-                               IN const uint8_t *aucData
-                               uint16_t usLinearAddress
-                               uint16_t usDataLength
-                               VAR uint16_t *lpusBytesWritten
-                               uint8_t ucKeyMode
+                               IN const uint8_t *aucData,
+                               uint16_t usLinearAddress,
+                               uint16_t usDataLength,
+                               VAR uint16_t *lpusBytesWritten,
+                               uint8_t ucKeyMode,
                                uint8_t ucReaderKeyIndex);
 
 UFR_STATUS DL_API LinearFormatCardM(UFR_HANDLE hndUFR,
-                                    IN const uint8_t *new_key_A
-                                    uint8_t blocks_access_bits
-                                    uint8_t sector_trailers_access_bits
-                                    uint8_t sector_trailers_byte9
-                                    IN  const uint8_t *new_key_B
-                                    VAR uint8_t *lpucSectorsFormatted
-                                    uint8_t auth_mode
+                                    IN const uint8_t *new_key_A,
+                                    uint8_t blocks_access_bits,
+                                    uint8_t sector_trailers_access_bits,
+                                    uint8_t sector_trailers_byte9,
+                                    IN  const uint8_t *new_key_B,
+                                    VAR uint8_t *lpucSectorsFormatted,
+                                    uint8_t auth_mode,
                                     uint8_t key_index);
 
 UFR_STATUS DL_API SectorTrailerWriteM(UFR_HANDLE hndUFR,
-                                      uint8_t addressing_mode
-                                      uint8_t address
-                                      IN const uint8_t *new_key_A
-                                      uint8_t block0_access_bits
-                                      uint8_t block1_access_bits
-                                      uint8_t block2_access_bits
-                                      uint8_t sector_trailer_access_bits
-                                      uint8_t sector_trailer_byte9
-                                      IN const uint8_t *new_key_B
-                                      uint8_t auth_mode
+                                      uint8_t addressing_mode,
+                                      uint8_t address,
+                                      IN const uint8_t *new_key_A,
+                                      uint8_t block0_access_bits,
+                                      uint8_t block1_access_bits,
+                                      uint8_t block2_access_bits,
+                                      uint8_t sector_trailer_access_bits,
+                                      uint8_t sector_trailer_byte9,
+                                      IN const uint8_t *new_key_B,
+                                      uint8_t auth_mode,
                                       uint8_t key_index);
 
 UFR_STATUS DL_API SectorTrailerWriteUnsafeM(UFR_HANDLE hndUFR,
-                                            uint8_t addressing_mode
-                                            uint8_t address
-                                            IN const uint8_t *sector_trailer
-                                            uint8_t auth_mode
+                                            uint8_t addressing_mode,
+                                            uint8_t address,
+                                            IN const uint8_t *sector_trailer,
+                                            uint8_t auth_mode,
                                             uint8_t key_index);
 
 UFR_STATUS DL_API ValueBlockReadM(UFR_HANDLE hndUFR,
-                                  VAR int32_t *value
-                                  VAR uint8_t *value_addr
-                                  uint8_t block_address
-                                  uint8_t auth_mode
+                                  VAR int32_t *value,
+                                  VAR uint8_t *value_addr,
+                                  uint8_t block_address,
+                                  uint8_t auth_mode,
                                   uint8_t key_index);
 
 UFR_STATUS DL_API ValueBlockInSectorReadM(UFR_HANDLE hndUFR,
-                                          VAR int32_t *value
-                                          VAR uint8_t *value_addr
-                                          uint8_t sector_address
-                                          uint8_t block_in_sector_address
-                                          uint8_t auth_mode
+                                          VAR int32_t *value,
+                                          VAR uint8_t *value_addr,
+                                          uint8_t sector_address,
+                                          uint8_t block_in_sector_address,
+                                          uint8_t auth_mode,
                                           uint8_t key_index);
 
 UFR_STATUS DL_API ValueBlockWriteM(UFR_HANDLE hndUFR,
-                                   int32_t value
-                                   uint8_t value_addr
-                                   uint8_t block_address
-                                   uint8_t auth_mode
+                                   int32_t value,
+                                   uint8_t value_addr,
+                                   uint8_t block_address,
+                                   uint8_t auth_mode,
                                    uint8_t key_index);
 
 UFR_STATUS DL_API ValueBlockInSectorWriteM(UFR_HANDLE hndUFR,
-                                           int32_t value
-                                           uint8_t value_addr
-                                           uint8_t sector_address
-                                           uint8_t block_in_sector_address
-                                           uint8_t auth_mode
+                                           int32_t value,
+                                           uint8_t value_addr,
+                                           uint8_t sector_address,
+                                           uint8_t block_in_sector_address,
+                                           uint8_t auth_mode,
                                            uint8_t key_index);
 
 UFR_STATUS DL_API ValueBlockIncrementM(UFR_HANDLE hndUFR,
-                                       int32_t increment_value
-                                       uint8_t block_address
-                                       uint8_t auth_mode
+                                       int32_t increment_value,
+                                       uint8_t block_address,
+                                       uint8_t auth_mode,
                                        uint8_t key_index);
 
 UFR_STATUS DL_API ValueBlockInSectorIncrementM(UFR_HANDLE hndUFR,
-                                               int32_t increment_value
-                                               uint8_t sector_address
-                                               uint8_t block_in_sector_address
-                                               uint8_t auth_mode
+                                               int32_t increment_value,
+                                               uint8_t sector_address,
+                                               uint8_t block_in_sector_address,
+                                               uint8_t auth_mode,
                                                uint8_t key_index);
 
 UFR_STATUS DL_API ValueBlockDecrementM(UFR_HANDLE hndUFR,
-                                       int32_t decrement_value
-                                       uint8_t block_address
-                                       uint8_t auth_mode
+                                       int32_t decrement_value,
+                                       uint8_t block_address,
+                                       uint8_t auth_mode,
                                        uint8_t key_index);
 
 UFR_STATUS DL_API ValueBlockInSectorDecrementM(UFR_HANDLE hndUFR,
-                                               int32_t decrement_value
-                                               uint8_t sector_address
-                                               uint8_t block_in_sector_address
-                                               uint8_t auth_mode
+                                               int32_t decrement_value,
+                                               uint8_t sector_address,
+                                               uint8_t block_in_sector_address,
+                                               uint8_t auth_mode,
                                                uint8_t key_index);
 
 UFR_STATUS DL_API BlockRead_AKM1M(UFR_HANDLE hndUFR,
-                                  OUT uint8_t *data
-                                  uint8_t block_address
+                                  OUT uint8_t *data,
+                                  uint8_t block_address,
                                   uint8_t auth_mode);
 
 UFR_STATUS DL_API BlockWrite_AKM1M(UFR_HANDLE hndUFR,
-                                   IN const uint8_t *data
-                                   uint8_t block_address
+                                   IN const uint8_t *data,
+                                   uint8_t block_address,
                                    uint8_t auth_mode);
 
 UFR_STATUS DL_API BlockInSectorRead_AKM1M(UFR_HANDLE hndUFR,
-                                          OUT uint8_t *data
-                                          uint8_t sector_address
-                                          uint8_t block_in_sector_address
+                                          OUT uint8_t *data,
+                                          uint8_t sector_address,
+                                          uint8_t block_in_sector_address,
                                           uint8_t auth_mode);
 
 UFR_STATUS DL_API BlockInSectorWrite_AKM1M(UFR_HANDLE hndUFR,
-                                           IN const uint8_t *data
-                                           uint8_t sector_address
-                                           uint8_t block_in_sector_address
+                                           IN const uint8_t *data,
+                                           uint8_t sector_address,
+                                           uint8_t block_in_sector_address,
                                            uint8_t auth_mode);
 
 UFR_STATUS DL_API LinearRead_AKM1M(UFR_HANDLE hndUFR,
-                                   OUT uint8_t *data
-                                   uint16_t linear_address
-                                   uint16_t length
-                                   VAR uint16_t *bytes_returned
+                                   OUT uint8_t *data,
+                                   uint16_t linear_address,
+                                   uint16_t length,
+                                   VAR uint16_t *bytes_returned,
                                    uint8_t auth_mode);
 
 UFR_STATUS DL_API LinRowRead_AKM1M(UFR_HANDLE hndUFR,
-                                   OUT uint8_t *data
-                                   uint16_t linear_address
-                                   uint16_t length
-                                   VAR uint16_t *bytes_returned
+                                   OUT uint8_t *data,
+                                   uint16_t linear_address,
+                                   uint16_t length,
+                                   VAR uint16_t *bytes_returned,
                                    uint8_t auth_mode);
 
 UFR_STATUS DL_API LinearWrite_AKM1M(UFR_HANDLE hndUFR,
-                                    IN const uint8_t *data
-                                    uint16_t linear_address
-                                    uint16_t length
-                                    VAR uint16_t *bytes_written
+                                    IN const uint8_t *data,
+                                    uint16_t linear_address,
+                                    uint16_t length,
+                                    VAR uint16_t *bytes_written,
                                     uint8_t auth_mode);
 
 UFR_STATUS DL_API LinearFormatCard_AKM1M(UFR_HANDLE hndUFR,
-                                         IN const uint8_t *new_key_A
-                                         uint8_t blocks_access_bits
-                                         uint8_t sector_trailers_access_bits
-                                         uint8_t sector_trailers_byte9
-                                         IN const uint8_t *new_key_B
-                                         VAR uint8_t *lpucSectorsFormatted
+                                         IN const uint8_t *new_key_A,
+                                         uint8_t blocks_access_bits,
+                                         uint8_t sector_trailers_access_bits,
+                                         uint8_t sector_trailers_byte9,
+                                         IN const uint8_t *new_key_B,
+                                         VAR uint8_t *lpucSectorsFormatted,
                                          uint8_t auth_mode);
 
 UFR_STATUS DL_API SectorTrailerWrite_AKM1M(UFR_HANDLE hndUFR,
-                                           uint8_t addressing_mode
-                                           uint8_t address
-                                           IN const uint8_t *new_key_A
-                                           uint8_t block0_access_bits
-                                           uint8_t block1_access_bits
-                                           uint8_t block2_access_bits
-                                           uint8_t sector_trailer_access_bits
-                                           uint8_t sector_trailer_byte9
-                                           IN const uint8_t *new_key_B
+                                           uint8_t addressing_mode,
+                                           uint8_t address,
+                                           IN const uint8_t *new_key_A,
+                                           uint8_t block0_access_bits,
+                                           uint8_t block1_access_bits,
+                                           uint8_t block2_access_bits,
+                                           uint8_t sector_trailer_access_bits,
+                                           uint8_t sector_trailer_byte9,
+                                           IN const uint8_t *new_key_B,
                                            uint8_t auth_mode);
 
 UFR_STATUS DL_API SectorTrailerWriteUnsafe_AKM1M(UFR_HANDLE hndUFR,
-                                                 uint8_t addressing_mode
-                                                 uint8_t address
-                                                 IN const uint8_t *sector_trailer
+                                                 uint8_t addressing_mode,
+                                                 uint8_t address,
+                                                 IN const uint8_t *sector_trailer,
                                                  uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockRead_AKM1M(UFR_HANDLE hndUFR,
-                                       VAR int32_t *value
-                                       VAR uint8_t *value_addr
-                                       uint8_t block_address
+                                       VAR int32_t *value,
+                                       VAR uint8_t *value_addr,
+                                       uint8_t block_address,
                                        uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockInSectorRead_AKM1M(UFR_HANDLE hndUFR,
-                                               VAR int32_t *value
-                                               VAR uint8_t *value_addr
-                                               uint8_t sector_address
-                                               uint8_t block_in_sector_address
+                                               VAR int32_t *value,
+                                               VAR uint8_t *value_addr,
+                                               uint8_t sector_address,
+                                               uint8_t block_in_sector_address,
                                                uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockWrite_AKM1M(UFR_HANDLE hndUFR,
-                                        int32_t value
-                                        uint8_t value_addr
-                                        uint8_t block_address
+                                        int32_t value,
+                                        uint8_t value_addr,
+                                        uint8_t block_address,
                                         uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockInSectorWrite_AKM1M(UFR_HANDLE hndUFR,
-                                                int32_t value
-                                                uint8_t value_addr
-                                                uint8_t sector_address
-                                                uint8_t block_in_sector_address
+                                                int32_t value,
+                                                uint8_t value_addr,
+                                                uint8_t sector_address,
+                                                uint8_t block_in_sector_address,
                                                 uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockIncrement_AKM1M(UFR_HANDLE hndUFR,
-                                            int32_t increment_value
-                                            uint8_t block_address
+                                            int32_t increment_value,
+                                            uint8_t block_address,
                                             uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockInSectorIncrement_AKM1M(UFR_HANDLE hndUFR,
-                                                    int32_t increment_value
-                                                    uint8_t sector_address
-                                                    uint8_t block_in_sector_address
+                                                    int32_t increment_value,
+                                                    uint8_t sector_address,
+                                                    uint8_t block_in_sector_address,
                                                     uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockDecrement_AKM1M(UFR_HANDLE hndUFR,
-                                            int32_t decrement_value
-                                            uint8_t block_address
+                                            int32_t decrement_value,
+                                            uint8_t block_address,
                                             uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockInSectorDecrement_AKM1M(UFR_HANDLE hndUFR,
-                                                    int32_t decrement_value
-                                                    uint8_t sector_address
-                                                    uint8_t block_in_sector_address
+                                                    int32_t decrement_value,
+                                                    uint8_t sector_address,
+                                                    uint8_t block_in_sector_address,
                                                     uint8_t auth_mode);
 
 UFR_STATUS DL_API BlockRead_AKM2M(UFR_HANDLE hndUFR,
-                                  OUT uint8_t *data
-                                  uint8_t block_address
+                                  OUT uint8_t *data,
+                                  uint8_t block_address,
                                   uint8_t auth_mode);
 
 UFR_STATUS DL_API BlockWrite_AKM2M(UFR_HANDLE hndUFR,
-                                   IN const uint8_t *data
-                                   uint8_t block_address
+                                   IN const uint8_t *data,
+                                   uint8_t block_address,
                                    uint8_t auth_mode);
 
 UFR_STATUS DL_API BlockInSectorRead_AKM2M(UFR_HANDLE hndUFR,
-                                          OUT uint8_t *data
-                                          uint8_t sector_address
-                                          uint8_t block_in_sector_address
+                                          OUT uint8_t *data,
+                                          uint8_t sector_address,
+                                          uint8_t block_in_sector_address,
                                           uint8_t auth_mode);
 
 UFR_STATUS DL_API BlockInSectorWrite_AKM2M(UFR_HANDLE hndUFR,
-                                           IN const uint8_t *data
-                                           uint8_t sector_address
-                                           uint8_t block_in_sector_address
+                                           IN const uint8_t *data,
+                                           uint8_t sector_address,
+                                           uint8_t block_in_sector_address,
                                            uint8_t auth_mode);
 
 UFR_STATUS DL_API LinearRead_AKM2M(UFR_HANDLE hndUFR,
-                                   OUT uint8_t *data
-                                   uint16_t linear_address
-                                   uint16_t length
-                                   VAR uint16_t *bytes_returned
+                                   OUT uint8_t *data,
+                                   uint16_t linear_address,
+                                   uint16_t length,
+                                   VAR uint16_t *bytes_returned,
                                    uint8_t auth_mode);
 
 UFR_STATUS DL_API LinRowRead_AKM2M(UFR_HANDLE hndUFR,
-                                   OUT uint8_t *data
-                                   uint16_t linear_address
-                                   uint16_t length
-                                   VAR uint16_t *bytes_returned
+                                   OUT uint8_t *data,
+                                   uint16_t linear_address,
+                                   uint16_t length,
+                                   VAR uint16_t *bytes_returned,
                                    uint8_t auth_mode);
 
 UFR_STATUS DL_API LinearWrite_AKM2M(UFR_HANDLE hndUFR,
-                                    OUT const uint8_t *data
-                                    uint16_t linear_address
-                                    uint16_t length
-                                    VAR uint16_t *bytes_written
+                                    OUT const uint8_t *data,
+                                    uint16_t linear_address,
+                                    uint16_t length,
+                                    VAR uint16_t *bytes_written,
                                     uint8_t auth_mode);
 
 UFR_STATUS DL_API LinearFormatCard_AKM2M(UFR_HANDLE hndUFR,
-                                         IN const uint8_t *new_key_A
-                                         uint8_t blocks_access_bits
-                                         uint8_t sector_trailers_access_bits
-                                         uint8_t sector_trailers_byte9
-                                         IN const uint8_t *new_key_B
-                                         VAR uint8_t *lpucSectorsFormatted
+                                         IN const uint8_t *new_key_A,
+                                         uint8_t blocks_access_bits,
+                                         uint8_t sector_trailers_access_bits,
+                                         uint8_t sector_trailers_byte9,
+                                         IN const uint8_t *new_key_B,
+                                         VAR uint8_t *lpucSectorsFormatted,
                                          uint8_t auth_mode);
 
 UFR_STATUS DL_API SectorTrailerWrite_AKM2M(UFR_HANDLE hndUFR,
-                                           uint8_t addressing_mode
-                                           uint8_t address
-                                           IN const uint8_t *new_key_A
-                                           uint8_t block0_access_bits
-                                           uint8_t block1_access_bits
-                                           uint8_t block2_access_bits
-                                           uint8_t sector_trailer_access_bits
-                                           uint8_t sector_trailer_byte9
-                                           IN const uint8_t *new_key_B
+                                           uint8_t addressing_mode,
+                                           uint8_t address,
+                                           IN const uint8_t *new_key_A,
+                                           uint8_t block0_access_bits,
+                                           uint8_t block1_access_bits,
+                                           uint8_t block2_access_bits,
+                                           uint8_t sector_trailer_access_bits,
+                                           uint8_t sector_trailer_byte9,
+                                           IN const uint8_t *new_key_B,
                                            uint8_t auth_mode);
 
 UFR_STATUS DL_API SectorTrailerWriteUnsafe_AKM2M(UFR_HANDLE hndUFR,
-                                                 uint8_t addressing_mode
-                                                 uint8_t address
-                                                 IN const uint8_t *sector_trailer
+                                                 uint8_t addressing_mode,
+                                                 uint8_t address,
+                                                 IN const uint8_t *sector_trailer,
                                                  uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockRead_AKM2M(UFR_HANDLE hndUFR,
-                                       VAR int32_t *value
-                                       VAR uint8_t *value_addr
-                                       uint8_t block_address
+                                       VAR int32_t *value,
+                                       VAR uint8_t *value_addr,
+                                       uint8_t block_address,
                                        uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockInSectorRead_AKM2M(UFR_HANDLE hndUFR,
-                                               VAR int32_t *value
-                                               VAR uint8_t *value_addr
-                                               uint8_t sector_address
-                                               uint8_t block_in_sector_address
+                                               VAR int32_t *value,
+                                               VAR uint8_t *value_addr,
+                                               uint8_t sector_address,
+                                               uint8_t block_in_sector_address,
                                                uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockWrite_AKM2M(UFR_HANDLE hndUFR,
-                                        int32_t value
-                                        uint8_t value_addr
-                                        uint8_t block_address
+                                        int32_t value,
+                                        uint8_t value_addr,
+                                        uint8_t block_address,
                                         uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockInSectorWrite_AKM2M(UFR_HANDLE hndUFR,
-                                                int32_t value
-                                                uint8_t value_addr
-                                                uint8_t sector_address
-                                                uint8_t block_in_sector_address
+                                                int32_t value,
+                                                uint8_t value_addr,
+                                                uint8_t sector_address,
+                                                uint8_t block_in_sector_address,
                                                 uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockIncrement_AKM2M(UFR_HANDLE hndUFR,
-                                            int32_t increment_value
-                                            uint8_t block_address
+                                            int32_t increment_value,
+                                            uint8_t block_address,
                                             uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockInSectorIncrement_AKM2M(UFR_HANDLE hndUFR,
-                                                    int32_t increment_value
-                                                    uint8_t sector_address
-                                                    uint8_t block_in_sector_address
+                                                    int32_t increment_value,
+                                                    uint8_t sector_address,
+                                                    uint8_t block_in_sector_address,
                                                     uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockDecrement_AKM2M(UFR_HANDLE hndUFR,
-                                            int32_t decrement_value
-                                            uint8_t block_address
+                                            int32_t decrement_value,
+                                            uint8_t block_address,
                                             uint8_t auth_mode);
 
 UFR_STATUS DL_API ValueBlockInSectorDecrement_AKM2M(UFR_HANDLE hndUFR,
-                                                    int32_t decrement_value
-                                                    uint8_t sector_address
-                                                    uint8_t block_in_sector_address
+                                                    int32_t decrement_value,
+                                                    uint8_t sector_address,
+                                                    uint8_t block_in_sector_address,
                                                     uint8_t auth_mode);
 
 UFR_STATUS DL_API BlockRead_PKM(UFR_HANDLE hndUFR,
-                                OUT uint8_t *data
-                                uint8_t block_address
-                                uint8_t auth_mode
+                                OUT uint8_t *data,
+                                uint8_t block_address,
+                                uint8_t auth_mode,
                                 IN const uint8_t *key);
 
 UFR_STATUS DL_API BlockWrite_PKM(UFR_HANDLE hndUFR,
-                                 IN const uint8_t *data
-                                 uint8_t block_address
-                                 uint8_t auth_mode
+                                 IN const uint8_t *data,
+                                 uint8_t block_address,
+                                 uint8_t auth_mode,
                                  IN const uint8_t *key);
 
 UFR_STATUS DL_API BlockInSectorRead_PKM(UFR_HANDLE hndUFR,
-                                        OUT uint8_t *data
-                                        uint8_t sector_address
-                                        uint8_t block_in_sector_address
-                                        uint8_t auth_mode
+                                        OUT uint8_t *data,
+                                        uint8_t sector_address,
+                                        uint8_t block_in_sector_address,
+                                        uint8_t auth_mode,
                                         IN const uint8_t *key);
 
 UFR_STATUS DL_API BlockInSectorWrite_PKM(UFR_HANDLE hndUFR,
-                                         IN const uint8_t *data
-                                         uint8_t sector_address
-                                         uint8_t block_in_sector_address
-                                         uint8_t auth_mode
+                                         IN const uint8_t *data,
+                                         uint8_t sector_address,
+                                         uint8_t block_in_sector_address,
+                                         uint8_t auth_mode,
                                          IN const uint8_t *key);
 
 UFR_STATUS DL_API LinearRead_PKM(UFR_HANDLE hndUFR,
-                                 OUT uint8_t *data
-                                 uint16_t linear_address
-                                 uint16_t length
-                                 VAR uint16_t *bytes_returned
-                                 uint8_t auth_mode
+                                 OUT uint8_t *data,
+                                 uint16_t linear_address,
+                                 uint16_t length,
+                                 VAR uint16_t *bytes_returned,
+                                 uint8_t auth_mode,
                                  IN const uint8_t *key);
 
 UFR_STATUS DL_API LinRowRead_PKM(UFR_HANDLE hndUFR,
-                                 OUT uint8_t *data
-                                 uint16_t linear_address
-                                 uint16_t length
-                                 VAR uint16_t *bytes_returned
-                                 uint8_t auth_mode
+                                 OUT uint8_t *data,
+                                 uint16_t linear_address,
+                                 uint16_t length,
+                                 VAR uint16_t *bytes_returned,
+                                 uint8_t auth_mode,
                                  IN const uint8_t *key);
 
 UFR_STATUS DL_API LinearWrite_PKM(UFR_HANDLE hndUFR,
-                                  IN const uint8_t *data
-                                  uint16_t linear_address
-                                  uint16_t length
-                                  VAR uint16_t *bytes_written
-                                  uint8_t auth_mode
+                                  IN const uint8_t *data,
+                                  uint16_t linear_address,
+                                  uint16_t length,
+                                  VAR uint16_t *bytes_written,
+                                  uint8_t auth_mode,
                                   IN const uint8_t *key);
 
 UFR_STATUS DL_API LinearFormatCard_PKM(UFR_HANDLE hndUFR,
-                                       IN const uint8_t *new_key_A
-                                       uint8_t blocks_access_bits
-                                       uint8_t sector_trailers_access_bits
-                                       uint8_t sector_trailers_byte9
-                                       IN const uint8_t *new_key_B
-                                       VAR uint8_t *lpucSectorsFormatted
-                                       uint8_t auth_mode
+                                       IN const uint8_t *new_key_A,
+                                       uint8_t blocks_access_bits,
+                                       uint8_t sector_trailers_access_bits,
+                                       uint8_t sector_trailers_byte9,
+                                       IN const uint8_t *new_key_B,
+                                       VAR uint8_t *lpucSectorsFormatted,
+                                       uint8_t auth_mode,
                                        IN const uint8_t *key);
 
 UFR_STATUS DL_API SectorTrailerWrite_PKM(UFR_HANDLE hndUFR,
-                                         uint8_t addressing_mode
-                                         uint8_t address
-                                         IN const uint8_t *new_key_A
-                                         uint8_t block0_access_bits
-                                         uint8_t block1_access_bits
-                                         uint8_t block2_access_bits
-                                         uint8_t sector_trailer_access_bits
-                                         uint8_t sector_trailer_byte9
-                                         IN const uint8_t *new_key_B
-                                         uint8_t auth_mode
+                                         uint8_t addressing_mode,
+                                         uint8_t address,
+                                         IN const uint8_t *new_key_A,
+                                         uint8_t block0_access_bits,
+                                         uint8_t block1_access_bits,
+                                         uint8_t block2_access_bits,
+                                         uint8_t sector_trailer_access_bits,
+                                         uint8_t sector_trailer_byte9,
+                                         IN const uint8_t *new_key_B,
+                                         uint8_t auth_mode,
                                          IN const uint8_t *key);
 
 UFR_STATUS DL_API SectorTrailerWriteUnsafe_PKM(UFR_HANDLE hndUFR,
-                                               uint8_t addressing_mode
-                                               uint8_t address
-                                               IN const uint8_t *sector_trailer
-                                               uint8_t auth_mode
+                                               uint8_t addressing_mode,
+                                               uint8_t address,
+                                               IN const uint8_t *sector_trailer,
+                                               uint8_t auth_mode,
                                                IN const uint8_t *key);
 
 UFR_STATUS DL_API ValueBlockRead_PKM(UFR_HANDLE hndUFR,
-                                     VAR int32_t *value
-                                     VAR uint8_t *value_addr
-                                     uint8_t block_address
-                                     uint8_t auth_mode
+                                     VAR int32_t *value,
+                                     VAR uint8_t *value_addr,
+                                     uint8_t block_address,
+                                     uint8_t auth_mode,
                                      IN const uint8_t *key);
 
 UFR_STATUS DL_API ValueBlockInSectorRead_PKM(UFR_HANDLE hndUFR,
-                                             VAR int32_t *value
-                                             VAR uint8_t *value_addr
-                                             uint8_t sector_address
-                                             uint8_t block_in_sector_address
-                                             uint8_t auth_mode
+                                             VAR int32_t *value,
+                                             VAR uint8_t *value_addr,
+                                             uint8_t sector_address,
+                                             uint8_t block_in_sector_address,
+                                             uint8_t auth_mode,
                                              IN const uint8_t *key);
 
 UFR_STATUS DL_API ValueBlockWrite_PKM(UFR_HANDLE hndUFR,
-                                      int32_t value
-                                      uint8_t value_addr
-                                      uint8_t block_address
-                                      uint8_t auth_mode
+                                      int32_t value,
+                                      uint8_t value_addr,
+                                      uint8_t block_address,
+                                      uint8_t auth_mode,
                                       IN const uint8_t *key);
 
 UFR_STATUS DL_API ValueBlockInSectorWrite_PKM(UFR_HANDLE hndUFR,
-                                              int32_t value
-                                              uint8_t value_addr
-                                              uint8_t sector_address
-                                              uint8_t block_in_sector_address
-                                              uint8_t auth_mode
+                                              int32_t value,
+                                              uint8_t value_addr,
+                                              uint8_t sector_address,
+                                              uint8_t block_in_sector_address,
+                                              uint8_t auth_mode,
                                               IN const uint8_t *key);
 
 UFR_STATUS DL_API ValueBlockIncrement_PKM(UFR_HANDLE hndUFR,
-                                          int32_t increment_value
-                                          uint8_t block_address
-                                          uint8_t auth_mode
+                                          int32_t increment_value,
+                                          uint8_t block_address,
+                                          uint8_t auth_mode,
                                           IN const uint8_t *key);
 
 UFR_STATUS DL_API ValueBlockInSectorIncrement_PKM(UFR_HANDLE hndUFR,
-                                                  int32_t increment_value
-                                                  uint8_t sector_address
-                                                  uint8_t block_in_sector_address
-                                                  uint8_t auth_mode
+                                                  int32_t increment_value,
+                                                  uint8_t sector_address,
+                                                  uint8_t block_in_sector_address,
+                                                  uint8_t auth_mode,
                                                   IN const uint8_t *key);
 
 UFR_STATUS DL_API ValueBlockDecrement_PKM(UFR_HANDLE hndUFR,
-                                          int32_t decrement_value
-                                          uint8_t block_address
-                                          uint8_t auth_mode
+                                          int32_t decrement_value,
+                                          uint8_t block_address,
+                                          uint8_t auth_mode,
                                           IN const uint8_t *key);
 
 UFR_STATUS DL_API ValueBlockInSectorDecrement_PKM(UFR_HANDLE hndUFR,
-                                                  int32_t decrement_value
-                                                  uint8_t sector_address
-                                                  uint8_t block_in_sector_address
-                                                  uint8_t auth_mode
+                                                  int32_t decrement_value,
+                                                  uint8_t sector_address,
+                                                  uint8_t block_in_sector_address,
+                                                  uint8_t auth_mode,
                                                   IN const uint8_t *key);
 
 UFR_STATUS DL_API GetReaderHardwareVersionM(UFR_HANDLE hndUFR,
-                                            VAR uint8_t *version_major
+                                            VAR uint8_t *version_major,
                                             VAR uint8_t *version_minor);
 
 UFR_STATUS DL_API GetReaderFirmwareVersionM(UFR_HANDLE hndUFR,
-                                            VAR uint8_t *version_major
+                                            VAR uint8_t *version_major,
                                             VAR uint8_t *version_minor);
 
 // New commands (for RTC & I2C EEPROM):
@@ -2192,39 +2192,39 @@ UFR_STATUS DL_API GetReaderTimeM(UFR_HANDLE hndUFR,
                                  VAR uint8_t *time);
 
 UFR_STATUS DL_API SetReaderTimeM(UFR_HANDLE hndUFR,
-                                 IN uint8_t *password
+                                 IN uint8_t *password,
                                  VAR uint8_t *time);
 
 UFR_STATUS DL_API ChangeReaderPasswordM(UFR_HANDLE hndUFR,
-                                        IN uint8_t *old_password
+                                        IN uint8_t *old_password,
                                         IN uint8_t *new_password);
 
 UFR_STATUS DL_API ReaderEepromWriteM(UFR_HANDLE hndUFR,
-                                     IN uint8_t *data
-                                     uint32_t address
-                                     uint32_t size
+                                     IN uint8_t *data,
+                                     uint32_t address,
+                                     uint32_t size,
                                      IN uint8_t *password);
 
 UFR_STATUS DL_API ReaderEepromReadM(UFR_HANDLE hndUFR,
-                                    OUT uint8_t *data
-                                    uint32_t address
+                                    OUT uint8_t *data,
+                                    uint32_t address,
                                     uint32_t size);
 
 UFR_STATUS DL_API GetReaderSerialDescriptionM(UFR_HANDLE hndUFR,
                                               OUT uint8_t pSerialDescription[8]);
-											  
+
 // New since version 2.0:
 UFR_STATUS DL_API GetBuildNumberM(UFR_HANDLE hndUFR,
                                   VAR uint8_t *build);
 
 UFR_STATUS DL_API GetCardIdExM(UFR_HANDLE hndUFR,
-                               VAR uint8_t *lpucSak
-                               OUT uint8_t *aucUid
+                               VAR uint8_t *lpucSak,
+                               OUT uint8_t *aucUid,
                                VAR uint8_t *lpucUidSize);
 
 UFR_STATUS DL_API GetLastCardIdExM(UFR_HANDLE hndUFR,
-                                   VAR uint8_t *lpucSak
-                                   OUT uint8_t *aucUid
+                                   VAR uint8_t *lpucSak,
+                                   OUT uint8_t *aucUid,
                                    VAR uint8_t *lpucUidSize);
 
 //------------------------------------------------------------------------------
@@ -2235,22 +2235,22 @@ UFR_STATUS DL_API EnableAntiCollisionM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API DisableAntiCollisionM(UFR_HANDLE hndUFR);
 
 UFR_STATUS DL_API EnumCardsM(UFR_HANDLE hndUFR,
-                             VAR uint8_t *lpucCardsNumber
+                             VAR uint8_t *lpucCardsNumber,
                              OUT uint8_t *lpucUidListSize); // Card pointer is on the first card in list
 
 UFR_STATUS DL_API ListCardsM(UFR_HANDLE hndUFR,
-                             OUT uint8_t *aucUidList
+                             OUT uint8_t *aucUidList,
                              VAR uint8_t ucUidListSize); // Before calling this function you must call EnumCards() first.
 
 UFR_STATUS DL_API SelectCardM(UFR_HANDLE hndUFR,
-                              IN const uint8_t *aucUid
-                              uint8_t ucUidSize
+                              IN const uint8_t *aucUid,
+                              uint8_t ucUidSize,
                               OUT uint8_t *lpucSelctedCardType);
 
 UFR_STATUS DL_API DeslectCardM(UFR_HANDLE hndUFR);
 
 UFR_STATUS DL_API GetAntiCollisionStatusM(UFR_HANDLE hndUFR,
-                                          VAR int8_t *lpcIsAntiCollEnabled
+                                          VAR int8_t *lpcIsAntiCollEnabled,
                                           VAR int8_t *lpcIsAnyCardSelected);
 //------------------------------------------------------------------------------
 
@@ -2261,89 +2261,89 @@ UFR_STATUS DL_API GetNfcT2TVersionM(UFR_HANDLE hndUFR,
                                     OUT uint8_t lpucVersionResponse[8]);
 
 UFR_STATUS DL_API GetCardSizeM(UFR_HANDLE hndUFR,
-                               VAR uint32_t *lpulLinearSize
+                               VAR uint32_t *lpulLinearSize,
                                VAR uint32_t *lpulRawSize);
-							   
+
 // uFCoder PRO MODE
 UFR_STATUS DL_API GetReaderProModeM(UFR_HANDLE hndUFR,
-                                    VAR uint32_t *pReaderProMode
+                                    VAR uint32_t *pReaderProMode,
                                     OUT uint32_t *pReaderProConfig);
 
 UFR_STATUS DL_API SetReaderProModeM(UFR_HANDLE hndUFR,
                                     const uint32_t ReaderProMode);
-									
+
 // QR barcode crypt algorithm
 // initialization. with TB serial like 'TB123456'
 UFR_STATUS DL_API CardEncryption_InitializeM(UFR_HANDLE hndUFR,
-                                             IN const uint8_t *TBSerialString
+                                             IN const uint8_t *TBSerialString,
                                              uint16_t job_number);
-											 
+
 // You must define 25 bytes array in memory for out_card_data[]
 UFR_STATUS DL_API CardEncryption_GetNextEncryptedCardM(UFR_HANDLE hndUFR,
-                                                       const uint32_t from_timestamp
-                                                       const uint32_t to_timestamp
+                                                       const uint32_t from_timestamp,
+                                                       const uint32_t to_timestamp,
                                                        OUT uint8_t out_card_data[]);
 
 UFR_STATUS DL_API CardEncryption_GetNextM(UFR_HANDLE hndUFR,
-                                          const uint32_t code_type
-                                          const uint32_t from_timestamp
-                                          const uint32_t to_timestamp
-                                          const uint32_t additional_data_size
-                                          IN const uint8_t additional_data[]
-                                          VAR uint32_t *out_card_data_size
+                                          const uint32_t code_type,
+                                          const uint32_t from_timestamp,
+                                          const uint32_t to_timestamp,
+                                          const uint32_t additional_data_size,
+                                          IN const uint8_t additional_data[],
+                                          VAR uint32_t *out_card_data_size,
                                           OUT uint8_t out_card_data[]);
 
 UFR_STATUS DL_API CardEncryption_GetActualCardSNM(UFR_HANDLE hndUFR,
-                                                  OUT uint32_t *ActualCard_SN
+                                                  OUT uint32_t *ActualCard_SN,
                                                   VAR uint32_t *ActualCard_SN_LOG);
 
 UFR_STATUS DL_API CardEncryption_GetJobSNM(UFR_HANDLE hndUFR,
                                            VAR uint32_t *JobSN);
 
 UFR_STATUS DL_API CardEncryption_GetSalterSNM(UFR_HANDLE hndUFR,
-                                              OUT uint8_t SalterSN[8]
+                                              OUT uint8_t SalterSN[8],
                                               VAR uint8_t * magicByte);
 
 UFR_STATUS DL_API read_ndef_recordM(UFR_HANDLE hndUFR,
-                                    uint8_t message_nr
-                                    uint8_t record_nr
-                                    VAR uint8_t *tnf
-                                    OUT uint8_t *type_record
-                                    VAR uint8_t *type_length
-                                    OUT uint8_t *id
-                                    VAR uint8_t *id_length
-                                    OUT uint8_t *payload
+                                    uint8_t message_nr,
+                                    uint8_t record_nr,
+                                    VAR uint8_t *tnf,
+                                    OUT uint8_t *type_record,
+                                    VAR uint8_t *type_length,
+                                    OUT uint8_t *id,
+                                    VAR uint8_t *id_length,
+                                    OUT uint8_t *payload,
                                     VAR uint32_t *payload_length);
 
 UFR_STATUS DL_API write_ndef_recordM(UFR_HANDLE hndUFR,
-                                     uint8_t message_nr
-                                     uint8_t *tnf
-                                     IN uint8_t *type_record
-                                     uint8_t *type_length
-                                     IN uint8_t *id
-                                     uint8_t *id_length
-                                     IN uint8_t *payload
-                                     uint32_t *payload_length
+                                     uint8_t message_nr,
+                                     uint8_t *tnf,
+                                     IN uint8_t *type_record,
+                                     uint8_t *type_length,
+                                     IN uint8_t *id,
+                                     uint8_t *id_length,
+                                     IN uint8_t *payload,
+                                     uint32_t *payload_length,
                                      VAR uint8_t *card_formated);
 
 UFR_STATUS DL_API write_ndef_record_mirroringM(UFR_HANDLE hndUFR,
-                                               uint8_t message_nr
-                                               uint8_t *tnf
-                                               IN uint8_t *type_record
-                                               uint8_t *type_length
-                                               IN uint8_t *id
-                                               uint8_t *id_length
-                                               IN uint8_t *payload
-                                               uint32_t *payload_length
-                                               VAR uint8_t *card_formated
-                                               int use_uid_ascii_mirror
-                                               int use_counter_ascii_mirror
+                                               uint8_t message_nr,
+                                               uint8_t *tnf,
+                                               IN uint8_t *type_record,
+                                               uint8_t *type_length,
+                                               IN uint8_t *id,
+                                               uint8_t *id_length,
+                                               IN uint8_t *payload,
+                                               uint32_t *payload_length,
+                                               VAR uint8_t *card_formated,
+                                               int use_uid_ascii_mirror,
+                                               int use_counter_ascii_mirror,
                                                uint32_t payload_mirroring_pos);
 
 UFR_STATUS DL_API get_ndef_record_countM(UFR_HANDLE hndUFR,
-                                         VAR uint8_t *ndef_message_cnt
-                                         VAR uint8_t *ndef_record_cnt
-                                         OUT uint8_t *ndef_record_array
+                                         VAR uint8_t *ndef_message_cnt,
+                                         VAR uint8_t *ndef_record_cnt,
+                                         OUT uint8_t *ndef_record_array,
                                          VAR uint8_t *empty_ndef_message_cnt);
 
 UFR_STATUS DL_API erase_last_ndef_recordM(UFR_HANDLE hndUFR,
@@ -2358,12 +2358,12 @@ UFR_STATUS DL_API ndef_card_initializationM(UFR_HANDLE hndUFR);
 // Card emulation:
 //---------------------------------------------------------------------
 UFR_STATUS DL_API WriteEmulationNdefM(UFR_HANDLE hndUFR,
-                                      uint8_t tnf
-                                      IN uint8_t* type_record
-                                      uint8_t type_length
-                                      IN uint8_t* id
-                                      uint8_t id_length
-                                      IN uint8_t* payload
+                                      uint8_t tnf,
+                                      IN uint8_t* type_record,
+                                      uint8_t type_length,
+                                      IN uint8_t* id,
+                                      uint8_t id_length,
+                                      IN uint8_t* payload,
                                       uint8_t payload_length);
 
 UFR_STATUS DL_API TagEmulationStartM(UFR_HANDLE hndUFR);
@@ -2377,85 +2377,85 @@ UFR_STATUS DL_API AdHocEmulationStartM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API AdHocEmulationStopM(UFR_HANDLE hndUFR);
 
 UFR_STATUS DL_API GetAdHocEmulationParamsM(UFR_HANDLE hndUFR,
-                                           VAR uint8_t *ThresholdMinLevel
-                                           VAR uint8_t *ThresholdCollLevel
-                                           VAR uint8_t *RFLevelAmp
-                                           VAR uint8_t *RxGain
+                                           VAR uint8_t *ThresholdMinLevel,
+                                           VAR uint8_t *ThresholdCollLevel,
+                                           VAR uint8_t *RFLevelAmp,
+                                           VAR uint8_t *RxGain,
                                            VAR uint8_t *RFLevel);
 
 UFR_STATUS DL_API SetAdHocEmulationParamsM(UFR_HANDLE hndUFR,
-                                           uint8_t ThresholdMinLevel
-                                           uint8_t ThresholdCollLevel
-                                           uint8_t RFLevelAmp
-                                           uint8_t RxGain
+                                           uint8_t ThresholdMinLevel,
+                                           uint8_t ThresholdCollLevel,
+                                           uint8_t RFLevelAmp,
+                                           uint8_t RxGain,
                                            uint8_t RFLevel);
 
 UFR_STATUS DL_API GetExternalFieldStateM(UFR_HANDLE hndUFR,
                                          VAR uint8_t *is_field_present);
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API ReadECCSignatureM(UFR_HANDLE hndUFR,
-                                    IN uint8_t lpucECCSignature[ECC_SIG_LEN]
-                                    OUT uint8_t lpucUid[MAX_UID_LEN]
-                                    VAR uint8_t *lpucUidLen
+                                    IN uint8_t lpucECCSignature[ECC_SIG_LEN],
+                                    OUT uint8_t lpucUid[MAX_UID_LEN],
+                                    VAR uint8_t *lpucUidLen,
                                     VAR uint8_t *lpucDlogicCardType);
-									
+
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API ReadCounterM(UFR_HANDLE hndUFR,
-                               uint8_t counter_address
+                               uint8_t counter_address,
                                VAR uint32_t *value);
 
 UFR_STATUS DL_API IncrementCounterM(UFR_HANDLE hndUFR,
-                                    uint8_t counter_address
+                                    uint8_t counter_address,
                                     uint32_t inc_value);
 
 UFR_STATUS DL_API ReadNFCCounterM(UFR_HANDLE hndUFR,
                                   VAR uint32_t *value); // Same as ReadCounter(2, &value);
 
 UFR_STATUS DL_API ReadNFCCounterPwdAuth_RKM(UFR_HANDLE hndUFR,
-                                            VAR uint32_t *value
+                                            VAR uint32_t *value,
                                             uint8_t reader_key_index);
 
 UFR_STATUS DL_API ReadNFCCounterPwdAuth_PKM(UFR_HANDLE hndUFR,
-                                            VAR uint32_t *value
-                                            IN const uint8_t *key);						
+                                            VAR uint32_t *value,
+                                            IN const uint8_t *key);
 //------------------------------------------------------------------------------
 
 UFR_STATUS DL_API SetAsyncCardIdSendConfigM(UFR_HANDLE hndUFR,
-                                            uint8_t send_enable
-                                            uint8_t prefix_enable
-                                            uint8_t prefix
-                                            uint8_t suffix
-                                            uint8_t send_removed_enable
+                                            uint8_t send_enable,
+                                            uint8_t prefix_enable,
+                                            uint8_t prefix,
+                                            uint8_t suffix,
+                                            uint8_t send_removed_enable,
                                             uint32_t async_baud_rate);
 
 UFR_STATUS DL_API SetAsyncCardIdSendConfigExM(UFR_HANDLE hndUFR,
-                                              uint8_t send_enable
-                                              uint8_t prefix_enable
-                                              uint8_t prefix
-                                              uint8_t suffix
-                                              uint8_t send_removed_enable
-                                              uint8_t reverse_byte_order
-                                              uint8_t decimal_representation
+                                              uint8_t send_enable,
+                                              uint8_t prefix_enable,
+                                              uint8_t prefix,
+                                              uint8_t suffix,
+                                              uint8_t send_removed_enable,
+                                              uint8_t reverse_byte_order,
+                                              uint8_t decimal_representation,
                                               uint32_t async_baud_rate);
 
 UFR_STATUS DL_API GetAsyncCardIdSendConfigM(UFR_HANDLE hndUFR,
-                                            VAR uint8_t *send_enable
-                                            VAR uint8_t *prefix_enable
-                                            VAR uint8_t *prefix
-                                            VAR uint8_t *suffix
-                                            VAR uint8_t *send_removed_enable
+                                            VAR uint8_t *send_enable,
+                                            VAR uint8_t *prefix_enable,
+                                            VAR uint8_t *prefix,
+                                            VAR uint8_t *suffix,
+                                            VAR uint8_t *send_removed_enable,
                                             VAR uint32_t *async_baud_rate);
 
 UFR_STATUS DL_API GetAsyncCardIdSendConfigExM(UFR_HANDLE hndUFR,
-                                              VAR uint8_t *send_enable
-                                              VAR uint8_t *prefix_enable
-                                              VAR uint8_t *prefix
-                                              VAR uint8_t *suffix
-                                              VAR uint8_t *send_removed_enable
-                                              VAR uint8_t *reverse_byte_order
-                                              VAR uint8_t *decimal_representation
+                                              VAR uint8_t *send_enable,
+                                              VAR uint8_t *prefix_enable,
+                                              VAR uint8_t *prefix,
+                                              VAR uint8_t *suffix,
+                                              VAR uint8_t *send_removed_enable,
+                                              VAR uint8_t *reverse_byte_order,
+                                              VAR uint8_t *decimal_representation,
                                               VAR uint32_t *async_baud_rate);
-											  
+
 /*****************************************************************************
  * AIS FUNCTIONS
  *****************************************************************************
@@ -2465,50 +2465,50 @@ UFR_STATUS DL_API ais_get_card_numberM(UFR_HANDLE hndUFR,
                                        VAR uint32_t *card_number);
 
 UFR_STATUS DL_API ais_set_right_recordM(UFR_HANDLE hndUFR,
-                                        uint8_t record_number
-                                        uint16_t first_reader_nr
-                                        uint16_t last_reader_nr
-                                        uint8_t start_hour
-                                        uint8_t start_minute
-                                        uint8_t end_hour
-                                        uint8_t end_minute
+                                        uint8_t record_number,
+                                        uint16_t first_reader_nr,
+                                        uint16_t last_reader_nr,
+                                        uint8_t start_hour,
+                                        uint8_t start_minute,
+                                        uint8_t end_hour,
+                                        uint8_t end_minute,
                                         IN uint8_t *days);
 
 UFR_STATUS DL_API ais_get_right_recordM(UFR_HANDLE hndUFR,
-                                        uint8_t record_number
-                                        VAR uint16_t *first_reader_nr
-                                        VAR uint16_t *last_reader_nr
-                                        VAR uint8_t *start_hour
-                                        VAR uint8_t *start_minute
-                                        VAR uint8_t *end_hour
-                                        VAR uint8_t *end_minute
+                                        uint8_t record_number,
+                                        VAR uint16_t *first_reader_nr,
+                                        VAR uint16_t *last_reader_nr,
+                                        VAR uint8_t *start_hour,
+                                        VAR uint8_t *start_minute,
+                                        VAR uint8_t *end_hour,
+                                        VAR uint8_t *end_minute,
                                         OUT uint8_t *days);
 
 UFR_STATUS DL_API ais_erase_right_recordM(UFR_HANDLE hndUFR,
                                           uint8_t record_number);
 
 UFR_STATUS DL_API ais_set_validate_recordM(UFR_HANDLE hndUFR,
-                                           uint8_t begin_year
-                                           uint8_t begin_month
-                                           uint8_t begin_day
-                                           uint8_t begin_hour
-                                           uint8_t begin_minute
-                                           uint8_t end_year
-                                           uint8_t end_month
-                                           uint8_t end_day
-                                           uint8_t end_hour
+                                           uint8_t begin_year,
+                                           uint8_t begin_month,
+                                           uint8_t begin_day,
+                                           uint8_t begin_hour,
+                                           uint8_t begin_minute,
+                                           uint8_t end_year,
+                                           uint8_t end_month,
+                                           uint8_t end_day,
+                                           uint8_t end_hour,
                                            uint8_t end_minute);
 
 UFR_STATUS DL_API ais_get_validate_recordM(UFR_HANDLE hndUFR,
-                                           VAR uint8_t *begin_year
-                                           VAR uint8_t *begin_month
-                                           VAR uint8_t *begin_day
-                                           VAR uint8_t *begin_hour
-                                           VAR uint8_t *begin_minute
-                                           VAR uint8_t *end_year
-                                           VAR uint8_t *end_month
-                                           VAR uint8_t *end_day
-                                           VAR uint8_t *end_hour
+                                           VAR uint8_t *begin_year,
+                                           VAR uint8_t *begin_month,
+                                           VAR uint8_t *begin_day,
+                                           VAR uint8_t *begin_hour,
+                                           VAR uint8_t *begin_minute,
+                                           VAR uint8_t *end_year,
+                                           VAR uint8_t *end_month,
+                                           VAR uint8_t *end_day,
+                                           VAR uint8_t *end_hour,
                                            VAR uint8_t *end_minute);
 
 UFR_STATUS DL_API ais_set_card_typeM(UFR_HANDLE hndUFR,
@@ -2528,58 +2528,58 @@ UFR_STATUS DL_API ais_set_card_total_durationM(UFR_HANDLE hndUFR,
 
 UFR_STATUS DL_API ais_get_card_total_durationM(UFR_HANDLE hndUFR,
                                                VAR uint32_t *duration);
-											   
+
 // swimming pool **************************************************************
 
 UFR_STATUS DL_API ais_get_credit_and_period_validityM(UFR_HANDLE hndUFR,
-                                                      VAR int32_t *credit
-                                                      VAR uint32_t *begin_year
-                                                      VAR uint32_t *begin_month
-                                                      VAR uint32_t *begin_day
-                                                      VAR uint32_t *begin_hour
-                                                      VAR uint32_t *begin_minute
-                                                      VAR uint32_t *end_year
-                                                      VAR uint32_t *end_month
-                                                      VAR uint32_t *end_day
-                                                      VAR uint32_t *end_hour
+                                                      VAR int32_t *credit,
+                                                      VAR uint32_t *begin_year,
+                                                      VAR uint32_t *begin_month,
+                                                      VAR uint32_t *begin_day,
+                                                      VAR uint32_t *begin_hour,
+                                                      VAR uint32_t *begin_minute,
+                                                      VAR uint32_t *end_year,
+                                                      VAR uint32_t *end_month,
+                                                      VAR uint32_t *end_day,
+                                                      VAR uint32_t *end_hour,
                                                       VAR uint32_t *end_minute);
 
 UFR_STATUS DL_API ais_set_credit_and_period_validityM(UFR_HANDLE hndUFR,
-                                                      int32_t credit
-                                                      uint32_t begin_year
-                                                      uint32_t begin_month
-                                                      uint32_t begin_day
-                                                      uint32_t begin_hour
-                                                      uint32_t begin_minute
-                                                      uint32_t end_year
-                                                      uint32_t end_month
-                                                      uint32_t end_day
-                                                      uint32_t end_hour
+                                                      int32_t credit,
+                                                      uint32_t begin_year,
+                                                      uint32_t begin_month,
+                                                      uint32_t begin_day,
+                                                      uint32_t begin_hour,
+                                                      uint32_t begin_minute,
+                                                      uint32_t end_year,
+                                                      uint32_t end_month,
+                                                      uint32_t end_day,
+                                                      uint32_t end_hour,
                                                       uint32_t end_minute);
 
 UFR_STATUS DL_API ais_set_right_type_recordM(UFR_HANDLE hndUFR,
-                                             uint8_t record_number
-                                             uint8_t right_record_type
+                                             uint8_t record_number,
+                                             uint8_t right_record_type,
                                              IN uint8_t *right_data);
 
 UFR_STATUS DL_API ais_get_right_type_recordM(UFR_HANDLE hndUFR,
-                                             uint8_t record_number
-                                             VAR uint8_t *right_record_type
+                                             uint8_t record_number,
+                                             VAR uint8_t *right_record_type,
                                              OUT uint8_t *right_data);
 
 UFR_STATUS DL_API ais_set_right_record_type_max_daily_counterM(UFR_HANDLE hndUFR,
-                                                               uint8_t record_number
-                                                               uint16_t first_reader_nr
-                                                               uint16_t last_reader_nr
-                                                               uint8_t start_hour
-                                                               uint8_t start_minute
-                                                               uint8_t end_hour
-                                                               uint8_t end_minute
-                                                               IN uint8_t *days
+                                                               uint8_t record_number,
+                                                               uint16_t first_reader_nr,
+                                                               uint16_t last_reader_nr,
+                                                               uint8_t start_hour,
+                                                               uint8_t start_minute,
+                                                               uint8_t end_hour,
+                                                               uint8_t end_minute,
+                                                               IN uint8_t *days,
                                                                uint8_t max_daily_counter);
 
 //=============================================================================
-															   
+
 UFR_STATUS DL_API UfrXrcLockOnM(UFR_HANDLE hndUFR,
                                 uint16_t pulse_duration);
 
@@ -2587,18 +2587,18 @@ UFR_STATUS DL_API UfrXrcRelayStateM(UFR_HANDLE hndUFR,
                                     uint8_t state);
 
 UFR_STATUS DL_API UfrXrcGetIoStateM(UFR_HANDLE hndUFR,
-                                    VAR uint8_t *intercom
-                                    VAR uint8_t *door
+                                    VAR uint8_t *intercom,
+                                    VAR uint8_t *door,
                                     VAR uint8_t *relay_state);
 
 UFR_STATUS DL_API UfrRedLightControlM(UFR_HANDLE hndUFR,
                                       uint8_t light_status);
 
 UFR_STATUS DL_API UfrRgbLightControlM(UFR_HANDLE hndUFR,
-                                      uint8_t red
-                                      uint8_t green
-                                      uint8_t blue
-                                      uint8_t intensity
+                                      uint8_t red,
+                                      uint8_t green,
+                                      uint8_t blue,
+                                      uint8_t intensity,
                                       uint8_t enable);
 
 UFR_STATUS DL_API UfrSetBadSelectCardNrMaxM(UFR_HANDLE hndUFR,
@@ -2618,15 +2618,15 @@ UFR_STATUS DL_API AutoSleepGetM(UFR_HANDLE hndUFR,
                                 VAR uint8_t *seconds_wait);
 
 UFR_STATUS DL_API SetSpeedPermanentlyM(UFR_HANDLE hndUFR,
-                                       unsigned char tx_speed
+                                       unsigned char tx_speed,
                                        unsigned char rx_speed);
 
 UFR_STATUS DL_API GetSpeedParametersM(UFR_HANDLE hndUFR,
-                                      VAR unsigned char *tx_speed
+                                      VAR unsigned char *tx_speed,
                                       VAR unsigned char *rx_speed);
 
 UFR_STATUS DL_API SetDisplayDataM(UFR_HANDLE hndUFR,
-                                  IN uint8_t *display_data
+                                  IN uint8_t *display_data,
                                   uint8_t data_length);
 
 UFR_STATUS DL_API SetSpeakerFrequencyM(UFR_HANDLE hndUFR,
@@ -2637,93 +2637,93 @@ UFR_STATUS DL_API SetDisplayIntensityM(UFR_HANDLE hndUFR,
 
 UFR_STATUS DL_API GetDisplayIntensityM(UFR_HANDLE hndUFR,
                                        VAR uint8_t *intensity);
-									   
+
 //#############################################################################
 //#############################################################################
 
 UFR_STATUS DL_API SetISO14443_4_ModeM(UFR_HANDLE hndUFR);
 
 UFR_STATUS DL_API uFR_i_block_transceiveM(UFR_HANDLE hndUFR,
-                                          uint8_t chaining
-                                          uint8_t timeout
-                                          uint8_t block_length
-                                          IN uint8_t *snd_data_array
-                                          VAR size_t *rcv_length
-                                          OUT uint8_t *rcv_data_array
+                                          uint8_t chaining,
+                                          uint8_t timeout,
+                                          uint8_t block_length,
+                                          IN uint8_t *snd_data_array,
+                                          VAR size_t *rcv_length,
+                                          OUT uint8_t *rcv_data_array,
                                           VAR uint32_t *ufr_status);
 
 UFR_STATUS DL_API uFR_APDU_TransceiveM(UFR_HANDLE hndUFR,
-                                       uint8_t cls
-                                       uint8_t ins
-                                       uint8_t p1
-                                       uint8_t p2
-                                       IN uint8_t *data_out
-                                       uint8_t data_out_len
-                                       OUT uint8_t *data_in
-                                       uint32_t max_data_in_len
-                                       VAR uint32_t *response_len
-                                       uint8_t send_le
+                                       uint8_t cls,
+                                       uint8_t ins,
+                                       uint8_t p1,
+                                       uint8_t p2,
+                                       IN uint8_t *data_out,
+                                       uint8_t data_out_len,
+                                       OUT uint8_t *data_in,
+                                       uint32_t max_data_in_len,
+                                       VAR uint32_t *response_len,
+                                       uint8_t send_le,
                                        OUT uint8_t *apdu_status);
 
 UFR_STATUS DL_API APDUHexStrTransceiveM(UFR_HANDLE hndUFR,
-                                        IN const char *c_apdu
+                                        IN const char *c_apdu,
                                         OUT char **r_apdu);
 
 UFR_STATUS DL_API APDUPlainTransceiveM(UFR_HANDLE hndUFR,
-                                       IN const uint8_t *c_apdu
-                                       uint32_t c_apdu_len
-                                       OUT uint8_t *r_apdu
+                                       IN const uint8_t *c_apdu,
+                                       uint32_t c_apdu_len,
+                                       OUT uint8_t *r_apdu,
                                        VAR uint32_t *r_apdu_len);
 
 UFR_STATUS DL_API APDUTransceiveM(UFR_HANDLE hndUFR,
-                                  uint8_t cls
-                                  uint8_t ins
-                                  uint8_t p1
-                                  uint8_t p2
-                                  IN const uint8_t *data_out
-                                  uint32_t Nc
-                                  OUT uint8_t *data_in
-                                  VAR uint32_t *Ne
-                                  uint8_t send_le
+                                  uint8_t cls,
+                                  uint8_t ins,
+                                  uint8_t p1,
+                                  uint8_t p2,
+                                  IN const uint8_t *data_out,
+                                  uint32_t Nc,
+                                  OUT uint8_t *data_in,
+                                  VAR uint32_t *Ne,
+                                  uint8_t send_le,
                                   OUT uint8_t *apdu_status);
 
 UFR_STATUS DL_API i_block_trans_rcv_chainM(UFR_HANDLE hndUFR,
-                                           uint8_t chaining
-                                           uint8_t timeout
-                                           uint8_t block_length
-                                           IN uint8_t *snd_data_array
-                                           VAR uint8_t *rcv_length
-                                           OUT uint8_t *rcv_data_array
-                                           VAR uint8_t *rcv_chained
+                                           uint8_t chaining,
+                                           uint8_t timeout,
+                                           uint8_t block_length,
+                                           IN uint8_t *snd_data_array,
+                                           VAR uint8_t *rcv_length,
+                                           OUT uint8_t *rcv_data_array,
+                                           VAR uint8_t *rcv_chained,
                                            VAR uint32_t *ufr_status);
 
 UFR_STATUS DL_API r_block_transceiveM(UFR_HANDLE hndUFR,
-                                      uint8_t ack
-                                      uint8_t timeout
-                                      VAR uint8_t *rcv_length
-                                      OUT uint8_t *rcv_data_array
-                                      VAR uint8_t *rcv_chained
+                                      uint8_t ack,
+                                      uint8_t timeout,
+                                      VAR uint8_t *rcv_length,
+                                      OUT uint8_t *rcv_data_array,
+                                      VAR uint8_t *rcv_chained,
                                       VAR uint32_t *ufr_status);
 
 UFR_STATUS DL_API s_block_deselectM(UFR_HANDLE hndUFR,
                                     uint8_t timeout);
 
 UFR_STATUS DL_API card_transceiveM(UFR_HANDLE hndUFR,
-                                   uint8_t card_activate
-                                   uint8_t card_halted
-                                   uint8_t tx_crc
-                                   uint8_t rx_crc
-                                   uint8_t crypto1
-                                   uint32_t timeout
-                                   IN uint8_t *tx_data
-                                   uint8_t tx_data_len
-                                   OUT uint8_t *rx_data
+                                   uint8_t card_activate,
+                                   uint8_t card_halted,
+                                   uint8_t tx_crc,
+                                   uint8_t rx_crc,
+                                   uint8_t crypto1,
+                                   uint32_t timeout,
+                                   IN uint8_t *tx_data,
+                                   uint8_t tx_data_len,
+                                   OUT uint8_t *rx_data,
                                    VAR uint8_t *rx_data_len);
 
 UFR_STATUS DL_API card_transceive_mode_startM(UFR_HANDLE hndUFR,
-                                              uint8_t tx_crc
-                                              uint8_t rx_crc
-                                              uint32_t rf_timeout
+                                              uint8_t tx_crc,
+                                              uint8_t rx_crc,
+                                              uint32_t rf_timeout,
                                               uint32_t uart_timeout);
 
 UFR_STATUS DL_API card_transceive_mode_stopM(UFR_HANDLE hndUFR);
@@ -2731,14 +2731,14 @@ UFR_STATUS DL_API card_transceive_mode_stopM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API card_halt_enableM(UFR_HANDLE hndUFR);
 
 UFR_STATUS DL_API uart_transceiveM(UFR_HANDLE hndUFR,
-                                   IN uint8_t *send_data
-                                   uint8_t send_len
-                                   OUT uint8_t *rcv_data
-                                   uint32_t bytes_to_receive
+                                   IN uint8_t *send_data,
+                                   uint8_t send_len,
+                                   OUT uint8_t *rcv_data,
+                                   uint32_t bytes_to_receive,
                                    VAR uint32_t *rcv_len);
 
 UFR_STATUS DL_API open_ISO7816_interfaceM(UFR_HANDLE hndUFR,
-                                          OUT uint8_t *atr_data
+                                          OUT uint8_t *atr_data,
                                           VAR uint8_t *atr_len);
 
 UFR_STATUS DL_API APDU_switch_to_ISO7816_interfaceM(UFR_HANDLE hndUFR);
@@ -2753,24 +2753,24 @@ UFR_STATUS DL_API APDU_switch_off_from_ISO7816_interfaceM(UFR_HANDLE hndUFR);
 
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API JCAppSelectByAidM(UFR_HANDLE hndUFR,
-                                    IN const uint8_t *aid
-                                    uint8_t aid_len
+                                    IN const uint8_t *aid,
+                                    uint8_t aid_len,
                                     OUT uint8_t selection_response[16]);
 
 UFR_STATUS DL_API JCAppPutPrivateKeyM(UFR_HANDLE hndUFR,
-                                      uint8_t key_type
-                                      uint8_t key_index
-                                      IN const uint8_t *key
-                                      uint16_t key_bit_len
-                                      const IN uint8_t *key_param
+                                      uint8_t key_type,
+                                      uint8_t key_index,
+                                      IN const uint8_t *key,
+                                      uint16_t key_bit_len,
+                                      const IN uint8_t *key_param,
                                       uint16_t key_parm_len);
 
 UFR_STATUS DL_API JCAppGenerateKeyPairM(UFR_HANDLE hndUFR,
-                                        uint8_t key_type
-                                        uint8_t key_index
-                                        uint8_t key_designator
-                                        uint16_t key_bit_len
-                                        IN const uint8_t *params
+                                        uint8_t key_type,
+                                        uint8_t key_index,
+                                        uint8_t key_designator,
+                                        uint16_t key_bit_len,
+                                        IN const uint8_t *params,
                                         uint16_t params_size);
 
 UFR_STATUS DL_API JCAppDeleteRsaKeyPairM(UFR_HANDLE hndUFR,
@@ -2780,114 +2780,114 @@ UFR_STATUS DL_API JCAppDeleteEcKeyPairM(UFR_HANDLE hndUFR,
                                         uint8_t key_index);
 
 UFR_STATUS DL_API JCAppSignatureBeginM(UFR_HANDLE hndUFR,
-                                       uint8_t cipher
-                                       uint8_t digest
-                                       uint8_t padding
-                                       uint8_t key_index
-                                       IN const uint8_t *chunk
-                                       uint16_t chunk_len
-                                       IN const uint8_t *alg_param
+                                       uint8_t cipher,
+                                       uint8_t digest,
+                                       uint8_t padding,
+                                       uint8_t key_index,
+                                       IN const uint8_t *chunk,
+                                       uint16_t chunk_len,
+                                       IN const uint8_t *alg_param,
                                        uint16_t alg_parm_len);
 
 UFR_STATUS DL_API JCAppSignatureUpdateM(UFR_HANDLE hndUFR,
-                                        IN const uint8_t *chunk
+                                        IN const uint8_t *chunk,
                                         uint16_t chunk_len);
 
 UFR_STATUS DL_API JCAppSignatureEndM(UFR_HANDLE hndUFR,
                                      VAR uint16_t *sig_len);
 
 UFR_STATUS DL_API JCAppGenerateSignatureM(UFR_HANDLE hndUFR,
-                                          uint8_t cipher
-                                          uint8_t digest
-                                          uint8_t padding
-                                          uint8_t key_index
-                                          IN const uint8_t *plain_data
-                                          uint16_t plain_data_len
-                                          VAR uint16_t *sig_len
-                                          IN const uint8_t *alg_param
+                                          uint8_t cipher,
+                                          uint8_t digest,
+                                          uint8_t padding,
+                                          uint8_t key_index,
+                                          IN const uint8_t *plain_data,
+                                          uint16_t plain_data_len,
+                                          VAR uint16_t *sig_len,
+                                          IN const uint8_t *alg_param,
                                           uint16_t alg_parm_len);
 
 UFR_STATUS DL_API JCAppPutObjM(UFR_HANDLE hndUFR,
-                               uint8_t obj_type
-                               uint8_t obj_index
-                               IN uint8_t *obj
-                               int16_t obj_size
-                               IN uint8_t *id
+                               uint8_t obj_type,
+                               uint8_t obj_index,
+                               IN uint8_t *obj,
+                               int16_t obj_size,
+                               IN uint8_t *id,
                                uint8_t id_size);
 
 UFR_STATUS DL_API JCAppPutObjSubjectM(UFR_HANDLE hndUFR,
-                                      uint8_t obj_type
-                                      uint8_t obj_index
-                                      IN uint8_t *subject
+                                      uint8_t obj_type,
+                                      uint8_t obj_index,
+                                      IN uint8_t *subject,
                                       uint8_t size);
 
 UFR_STATUS DL_API JCAppInvalidateCertM(UFR_HANDLE hndUFR,
-                                       uint8_t obj_type
+                                       uint8_t obj_type,
                                        uint8_t obj_index);
 
 UFR_STATUS DL_API JCAppGetObjIdM(UFR_HANDLE hndUFR,
-                                 uint8_t obj_type
-                                 uint8_t obj_index
-                                 OUT uint8_t *id
+                                 uint8_t obj_type,
+                                 uint8_t obj_index,
+                                 OUT uint8_t *id,
                                  VAR uint16_t *id_size); // when id == NULL returns size
 
 UFR_STATUS DL_API JCAppGetObjSubjectM(UFR_HANDLE hndUFR,
-                                      uint8_t obj_type
-                                      uint8_t obj_index
-                                      OUT uint8_t *subject
+                                      uint8_t obj_type,
+                                      uint8_t obj_index,
+                                      OUT uint8_t *subject,
                                       VAR uint16_t *size); // when subject == NULL returns size
 
 UFR_STATUS DL_API JCAppGetObjM(UFR_HANDLE hndUFR,
-                               uint8_t obj_type
-                               uint8_t obj_index
-                               OUT uint8_t *obj
+                               uint8_t obj_type,
+                               uint8_t obj_index,
+                               OUT uint8_t *obj,
                                int16_t size); // when obj == NULL returns size
 
 UFR_STATUS DL_API JCAppLoginM(UFR_HANDLE hndUFR,
-                              uint8_t SO
-                              IN uint8_t *pin
+                              uint8_t SO,
+                              IN uint8_t *pin,
                               uint8_t pinSize);
 
 UFR_STATUS DL_API JCAppGetPinTriesRemainingM(UFR_HANDLE hndUFR,
-                                             dl_sec_code_t secureCodeType
+                                             dl_sec_code_t secureCodeType,
                                              VAR uint16_t *triesRemaining);
 
 UFR_STATUS DL_API JCAppPinChangeM(UFR_HANDLE hndUFR,
-                                  dl_sec_code_t secureCodeType
-                                  IN uint8_t *newPin
+                                  dl_sec_code_t secureCodeType,
+                                  IN uint8_t *newPin,
                                   uint8_t newPinSize);
 
 UFR_STATUS DL_API JCAppPinUnblockM(UFR_HANDLE hndUFR,
-                                   uint8_t SO
-                                   IN uint8_t *puk
+                                   uint8_t SO,
+                                   IN uint8_t *puk,
                                    uint8_t pukSize);
 
 UFR_STATUS DL_API JCAppGetRsaPublicKeyM(UFR_HANDLE hndUFR,
-                                        uint8_t key_index
+                                        uint8_t key_index,
                                         OUT uint8_t *modulus
-                                        VAR uint16_t *modulus_size
-                                        OUT uint8_t *exponent
+                                        VAR uint16_t *modulus_size,
+                                        OUT uint8_t *exponent,
                                         VAR uint16_t *exponent_size); // when modulus == NULL, returns sizes and exponent ignored
 
 UFR_STATUS DL_API JCAppGetEcPublicKeyM(UFR_HANDLE hndUFR,
-                                       uint8_t key_index
-                                       OUT uint8_t *keyW
-                                       VAR uint16_t *kexWSize
-                                       OUT uint8_t *field
-                                       VAR uint16_t *field_size
-                                       OUT uint8_t *ab
-                                       VAR uint16_t *ab_size
-                                       OUT uint8_t *g
-                                       VAR uint16_t *g_size
-                                       OUT uint8_t *r
-                                       VAR uint16_t *r_size
-                                       VAR uint16_t *k
-                                       VAR uint16_t *key_size_bits
+                                       uint8_t key_index,
+                                       OUT uint8_t *keyW,
+                                       VAR uint16_t *kexWSize,
+                                       OUT uint8_t *field,
+                                       VAR uint16_t *field_size,
+                                       OUT uint8_t *ab,
+                                       VAR uint16_t *ab_size,
+                                       OUT uint8_t *g,
+                                       VAR uint16_t *g_size,
+                                       OUT uint8_t *r,
+                                       VAR uint16_t *r_size,
+                                       VAR uint16_t *k,
+                                       VAR uint16_t *key_size_bits,
                                        VAR uint16_t *key_designator); // when keyW == NULL, returns size
 
 UFR_STATUS DL_API JCAppGetEcKeySizeBitsM(UFR_HANDLE hndUFR,
-                                         uint8_t key_index
-                                         VAR uint16_t *key_size_bits
+                                         uint8_t key_index,
+                                         VAR uint16_t *key_size_bits,
                                          VAR uint16_t *key_designator);
 //#############################################################################
 
@@ -2903,51 +2903,51 @@ UFR_STATUS DL_API uFR_APDU_StopM(UFR_HANDLE hndUFR);    // Alias for uFR_DESFIRE
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 UFR_STATUS DL_API uFR_int_GetDesfireUidM(UFR_HANDLE hndUFR,
-                                         uint8_t aes_key_nr
-                                         uint32_t aid
-                                         uint8_t aid_key_nr
-                                         OUT uint8_t *card_uid
-                                         VAR uint8_t *card_uid_len
-                                         VAR uint16_t *card_status
+                                         uint8_t aes_key_nr,
+                                         uint32_t aid,
+                                         uint8_t aid_key_nr,
+                                         OUT uint8_t *card_uid,
+                                         VAR uint8_t *card_uid_len,
+                                         VAR uint16_t *card_status,
                                          VAR uint16_t *exec_time);
-										 
+
 UFR_STATUS DL_API uFR_int_GetDesfireUid_PK_M(UFR_HANDLE hndUFR,
                                              IN uint8_t *aes_key_ext,
 											 uint32_t aid,
-		                                     uint8_t aid_key_nr, 
+		                                     uint8_t aid_key_nr,
 											 OUT uint8_t *card_uid,
 											 VAR uint8_t *card_uid_len,
 		                                     VAR uint16_t *card_status,
 											 VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireFreeMemM(UFR_HANDLE hndUFR,
-                                          VAR uint32_t *free_mem_byte
-                                          VAR uint16_t *card_status
+                                          VAR uint32_t *free_mem_byte,
+                                          VAR uint16_t *card_status,
                                           VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireFormatCardM(UFR_HANDLE hndUFR,
-                                             uint8_t aes_key_nr
-                                             VAR uint16_t *card_status
+                                             uint8_t aes_key_nr,
+                                             VAR uint16_t *card_status,
                                              VAR uint16_t *exec_time);
-											 
+
 UFR_STATUS DL_API uFR_int_DesfireFormatCard_PK_M(UFR_HANDLE hndUFR,
                                                  IN uint8_t *aes_key_ext,
 												 VAR uint16_t *card_status,
-												 VAR uint16_t *exec_time);											 
+												 VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireCreateStdDataFileM(UFR_HANDLE hndUFR,
-                                                    uint8_t aes_key_nr
-                                                    uint32_t aid
-                                                    uint8_t file_id
-                                                    uint32_t file_size
-                                                    uint8_t read_key_no
-                                                    uint8_t write_key_no
-                                                    uint8_t read_write_key_no
-                                                    uint8_t change_key_no
-                                                    uint8_t communication_settings
-                                                    VAR uint16_t *card_status
+                                                    uint8_t aes_key_nr,
+                                                    uint32_t aid,
+                                                    uint8_t file_id,
+                                                    uint32_t file_size,
+                                                    uint8_t read_key_no,
+                                                    uint8_t write_key_no,
+                                                    uint8_t read_write_key_no,
+                                                    uint8_t change_key_no,
+                                                    uint8_t communication_settings,
+                                                    VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
-													
+
 UFR_STATUS DL_API uFR_int_DesfireCreateStdDataFile_PK_M(UFR_HANDLE hndUFR,
                                                         IN uint8_t *aes_key_ext,
 														uint32_t aid,
@@ -2960,7 +2960,7 @@ UFR_STATUS DL_API uFR_int_DesfireCreateStdDataFile_PK_M(UFR_HANDLE hndUFR,
 		                                                uint8_t communication_settings,
 														VAR uint16_t *card_status,
 														VAR uint16_t *exec_time);
-														
+
 UFR_STATUS DL_API uFR_int_DesfireCreateStdDataFile_no_auth_M(UFR_HANDLE hndUFR,
                                                              uint32_t aid,
 															 uint8_t file_id,
@@ -2974,19 +2974,19 @@ UFR_STATUS DL_API uFR_int_DesfireCreateStdDataFile_no_auth_M(UFR_HANDLE hndUFR,
 															 VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireDeleteFileM(UFR_HANDLE hndUFR,
-                                             uint8_t aes_key_nr
-                                             uint32_t aid
-                                             uint8_t file_id
-                                             VAR uint16_t *card_status
+                                             uint8_t aes_key_nr,
+                                             uint32_t aid,
+                                             uint8_t file_id,
+                                             VAR uint16_t *card_status,
                                              VAR uint16_t *exec_time);
-											 
+
 UFR_STATUS DL_API uFR_int_DesfireDeleteFile_PK_M(UFR_HANDLE hndUFR,
                                                  IN uint8_t *aes_key_ext,
 												 uint32_t aid,
 												 uint8_t file_id,
 		                                         VAR uint16_t *card_status,
 												 VAR uint16_t *exec_time);
-												 
+
 UFR_STATUS DL_API uFR_int_DesfireDeleteFile_no_auth_M(UFR_HANDLE hndUFR,
                                                       uint32_t aid,
 													  uint8_t file_id,
@@ -2994,13 +2994,13 @@ UFR_STATUS DL_API uFR_int_DesfireDeleteFile_no_auth_M(UFR_HANDLE hndUFR,
 													  VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireCreateAesApplicationM(UFR_HANDLE hndUFR,
-                                                       uint8_t aes_key_nr
-                                                       uint32_t aid
-                                                       uint8_t setting
-                                                       uint8_t max_key_no
-                                                       VAR uint16_t *card_status
+                                                       uint8_t aes_key_nr,
+                                                       uint32_t aid,
+                                                       uint8_t setting,
+                                                       uint8_t max_key_no,
+                                                       VAR uint16_t *card_status,
                                                        VAR uint16_t *exec_time);
-													   
+
 UFR_STATUS DL_API uFR_int_DesfireCreateAesApplication_PK_M(UFR_HANDLE hndUFR,
                                                            IN uint8_t *aes_key_ext,
  														   uint32_t aid,
@@ -3017,11 +3017,11 @@ UFR_STATUS DL_API uFR_int_DesfireCreateAesApplication_no_auth_M(UFR_HANDLE hndUF
 																VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireDeleteApplicationM(UFR_HANDLE hndUFR,
-                                                    uint8_t aes_key_nr
-                                                    uint32_t aid
-                                                    VAR uint16_t *card_status
+                                                    uint8_t aes_key_nr,
+                                                    uint32_t aid,
+                                                    VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
-													
+
 UFR_STATUS DL_API uFR_int_DesfireDeleteApplication_PK_M(UFR_HANDLE hndUFR,
                                                         IN uint8_t *aes_key_ext,
 														uint32_t aid,
@@ -3029,10 +3029,10 @@ UFR_STATUS DL_API uFR_int_DesfireDeleteApplication_PK_M(UFR_HANDLE hndUFR,
 														OUT uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireSetConfigurationM(UFR_HANDLE hndUFR,
-                                                   uint8_t aes_key_nr
-                                                   uint8_t random_uid
-                                                   uint8_t format_disable
-                                                   VAR uint16_t *card_status
+                                                   uint8_t aes_key_nr,
+                                                   uint8_t random_uid,
+                                                   uint8_t format_disable,
+                                                   VAR uint16_t *card_status,
                                                    VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireSetConfiguration_PK_M(UFR_HANDLE hndUFR,
@@ -3041,15 +3041,15 @@ UFR_STATUS DL_API uFR_int_DesfireSetConfiguration_PK_M(UFR_HANDLE hndUFR,
 													   uint8_t format_disable,
 		                                               VAR uint16_t *card_status,
 													   VAR uint16_t *exec_time);
-												   
+
 UFR_STATUS DL_API uFR_int_DesfireGetKeySettingsM(UFR_HANDLE hndUFR,
-                                                 uint8_t aes_key_nr
-                                                 uint32_t aid
-                                                 VAR uint8_t *setting
-                                                 VAR uint8_t *max_key_no
-                                                 VAR uint16_t *card_status
+                                                 uint8_t aes_key_nr,
+                                                 uint32_t aid,
+                                                 VAR uint8_t *setting,
+                                                 VAR uint8_t *max_key_no,
+                                                 VAR uint16_t *card_status,
                                                  VAR uint16_t *exec_time);
-												 
+
 UFR_STATUS DL_API uFR_int_DesfireGetKeySettings_PK_M(UFR_HANDLE hndUFR,
                                                      IN uint8_t *aes_key_ext,
 													 uint32_t aid,
@@ -3059,12 +3059,12 @@ UFR_STATUS DL_API uFR_int_DesfireGetKeySettings_PK_M(UFR_HANDLE hndUFR,
 													 VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireChangeKeySettingsM(UFR_HANDLE hndUFR,
-                                                    uint8_t aes_key_nr
-                                                    uint32_t aid
-                                                    uint8_t setting
-                                                    VAR uint16_t *card_status
+                                                    uint8_t aes_key_nr,
+                                                    uint32_t aid,
+                                                    uint8_t setting,
+                                                    VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
-													
+
 UFR_STATUS DL_API uFR_int_DesfireChangeKeySettings_PK_M(UFR_HANDLE hndUFR,
                                                         IN uint8_t *aes_key_ext,
 														uint32_t aid,
@@ -3073,15 +3073,15 @@ UFR_STATUS DL_API uFR_int_DesfireChangeKeySettings_PK_M(UFR_HANDLE hndUFR,
 														VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireChangeAesKeyM(UFR_HANDLE hndUFR,
-                                               uint8_t aes_key_nr
-                                               uint32_t aid
-                                               uint8_t aid_key_no_auth
-                                               IN uint8_t new_aes_key[16]
-                                               uint8_t aid_key_no
-                                               IN uint8_t old_aes_key[16]
-                                               VAR uint16_t *card_status
+                                               uint8_t aes_key_nr,
+                                               uint32_t aid,
+                                               uint8_t aid_key_no_auth,
+                                               IN uint8_t new_aes_key[16],
+                                               uint8_t aid_key_no,
+                                               IN uint8_t old_aes_key[16],
+                                               VAR uint16_t *card_status,
                                                VAR uint16_t *exec_time);
-											   
+
 UFR_STATUS DL_API uFR_int_DesfireChangeAesKey_PK_M(UFR_HANDLE hndUFR,
                                                    IN uint8_t *aes_key_ext,
 												   uint32_t aid,
@@ -3091,9 +3091,9 @@ UFR_STATUS DL_API uFR_int_DesfireChangeAesKey_PK_M(UFR_HANDLE hndUFR,
 												   IN uint8_t old_aes_key[16],
 		                                           OUT uint16_t *card_status,
 												   OUT uint16_t *exec_time);
-												   
+
 //---------------------------------------------------------------------------
-												   
+
 UFR_STATUS DL_API uFR_int_DesfireReaStddDataFileM(UFR_HANDLE hndUFR,
                                                   uint8_t aes_key_nr,
 												  uint32_t aid,
@@ -3130,172 +3130,172 @@ UFR_STATUS DL_API uFR_int_DesfireReadStdDataFile_no_auth_M(UFR_HANDLE hndUFR,
 												  VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireWriteStdDataFileM(UFR_HANDLE hndUFR,
-                                                   uint8_t aes_key_nr
-                                                   uint32_t aid
-                                                   uint8_t aid_key_nr
-                                                   uint8_t file_id
-                                                   uint16_t offset
-                                                   uint16_t data_length
-                                                   uint8_t communication_settings
-                                                   IN uint8_t *data
-                                                   VAR uint16_t *card_status
+                                                   uint8_t aes_key_nr,
+                                                   uint32_t aid,
+                                                   uint8_t aid_key_nr,
+                                                   uint8_t file_id,
+                                                   uint16_t offset,
+                                                   uint16_t data_length,
+                                                   uint8_t communication_settings,
+                                                   IN uint8_t *data,
+                                                   VAR uint16_t *card_status,
                                                    VAR uint16_t *exec_time);
-												   
+
 UFR_STATUS DL_API uFR_int_DesfireWriteStdDataFile_PK_M(UFR_HANDLE hndUFR,
-                                                   IN uint8_t *aes_key_ext
-                                                   uint32_t aid
-                                                   uint8_t aid_key_nr
-                                                   uint8_t file_id
-                                                   uint16_t offset
-                                                   uint16_t data_length
-                                                   uint8_t communication_settings
-                                                   IN uint8_t *data
-                                                   VAR uint16_t *card_status
+                                                   IN uint8_t *aes_key_ext,
+                                                   uint32_t aid,
+                                                   uint8_t aid_key_nr,
+                                                   uint8_t file_id,
+                                                   uint16_t offset,
+                                                   uint16_t data_length,
+                                                   uint8_t communication_settings,
+                                                   IN uint8_t *data,
+                                                   VAR uint16_t *card_status,
                                                    VAR uint16_t *exec_time);
-												   
+
 UFR_STATUS DL_API uFR_int_DesfireWriteStdDataFile_no_auth_M(UFR_HANDLE hndUFR,
-                                                   uint32_t aid
-                                                   uint8_t aid_key_nr
-                                                   uint8_t file_id
-                                                   uint16_t offset
-                                                   uint16_t data_length
-                                                   uint8_t communication_settings
-                                                   IN uint8_t *data
-                                                   VAR uint16_t *card_status
+                                                   uint32_t aid,
+                                                   uint8_t aid_key_nr,
+                                                   uint8_t file_id,
+                                                   uint16_t offset,
+                                                   uint16_t data_length,
+                                                   uint8_t communication_settings,
+                                                   IN uint8_t *data,
+                                                   VAR uint16_t *card_status,
                                                    VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireCreateValueFileM(UFR_HANDLE hndUFR,
-                                                  uint8_t aes_key_nr
-                                                  uint32_t aid
-                                                  uint8_t file_id
-                                                  int32_t lower_limit
-                                                  int32_t upper_limit
-                                                  int32_t value
-                                                  uint8_t limited_credit_enabled
-                                                  uint8_t read_key_no
-                                                  uint8_t write_key_no
-                                                  uint8_t read_write_key_no
-                                                  uint8_t change_key_no
-                                                  uint8_t communication_settings
-                                                  VAR uint16_t *card_status
+                                                  uint8_t aes_key_nr,
+                                                  uint32_t aid,
+                                                  uint8_t file_id,
+                                                  int32_t lower_limit,
+                                                  int32_t upper_limit,
+                                                  int32_t value,
+                                                  uint8_t limited_credit_enabled,
+                                                  uint8_t read_key_no,
+                                                  uint8_t write_key_no,
+                                                  uint8_t read_write_key_no,
+                                                  uint8_t change_key_no,
+                                                  uint8_t communication_settings,
+                                                  VAR uint16_t *card_status,
                                                   VAR uint16_t *exec_time);
-												  
+
 UFR_STATUS DL_API uFR_int_DesfireCreateValueFile_PK_M(UFR_HANDLE hndUFR,
-                                                  IN uint8_t *aes_key_ext
-                                                  uint32_t aid
-                                                  uint8_t file_id
-                                                  int32_t lower_limit
-                                                  int32_t upper_limit
-                                                  int32_t value
-                                                  uint8_t limited_credit_enabled
-                                                  uint8_t read_key_no
-                                                  uint8_t write_key_no
-                                                  uint8_t read_write_key_no
-                                                  uint8_t change_key_no
-                                                  uint8_t communication_settings
-                                                  VAR uint16_t *card_status
+                                                  IN uint8_t *aes_key_ext,
+                                                  uint32_t aid,
+                                                  uint8_t file_id,
+                                                  int32_t lower_limit,
+                                                  int32_t upper_limit,
+                                                  int32_t value,
+                                                  uint8_t limited_credit_enabled,
+                                                  uint8_t read_key_no,
+                                                  uint8_t write_key_no,
+                                                  uint8_t read_write_key_no,
+                                                  uint8_t change_key_no,
+                                                  uint8_t communication_settings,
+                                                  VAR uint16_t *card_status,
                                                   VAR uint16_t *exec_time);
-												  
+
 UFR_STATUS DL_API uFR_int_DesfireCreateValueFile_no_auth_M(UFR_HANDLE hndUFR,
-                                                  uint32_t aid
-                                                  uint8_t file_id
-                                                  int32_t lower_limit
-                                                  int32_t upper_limit
-                                                  int32_t value
-                                                  uint8_t limited_credit_enabled
-                                                  uint8_t read_key_no
-                                                  uint8_t write_key_no
-                                                  uint8_t read_write_key_no
-                                                  uint8_t change_key_no
-                                                  uint8_t communication_settings
-                                                  VAR uint16_t *card_status
+                                                  uint32_t aid,
+                                                  uint8_t file_id,
+                                                  int32_t lower_limit,
+                                                  int32_t upper_limit,
+                                                  int32_t value,
+                                                  uint8_t limited_credit_enabled,
+                                                  uint8_t read_key_no,
+                                                  uint8_t write_key_no,
+                                                  uint8_t read_write_key_no,
+                                                  uint8_t change_key_no,
+                                                  uint8_t communication_settings,
+                                                  VAR uint16_t *card_status,
                                                   VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireReadValueFileM(UFR_HANDLE hndUFR,
-                                                uint8_t aes_key_nr
-                                                uint32_t aid
-                                                uint8_t aid_key_nr
-                                                uint8_t file_id
-                                                uint8_t communication_settings
-                                                VAR int32_t *value
-                                                VAR uint16_t *card_status
+                                                uint8_t aes_key_nr,
+                                                uint32_t aid,
+                                                uint8_t aid_key_nr,
+                                                uint8_t file_id,
+                                                uint8_t communication_settings,
+                                                VAR int32_t *value,
+                                                VAR uint16_t *card_status,
                                                 VAR uint16_t *exec_time);
-												
+
 UFR_STATUS DL_API uFR_int_DesfireReadValueFile_PK_M(UFR_HANDLE hndUFR,
-                                                IN uint8_t *aes_key_ext
-                                                uint32_t aid
-                                                uint8_t aid_key_nr
-                                                uint8_t file_id
-                                                uint8_t communication_settings
-                                                VAR int32_t *value
-                                                VAR uint16_t *card_status
+                                                IN uint8_t *aes_key_ext,
+                                                uint32_t aid,
+                                                uint8_t aid_key_nr,
+                                                uint8_t file_id,
+                                                uint8_t communication_settings,
+                                                VAR int32_t *value,
+                                                VAR uint16_t *card_status,
                                                 VAR uint16_t *exec_time);
-												
+
 UFR_STATUS DL_API uFR_int_DesfireReadValueFile_no_auth_M(UFR_HANDLE hndUFR,
-                                                uint32_t aid
-                                                uint8_t aid_key_nr
-                                                uint8_t file_id
-                                                uint8_t communication_settings
-                                                VAR int32_t *value
-                                                VAR uint16_t *card_status
+                                                uint32_t aid,
+                                                uint8_t aid_key_nr,
+                                                uint8_t file_id,
+                                                uint8_t communication_settings,
+                                                VAR int32_t *value,
+                                                VAR uint16_t *card_status,
                                                 VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFileM(UFR_HANDLE hndUFR,
-                                                    uint8_t aes_key_nr
-                                                    uint32_t aid
-                                                    uint8_t aid_key_nr
-                                                    uint8_t file_id
-                                                    uint8_t communication_settings
-                                                    uint32_t value
-                                                    VAR uint16_t *card_status
+                                                    uint8_t aes_key_nr,
+                                                    uint32_t aid,
+                                                    uint8_t aid_key_nr,
+                                                    uint8_t file_id,
+                                                    uint8_t communication_settings,
+                                                    uint32_t value,
+                                                    VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
-													
+
 UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_PK_M(UFR_HANDLE hndUFR,
-                                                    IN uint8_t *aes_key_ext
-                                                    uint32_t aid
-                                                    uint8_t aid_key_nr
-                                                    uint8_t file_id
-                                                    uint8_t communication_settings
-                                                    uint32_t value
-                                                    VAR uint16_t *card_status
+                                                    IN uint8_t *aes_key_ext,
+                                                    uint32_t aid,
+                                                    uint8_t aid_key_nr,
+                                                    uint8_t file_id,
+                                                    uint8_t communication_settings,
+                                                    uint32_t value,
+                                                    VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
-													
+
 UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_no_auth_M(UFR_HANDLE hndUFR,
-                                                    uint32_t aid
-                                                    uint8_t aid_key_nr
-                                                    uint8_t file_id
-                                                    uint8_t communication_settings
-                                                    uint32_t value
-                                                    VAR uint16_t *card_status
+                                                    uint32_t aid,
+                                                    uint8_t aid_key_nr,
+                                                    uint8_t file_id,
+                                                    uint8_t communication_settings,
+                                                    uint32_t value,
+                                                    VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFileM(UFR_HANDLE hndUFR,
-                                                    uint8_t aes_key_nr
-                                                    uint32_t aid
-                                                    uint8_t aid_key_nr
-                                                    uint8_t file_id
-                                                    uint8_t communication_settings
-                                                    uint32_t value
-                                                    VAR uint16_t *card_status
+                                                    uint8_t aes_key_nr,
+                                                    uint32_t aid,
+                                                    uint8_t aid_key_nr,
+                                                    uint8_t file_id,
+                                                    uint8_t communication_settings,
+                                                    uint32_t value,
+                                                    VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
-													
+
 UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_PK_M(UFR_HANDLE hndUFR,
-                                                    IN uint8_t *aes_key_ext
-                                                    uint32_t aid
-                                                    uint8_t aid_key_nr
-                                                    uint8_t file_id
-                                                    uint8_t communication_settings
-                                                    uint32_t value
-                                                    VAR uint16_t *card_status
+                                                    IN uint8_t *aes_key_ext,
+                                                    uint32_t aid,
+                                                    uint8_t aid_key_nr,
+                                                    uint8_t file_id,
+                                                    uint8_t communication_settings,
+                                                    uint32_t value,
+                                                    VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
-													
+
 UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_no_auth_M(UFR_HANDLE hndUFR,
-                                                    uint32_t aid
-                                                    uint8_t aid_key_nr
-                                                    uint8_t file_id
-                                                    uint8_t communication_settings
-                                                    uint32_t value
-                                                    VAR uint16_t *card_status
+                                                    uint32_t aid,
+                                                    uint8_t aid_key_nr,
+                                                    uint8_t file_id,
+                                                    uint8_t communication_settings,
+                                                    uint32_t value,
+                                                    VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API GreenLedBlinkingTurnOnM(UFR_HANDLE hndUFR);
@@ -3305,31 +3305,31 @@ UFR_STATUS DL_API GreenLedBlinkingTurnOffM(UFR_HANDLE hndUFR);
 /////////////////////////////////////////////////////////////////////
 
 UFR_STATUS DL_API SetRfAnalogRegistersTypeAM(UFR_HANDLE hndUFR,
-                                             uint8_t ThresholdMinLevel
-                                             uint8_t ThresholdCollLevel
-                                             uint8_t RFLevelAmp
-                                             uint8_t RxGain
+                                             uint8_t ThresholdMinLevel,
+                                             uint8_t ThresholdCollLevel,
+                                             uint8_t RFLevelAmp,
+                                             uint8_t RxGain,
                                              uint8_t RFLevel);
 
 UFR_STATUS DL_API SetRfAnalogRegistersTypeBM(UFR_HANDLE hndUFR,
-                                             uint8_t ThresholdMinLevel
-                                             uint8_t ThresholdCollLevel
-                                             uint8_t RFLevelAmp
-                                             uint8_t RxGain
+                                             uint8_t ThresholdMinLevel,
+                                             uint8_t ThresholdCollLevel,
+                                             uint8_t RFLevelAmp,
+                                             uint8_t RxGain,
                                              uint8_t RFLevel);
 
 UFR_STATUS DL_API SetRfAnalogRegistersISO14443_212M(UFR_HANDLE hndUFR,
-                                                    uint8_t ThresholdMinLevel
-                                                    uint8_t ThresholdCollLevel
-                                                    uint8_t RFLevelAmp
-                                                    uint8_t RxGain
+                                                    uint8_t ThresholdMinLevel,
+                                                    uint8_t ThresholdCollLevel,
+                                                    uint8_t RFLevelAmp,
+                                                    uint8_t RxGain,
                                                     uint8_t RFLevel);
 
 UFR_STATUS DL_API SetRfAnalogRegistersISO14443_424M(UFR_HANDLE hndUFR,
-                                                    uint8_t ThresholdMinLevel
-                                                    uint8_t ThresholdCollLevel
-                                                    uint8_t RFLevelAmp
-                                                    uint8_t RxGain
+                                                    uint8_t ThresholdMinLevel,
+                                                    uint8_t ThresholdCollLevel,
+                                                    uint8_t RFLevelAmp,
+                                                    uint8_t RxGain,
                                                     uint8_t RFLevel);
 
 UFR_STATUS DL_API SetRfAnalogRegistersTypeADefaultM(UFR_HANDLE hndUFR);
@@ -3341,95 +3341,95 @@ UFR_STATUS DL_API SetRfAnalogRegistersISO14443_212DefaultM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API SetRfAnalogRegistersISO14443_424DefaultM(UFR_HANDLE hndUFR);
 
 UFR_STATUS DL_API GetRfAnalogRegistersTypeAM(UFR_HANDLE hndUFR,
-                                             VAR uint8_t *ThresholdMinLevel
-                                             VAR uint8_t *ThresholdCollLevel
-                                             VAR uint8_t *RFLevelAmp
-                                             VAR uint8_t *RxGain
+                                             VAR uint8_t *ThresholdMinLevel,
+                                             VAR uint8_t *ThresholdCollLevel,
+                                             VAR uint8_t *RFLevelAmp,
+                                             VAR uint8_t *RxGain,
                                              VAR uint8_t *RFLevel);
 
 UFR_STATUS DL_API GetRfAnalogRegistersTypeBM(UFR_HANDLE hndUFR,
-                                             VAR uint8_t *ThresholdMinLevel
-                                             VAR uint8_t *ThresholdCollLevel
-                                             VAR uint8_t *RFLevelAmp
-                                             VAR uint8_t *RxGain
+                                             VAR uint8_t *ThresholdMinLevel,
+                                             VAR uint8_t *ThresholdCollLevel,
+                                             VAR uint8_t *RFLevelAmp,
+                                             VAR uint8_t *RxGain,
                                              VAR uint8_t *RFLevel);
 
 UFR_STATUS DL_API GetRfAnalogRegistersISO14443_212M(UFR_HANDLE hndUFR,
-                                                    VAR uint8_t *ThresholdMinLevel
-                                                    VAR uint8_t *ThresholdCollLevel
-                                                    VAR uint8_t *RFLevelAmp
-                                                    VAR uint8_t *RxGain
+                                                    VAR uint8_t *ThresholdMinLevel,
+                                                    VAR uint8_t *ThresholdCollLevel,
+                                                    VAR uint8_t *RFLevelAmp,
+                                                    VAR uint8_t *RxGain,
                                                     VAR uint8_t *RFLevel);
 
 UFR_STATUS DL_API GetRfAnalogRegistersISO14443_424M(UFR_HANDLE hndUFR,
-                                                    VAR uint8_t *ThresholdMinLevel
-                                                    VAR uint8_t *ThresholdCollLevel
-                                                    VAR uint8_t *RFLevelAmp
-                                                    VAR uint8_t *RxGain
+                                                    VAR uint8_t *ThresholdMinLevel,
+                                                    VAR uint8_t *ThresholdCollLevel,
+                                                    VAR uint8_t *RFLevelAmp,
+                                                    VAR uint8_t *RxGain,
                                                     VAR uint8_t *RFLevel);
 
 UFR_STATUS DL_API SetRfAnalogRegistersTypeATransM(UFR_HANDLE hndUFR,
-                                                  uint8_t ThresholdMinLevel
-                                                  uint8_t ThresholdCollLevel
-                                                  uint8_t RFLevelAmp
-                                                  uint8_t RxGain
-                                                  uint8_t RFLevel
-                                                  uint8_t CWGsNOn
-                                                  uint8_t ModGsNOn
-                                                  uint8_t CWGsP
-                                                  uint8_t CWGsNOff
+                                                  uint8_t ThresholdMinLevel,
+                                                  uint8_t ThresholdCollLevel,
+                                                  uint8_t RFLevelAmp,
+                                                  uint8_t RxGain,
+                                                  uint8_t RFLevel,
+                                                  uint8_t CWGsNOn,
+                                                  uint8_t ModGsNOn,
+                                                  uint8_t CWGsP,
+                                                  uint8_t CWGsNOff,
                                                   uint8_t ModGsNOff);
 
 UFR_STATUS DL_API SetRfAnalogRegistersTypeBTransM(UFR_HANDLE hndUFR,
-                                                  uint8_t ThresholdMinLevel
-                                                  uint8_t ThresholdCollLevel
-                                                  uint8_t RFLevelAmp
-                                                  uint8_t RxGain
-                                                  uint8_t RFLevel
-                                                  uint8_t CWGsNOn
-                                                  uint8_t ModGsNOn
-                                                  uint8_t CWGsP
+                                                  uint8_t ThresholdMinLevel,
+                                                  uint8_t ThresholdCollLevel,
+                                                  uint8_t RFLevelAmp,
+                                                  uint8_t RxGain,
+                                                  uint8_t RFLevel,
+                                                  uint8_t CWGsNOn,
+                                                  uint8_t ModGsNOn,
+                                                  uint8_t CWGsP,
                                                   uint8_t ModGsP);
 
 UFR_STATUS DL_API GetRfAnalogRegistersTypeATransM(UFR_HANDLE hndUFR,
-                                                  VAR uint8_t *ThresholdMinLevel
-                                                  VAR uint8_t *ThresholdCollLevel
-                                                  VAR uint8_t *RFLevelAmp
-                                                  VAR uint8_t *RxGain
-                                                  VAR uint8_t *RFLevel
-                                                  VAR uint8_t *CWGsNOn
-                                                  VAR uint8_t *ModGsNOn
-                                                  VAR uint8_t *CWGsP
-                                                  VAR uint8_t *CWGsNOff
+                                                  VAR uint8_t *ThresholdMinLevel,
+                                                  VAR uint8_t *ThresholdCollLevel,
+                                                  VAR uint8_t *RFLevelAmp,
+                                                  VAR uint8_t *RxGain,
+                                                  VAR uint8_t *RFLevel,
+                                                  VAR uint8_t *CWGsNOn,
+                                                  VAR uint8_t *ModGsNOn,
+                                                  VAR uint8_t *CWGsP,
+                                                  VAR uint8_t *CWGsNOff,
                                                   VAR uint8_t *ModGsNOff);
 
 UFR_STATUS DL_API GetRfAnalogRegistersTypeBTransM(UFR_HANDLE hndUFR,
-                                                  VAR uint8_t *ThresholdMinLevel
-                                                  VAR uint8_t *ThresholdCollLevel
-                                                  VAR uint8_t *RFLevelAmp
-                                                  VAR uint8_t *RxGain
-                                                  VAR uint8_t *RFLevel
-                                                  VAR uint8_t *CWGsNOn
-                                                  VAR uint8_t *ModGsNOn
-                                                  VAR uint8_t *CWGsP
+                                                  VAR uint8_t *ThresholdMinLevel,
+                                                  VAR uint8_t *ThresholdCollLevel,
+                                                  VAR uint8_t *RFLevelAmp,
+                                                  VAR uint8_t *RxGain,
+                                                  VAR uint8_t *RFLevel,
+                                                  VAR uint8_t *CWGsNOn,
+                                                  VAR uint8_t *ModGsNOn,
+                                                  VAR uint8_t *CWGsP,
                                                   VAR uint8_t *ModGsP);
 
 //MIFARE PLUS
 UFR_STATUS DL_API MFP_WritePersoM(UFR_HANDLE hndUFR,
-                                  uint16_t address
+                                  uint16_t address,
                                   IN uint8_t *data);
 
 UFR_STATUS DL_API MFP_CommitPersoM(UFR_HANDLE hndUFR);
 
 UFR_STATUS DL_API MFP_PersonalizationMinimalM(UFR_HANDLE hndUFR,
-                                              IN uint8_t *card_master_key
-                                              IN uint8_t *card_config_key
-                                              IN uint8_t *level_2_switch_key
-                                              IN uint8_t *level_3_switch_key
-                                              IN uint8_t *level_1_auth_key
-                                              IN uint8_t *select_vc_key
-                                              IN uint8_t *prox_chk_key
-                                              IN uint8_t *vc_poll_enc_key
+                                              IN uint8_t *card_master_key,
+                                              IN uint8_t *card_config_key,
+                                              IN uint8_t *level_2_switch_key,
+                                              IN uint8_t *level_3_switch_key,
+                                              IN uint8_t *level_1_auth_key,
+                                              IN uint8_t *select_vc_key,
+                                              IN uint8_t *prox_chk_key,
+                                              IN uint8_t *vc_poll_enc_key,
                                               IN uint8_t *vc_poll_mac_key);
 
 UFR_STATUS DL_API MFP_SwitchToSecurityLevel3M(UFR_HANDLE hndUFR,
@@ -3445,69 +3445,69 @@ UFR_STATUS DL_API MFP_AesAuthSecurityLevel1_PKM(UFR_HANDLE hndUFR,
                                                 IN uint8_t *aes_key);
 
 UFR_STATUS DL_API MFP_ChangeMasterKeyM(UFR_HANDLE hndUFR,
-                                       uint8_t key_index
+                                       uint8_t key_index,
                                        IN uint8_t *new_key);
 
 UFR_STATUS DL_API MFP_ChangeMasterKey_PKM(UFR_HANDLE hndUFR,
-                                          IN uint8_t *old_key
+                                          IN uint8_t *old_key,
                                           IN uint8_t *new_key);
 
 UFR_STATUS DL_API MFP_ChangeConfigurationKeyM(UFR_HANDLE hndUFR,
-                                              uint8_t key_index
+                                              uint8_t key_index,
                                               IN uint8_t *new_key);
 
 UFR_STATUS DL_API MFP_ChangeConfigurationKey_PKM(UFR_HANDLE hndUFR,
-                                                 IN uint8_t *old_key
+                                                 IN uint8_t *old_key,
                                                  IN uint8_t *new_key);
 
 UFR_STATUS DL_API MFP_FieldConfigurationSetM(UFR_HANDLE hndUFR,
-                                             uint8_t configuration_key_index
-                                             uint8_t rid_use
+                                             uint8_t configuration_key_index,
+                                             uint8_t rid_use,
                                              uint8_t prox_check_use);
 
 UFR_STATUS DL_API MFP_FieldConfigurationSet_PKM(UFR_HANDLE hndUFR,
-                                                IN uint8_t *configuration_key
-                                                uint8_t rid_use
+                                                IN uint8_t *configuration_key,
+                                                uint8_t rid_use,
                                                 uint8_t prox_check_use);
 
 UFR_STATUS DL_API MFP_ChangeSectorKeyM(UFR_HANDLE hndUFR,
-                                       uint8_t sector_nr
-                                       uint8_t auth_mode
-                                       uint8_t key_index
+                                       uint8_t sector_nr,
+                                       uint8_t auth_mode,
+                                       uint8_t key_index,
                                        IN uint8_t *new_key);
 
 UFR_STATUS DL_API MFP_ChangeSectorKey_PKM(UFR_HANDLE hndUFR,
-                                          uint8_t sector_nr
-                                          uint8_t auth_mode
-                                          IN uint8_t *old_key
+                                          uint8_t sector_nr,
+                                          uint8_t auth_mode,
+                                          IN uint8_t *old_key,
                                           IN uint8_t *new_key);
 
 UFR_STATUS DL_API MFP_GetUidM(UFR_HANDLE hndUFR,
-                              uint8_t key_index_vc_poll_enc_key
-                              uint8_t key_index_vc_poll_mac_key
-                              OUT uint8_t *uid
+                              uint8_t key_index_vc_poll_enc_key,
+                              uint8_t key_index_vc_poll_mac_key,
+                              OUT uint8_t *uid,
                               VAR uint8_t *uid_len);
 
 UFR_STATUS DL_API MFP_GetUid_PKM(UFR_HANDLE hndUFR,
-                                 IN uint8_t *vc_poll_enc_key
-                                 IN uint8_t *vc_poll_mac_key
-                                 OUT uint8_t *uid
+                                 IN uint8_t *vc_poll_enc_key,
+                                 IN uint8_t *vc_poll_mac_key,
+                                 OUT uint8_t *uid,
                                  VAR uint8_t *uid_len);
 
 UFR_STATUS DL_API MFP_ChangeVcPollingEncKeyM(UFR_HANDLE hndUFR,
-                                             uint8_t configuration_key_index
+                                             uint8_t configuration_key_index,
                                              IN uint8_t *new_key);
 
 UFR_STATUS DL_API MFP_ChangeVcPollingEncKey_PKM(UFR_HANDLE hndUFR,
-                                                IN uint8_t *configuration_key
+                                                IN uint8_t *configuration_key,
                                                 IN uint8_t *new_key);
 
 UFR_STATUS DL_API MFP_ChangeVcPollingMacKeyM(UFR_HANDLE hndUFR,
-                                             uint8_t configuration_key_index
+                                             uint8_t configuration_key_index,
                                              IN uint8_t *new_key);
 
 UFR_STATUS DL_API MFP_ChangeVcPollingMacKey_PKM(UFR_HANDLE hndUFR,
-                                                IN uint8_t *configuration_key
+                                                IN uint8_t *configuration_key,
                                                 IN uint8_t *new_key);
 
 //ULTRALIGHT C
@@ -3521,7 +3521,7 @@ UFR_STATUS DL_API ULC_write_3des_key_factory_keyM(UFR_HANDLE hndUFR,
                                                   IN uint8_t *new_3des_key);
 
 UFR_STATUS DL_API ULC_write_3des_keyM(UFR_HANDLE hndUFR,
-                                      IN uint8_t *new_3des_key
+                                      IN uint8_t *new_3des_key,
                                       IN uint8_t *old_3des_key);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
