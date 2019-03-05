@@ -2864,7 +2864,7 @@ UFR_STATUS DL_API JCAppPinUnblockM(UFR_HANDLE hndUFR,
 
 UFR_STATUS DL_API JCAppGetRsaPublicKeyM(UFR_HANDLE hndUFR,
                                         uint8_t key_index,
-                                        OUT uint8_t *modulus
+                                        OUT uint8_t *modulus,
                                         VAR uint16_t *modulus_size,
                                         OUT uint8_t *exponent,
                                         VAR uint16_t *exponent_size); // when modulus == NULL, returns sizes and exponent ignored
