@@ -486,9 +486,9 @@ UFR_STATUS DL_API ReaderOpenByType(IN uint32_t reader_type);
  *
  * @return
  */
-UFR_STATUS DL_API ReaderOpenEx(IN uint32_t reader_type,
+UFR_STATUS DL_API ReaderOpenEx(uint32_t reader_type,
 							   IN c_string port_name,
-		                       IN uint32_t port_interface,
+		                       uint32_t port_interface,
 							   IN void *arg);
 
 UFR_STATUS DL_API ReaderReset(void);
