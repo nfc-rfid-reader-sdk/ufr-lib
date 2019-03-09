@@ -451,7 +451,7 @@ UFR_STATUS DL_API ReaderOpen(void);
  *                      3 : BASE HD uFR (XRC) type (250 Kbps)
  * @return
  */
-UFR_STATUS DL_API ReaderOpenByType(IN uint32_t reader_type);
+UFR_STATUS DL_API ReaderOpenByType(uint32_t reader_type);
 
 /**
  * ReaderOpenEx() is a function for opening port with
@@ -905,7 +905,7 @@ UFR_STATUS DL_API GetLastCardIdEx(VAR uint8_t *lpucSak, OUT uint8_t *aucUid,
 UFR_STATUS DL_API EnableAntiCollision(void);
 UFR_STATUS DL_API DisableAntiCollision(void);
 UFR_STATUS DL_API EnumCards(VAR uint8_t *lpucCardsNumber, OUT uint8_t *lpucUidListSize); // Card pointer is on the first card in list
-UFR_STATUS DL_API ListCards(OUT uint8_t *aucUidList, VAR uint8_t ucUidListSize); // Before calling this function you must call EnumCards() first.
+UFR_STATUS DL_API ListCards(OUT uint8_t *aucUidList, uint8_t ucUidListSize); // Before calling this function you must call EnumCards() first.
 UFR_STATUS DL_API SelectCard(IN const uint8_t *aucUid, uint8_t ucUidSize, OUT uint8_t *lpucSelctedCardType);
 UFR_STATUS DL_API DeslectCard(void);
 UFR_STATUS DL_API GetAntiCollisionStatus(VAR int8_t *lpcIsAntiCollEnabled, VAR int8_t *lpcIsAnyCardSelected);
@@ -2240,7 +2240,7 @@ UFR_STATUS DL_API EnumCardsM(UFR_HANDLE hndUFR,
 
 UFR_STATUS DL_API ListCardsM(UFR_HANDLE hndUFR,
                              OUT uint8_t *aucUidList,
-                             VAR uint8_t ucUidListSize); // Before calling this function you must call EnumCards() first.
+                             uint8_t ucUidListSize); // Before calling this function you must call EnumCards() first.
 
 UFR_STATUS DL_API SelectCardM(UFR_HANDLE hndUFR,
                               IN const uint8_t *aucUid,
