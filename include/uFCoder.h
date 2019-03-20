@@ -1624,13 +1624,13 @@ UFR_STATUS DL_API ReaderList_GetSerialDescriptionByIndex(int32_t DeviceIndex, OU
 UFR_STATUS DL_API ReaderList_GetTypeByIndex(int32_t DeviceIndex, VAR uint32_t *lpulReaderType);
 UFR_STATUS DL_API ReaderList_GetFTDISerialByIndex(int32_t DeviceIndex, OUT char ** Device_Serial);
 UFR_STATUS DL_API ReaderList_GetFTDIDescriptionByIndex(int32_t DeviceIndex, OUT char ** Device_Description);
-UFR_STATUS DL_API ReaderList_OpenByIndex(const int32_t DeviceIndex, IN UFR_HANDLE *hndUFR);
-UFR_STATUS DL_API ReaderList_OpenBySerial(const char Device_SN[16], UFR_HANDLE *hndUFR); // ! not implemented
+UFR_STATUS DL_API ReaderList_OpenByIndex(const int32_t DeviceIndex, VAR UFR_HANDLE *hndUFR);
+UFR_STATUS DL_API ReaderList_OpenBySerial(const char Device_SN[16], VAR UFR_HANDLE *hndUFR); // ! not implemented
 
 //--------------------------------------------------------------------------------------------------
 
 // open first/next Reader and return handle - better to use ReaderList_OpenByIndex()
-UFR_STATUS DL_API ReaderOpenM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API ReaderOpenM(VAR UFR_HANDLE *hndUFR);
 
 UFR_STATUS DL_API ReaderResetM(UFR_HANDLE hndUFR);
 
