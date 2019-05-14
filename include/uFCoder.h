@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.5
+ * library version: 5.0.6
  *
  * Created on:  2009-01-14
- * Last edited: 2019-04-04
+ * Last edited: 2019-05-14
  *
  * Author: D-Logic
  */
@@ -3538,6 +3538,16 @@ UFR_STATUS DL_API ULC_write_3des_key_factory_keyM(UFR_HANDLE hndUFR,
 UFR_STATUS DL_API ULC_write_3des_keyM(UFR_HANDLE hndUFR,
                                       IN uint8_t *new_3des_key,
                                       IN uint8_t *old_3des_key);
+
+
+//ESP32
+UFR_STATUS DL_API EspSetDisplayData(IN uint8_t *display_data, IN uint8_t data_length, uint16_t duration);
+UFR_STATUS DL_API EspReaderReset(void);
+UFR_STATUS DL_API EspChangeReaderPassword(uint8_t *old_password, uint8_t *new_password);
+UFR_STATUS DL_API EspReaderEepromWrite(uint8_t *data, uint32_t address, uint32_t size, uint8_t *password);
+UFR_STATUS DL_API EspReaderEepromRead(uint8_t *data, uint32_t address, uint32_t size);
+UFR_STATUS DL_API EspGetReaderTime(uint8_t *time);
+UFR_STATUS DL_API EspSetReaderTime(uint8_t *password, uint8_t *time);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
