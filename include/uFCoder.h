@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.6
+ * library version: 5.0.7
  *
  * Created on:  2009-01-14
- * Last edited: 2019-05-14
+ * Last edited: 2019-05-16
  *
  * Author: D-Logic
  */
@@ -424,6 +424,20 @@ typedef enum UFCODER_ERROR_CODES
 #define DESFIRE_KEY_SET_CREATE_WITHOUT_AUTH_SET_CHANGE_KEY_NOT_CHANGE		0x0E
 #define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_NOT_CHANGE_KEY_NOT_CHANGE		0x00
 #define DESFIRE_KEY_SET_CREATE_WITHOUT_AUTH_SET_NOT_CHANGE_KEY_NOT_CHANGE	0x06
+
+#define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_CHANGE_KEY_CHANGE_APP_IDS_WITH_AUTH				0x09
+#define DESFIRE_KEY_SET_CREATE_WITHOUT_AUTH_SET_CHANGE_KEY_CHANGE_APP_IDS_WIDTHOUT_AUTH			0x0F
+#define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_NOT_CHANGE_KEY_CHANGE_APP_IDS_WITH_AUTH			0x01
+#define DESFIRE_KEY_SET_CREATE_WITHOUT_AUTH_SET_NOT_CHANGE_KEY_CHANGE_APP_IDS_WIDTHOUT_AUTH		0x07
+#define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_CHANGE_KEY_NOT_CHANGE_APP_IDS_WITH_AUTH			0x08
+#define DESFIRE_KEY_SET_CREATE_WITHOUT_AUTH_SET_CHANGE_KEY_NOT_CHANGE_APP_IDS_WIDTHOUT_AUTH		0x0E
+#define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_NOT_CHANGE_KEY_NOT_CHANGE_APP_IDS_WITH_AUTH		0x00
+#define DESFIRE_KEY_SET_CREATE_WITHOUT_AUTH_SET_NOT_CHANGE_KEY_NOT_CHANGE_APP_IDS_WIDTHOUT_AUTH	0x06
+#define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_CHANGE_KEY_CHANGE_APP_IDS_WIDTHOUT_AUTH			0x0B
+#define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_NOT_CHANGE_KEY_CHANGE_APP_IDS_WIDTHOUT_AUTH		0x02
+#define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_CHANGE_KEY_NOT_CHANGE_APP_IDS_WIDTHOUT_AUTH		0x0A
+#define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_NOT_CHANGE_KEY_NOT_CHANGE_APP_IDS_WIDTHOUT_AUTH	0x02
+
 
 enum E_ASYMMETRIC_KEY_TYPES {
 	RSA_PRIVATE_KEY = 0,
@@ -1437,6 +1451,17 @@ UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_PK(IN uint8_t *aes_key_ext, u
 UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_no_auth(uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 		uint8_t communication_settings, uint32_t value,
 		VAR uint16_t *card_status, VAR uint16_t *exec_time);
+
+UFR_STATUS DL_API uFR_int_DesfireGetApplicationIds(uint8_t aes_key_nr,
+		uint32_t *application_ids, uint8_t *number_of_aplication_ids,
+		uint16_t *card_status, uint16_t *exec_time);
+
+UFR_STATUS DL_API uFR_int_DesfireGetApplicationIds_PK(uint8_t *aes_key_ext,
+		uint32_t *application_ids, uint8_t *number_of_aplication_ids,
+		uint16_t *card_status, uint16_t *exec_time);
+
+UFR_STATUS DL_API uFR_int_DesfireGetApplicationIds_no_auth(uint32_t *application_ids, uint8_t *number_of_aplication_ids,
+		uint16_t *card_status, uint16_t *exec_time);
 
 /////////////////////////////////////////////////////////////////////
 
@@ -3107,9 +3132,13 @@ UFR_STATUS DL_API uFR_int_DesfireChangeAesKey_PK_M(UFR_HANDLE hndUFR,
 		                                           OUT uint16_t *card_status,
 												   OUT uint16_t *exec_time);
 
+UFR_STATUS DL_API uFR_int_DesfireWriteAesKeyM(UFR_HANDLE hndUFR,
+											uint8_t aes_key_no,
+											uint8_t *aes_key);
+
 //---------------------------------------------------------------------------
 
-UFR_STATUS DL_API uFR_int_DesfireReaStddDataFileM(UFR_HANDLE hndUFR,
+UFR_STATUS DL_API uFR_int_DesfireReadStddDataFileM(UFR_HANDLE hndUFR,
                                                   uint8_t aes_key_nr,
 												  uint32_t aid,
 												  uint8_t aid_key_nr,
@@ -3312,6 +3341,26 @@ UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_no_auth_M(UFR_HANDLE hndUFR,
                                                     uint32_t value,
                                                     VAR uint16_t *card_status,
                                                     VAR uint16_t *exec_time);
+
+UFR_STATUS DL_API uFR_int_DesfireGetApplicationIdsM(UFR_HANDLE hndUFR,
+													uint8_t aes_key_nr,
+													uint32_t *application_ids,
+													uint8_t *number_of_aplication_ids,
+													uint16_t *card_status,
+													uint16_t *exec_time);
+
+UFR_STATUS DL_API uFR_int_DesfireGetApplicationIds_PK_M(UFR_HANDLE hndUFR,
+													uint8_t *aes_key_ext,
+													uint32_t *application_ids,
+													uint8_t *number_of_aplication_ids,
+													uint16_t *card_status,
+													uint16_t *exec_time);
+
+UFR_STATUS DL_API uFR_int_DesfireGetApplicationIds_no_auth_M(UFR_HANDLE hndUFR,
+													uint32_t *application_ids,
+													uint8_t *number_of_aplication_ids,
+													uint16_t *card_status,
+													uint16_t *exec_time);
 
 UFR_STATUS DL_API GreenLedBlinkingTurnOnM(UFR_HANDLE hndUFR);
 
