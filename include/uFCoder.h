@@ -1,7 +1,7 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.7
+ * library version: 5.0.8
  *
  * Created on:  2009-01-14
  * Last edited: 2019-05-16
@@ -176,7 +176,32 @@ enum E_OBJ_TYPES {
 	OBJ_TYPES_COUNT
 };
 
-// JCApp instructions:
+// JCDL_AIDs
+#define DL_RAW_SIZEOF_SZ(x)	(sizeof(x) - 1)
+#define DL_AID_RID_PLUS 	"\xF0" "DLogic"
+#define DL_SIGNER_PIX		"\x00\x01"
+#define DL_STORAGE_PIX		"\x01\x01"
+#define DL_SIGNER_AID		DL_AID_RID_PLUS  DL_SIGNER_PIX
+#define DL_SIGNER_AID_SIZE	9
+#define DL_STORAGE_AID		DL_AID_RID_PLUS  DL_STORAGE_PIX
+#define DL_STORAGE_AID_SIZE	9
+
+// Universal JCDL instructions:
+#define INS_LOGIN					0x20
+#define INS_GET_PIN_TRIES_REMAINING 0x21
+#define INS_PIN_CHANGE				0x22
+#define INS_PIN_UNBLOCK				0x23
+
+// JCDLStorage instructions:
+#define INS_PIN_ENABLE				0x24
+#define INS_PIN_DISABLE				0x25
+#define INS_LIST_FILES				0x31
+#define INS_GET_FILE_SIZE			0x32
+#define INS_READ_FILE				0x33
+#define INS_WRITE_FILE				0x34
+#define INS_DELETE_FILE				0x3F
+
+// JCDLSigner instructions:
 #define INS_SET_RSA_PRIKEY			0x51
 #define INS_GEN_RSA_KEY_PAIR		0x52
 #define INS_GET_RSA_PUBKEY_MODULUS	0x53
@@ -197,24 +222,25 @@ enum E_OBJ_TYPES {
 #define INS_GET_OBJ					0x41
 #define INS_GET_OBJ_ID				0x42
 #define INS_GET_OBJ_SUBJECT			0x43
-#define INS_LOGIN					0x20
-#define INS_GET_PIN_TRIES_REMAINING 0x21
-#define INS_PIN_CHANGE				0x22
-#define INS_PIN_UNBLOCK				0x23
 
-// JCApp DL_AID
-#define DL_SIZEOF_SZ(x) (sizeof(x) - 1)
-#define DL_AID_RID_PLUS "\xF0""DLogic"
-#define DL_AID_PIX      "\x00\x01"
-#define DL_AID          AID_RID_PLUS AID_PIX
+// Universal JCDL constants:
+#define PIN_MAX_TRIES				5
+#define PIN_MIN_LENGTH				4
+#define PIN_MAX_LENGTH				8
+#define PUK_MAX_TRIES				10
+#define PUK_LENGTH					8
 
-// JCApp max. consts:
+// JCDLSigner constants:
 #define JC_APP_MAX_KEY_INDEX		((3) - 1)
 #define JC_APP_MAX_CA_CERT_INDEX	((12) - 1)
 #define JC_APP_MAX_ID_SIZE			253
 #define JC_APP_MAX_SUBJECT_SIZE		255
 #define JC_APP_MAX_SIGNATURE_LEN	256
 #define JC_APP_MAX_PIN_LENGTH		8
+
+// JCDLStorage constants:
+#define JC_DL_STORAGE_MAX_FILES		16
+#define JC_DL_STORAGE_MAX_FILE_SIZE	(32 * 1024 - 2) // 32KB - 2 byte system reserved
 
 // MIFARE CLASSIC Authentication Modes:
 enum MIFARE_AUTHENTICATION
@@ -379,9 +405,11 @@ typedef enum UFCODER_ERROR_CODES
 
 	// uFCoder library errors:
 	UFR_NOT_IMPLEMENTED = 0x1000,
-	UFR_COMMAND_FAILED,
-
-	UFR_TIMEOUT_ERR = 0x111E,
+	UFR_COMMAND_FAILED = 0x1001,
+	UFR_TIMEOUT_ERR = 0x1002,
+	UFR_FILE_SYSTEM_ERROR = 0x1003,
+	UFR_FILE_SYSTEM_PATH_NOT_EXISTS = 0x1004,
+	UFR_FILE_NOT_EXISTS = 0x1005,
 
 	// JC cards APDU Error Codes:
 	UFR_APDU_TRANSCEIVE_ERROR = 0xAE,
@@ -396,15 +424,18 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_APDU_UNSUPPORTED_KEY_SIZE,
 	UFR_APDU_UNSUPPORTED_ALGORITHMS,
 	UFR_APDU_PKI_OBJECT_NOT_FOUND,
-	UFR_APDU_MAX_PIN_LENGTH_EXCEEDED,
-	UFR_DIGEST_LENGTH_DOES_NOT_MATCH,
+//	UFR_APDU_MAX_PIN_LENGTH_EXCEEDED,
+//	UFR_DIGEST_LENGTH_DOES_NOT_MATCH,
 
 	// ISO7816-4 Errors (R-APDU) - 2 SW bytes returned by the card, prefixed with 0x000A:
 	UFR_APDU_SW_TAG = 0x000A0000,
+	UFR_APDU_SW_WRONG_LENGTH = 0x000A6700,
 	UFR_APDU_SW_SECURITY_STATUS_NOT_SATISFIED = 0x000A6982,
+	UFR_APDU_SW_AUTHENTICATION_METHOD_BLOCKED = 0x000A6983,
 	UFR_APDU_SW_DATA_INVALID = 0x000A6984,
 	UFR_APDU_SW_CONDITIONS_NOT_SATISFIED = 0x000A6985,
 	UFR_APDU_SW_WRONG_DATA = 0x000A6A80,
+	UFR_APDU_SW_FILE_NOT_FOUND = 0x000A6A82,
 	UFR_APDU_SW_RECORD_NOT_FOUND = 0x000A6A83,
 	UFR_APDU_SW_DATA_NOT_FOUND = 0x000A6A88,
 	UFR_APDU_SW_ENTITY_ALREADY_EXISTS = 0x000A6A89,
@@ -1208,6 +1239,7 @@ UFR_STATUS DL_API GetDisplayIntensity(VAR uint8_t *intensity);
  * @return
  */
 UFR_STATUS DL_API SetISO14443_4_Mode(void);
+UFR_STATUS DL_API SetISO14443_4_DLStorage(void);
 UFR_STATUS DL_API uFR_i_block_transceive(uint8_t chaining, uint8_t timeout,
 		uint8_t block_length, IN uint8_t *snd_data_array, VAR size_t *rcv_length,
 		OUT uint8_t *rcv_data_array, VAR uint32_t *ufr_status);
@@ -1278,7 +1310,14 @@ UFR_STATUS DL_API JCAppGetEcPublicKey(uint8_t key_index, OUT uint8_t *keyW, VAR 
 		OUT uint8_t *r, VAR uint16_t *r_size, VAR uint16_t *k, VAR uint16_t *key_size_bits, VAR uint16_t *key_designator);
 UFR_STATUS DL_API JCAppGetEcKeySizeBits(uint8_t key_index, VAR uint16_t *key_size_bits, VAR uint16_t *key_designator);
 //------------------------------------------------------------------------------
-UFR_STATUS DL_API JCAppGetSignature(OUT uint8_t *sig, uint16_t sig_len);
+UFR_STATUS DL_API JCStorageGetFilesListSize(VAR uint32_t *list_size);
+UFR_STATUS DL_API JCStorageListFiles(OUT uint8_t *list, uint32_t list_bytes_allocated);
+UFR_STATUS DL_API JCStorageGetFileSize(uint8_t card_file_index, VAR uint32_t *file_size);
+UFR_STATUS DL_API JCStorageReadFile(uint8_t card_file_index, OUT uint8_t *data, uint32_t data_bytes_allocated);
+UFR_STATUS DL_API JCStorageReadFileToFileSystem(uint8_t card_file_index, IN const char *file_system_path_name);
+UFR_STATUS DL_API JCStorageWriteFile(uint8_t card_file_index, IN const uint8_t *data, uint32_t data_size);
+UFR_STATUS DL_API JCStorageWriteFileFromFileSystem(uint8_t card_file_index, IN const char *file_system_path_name);
+UFR_STATUS DL_API JCStorageDeleteFile(uint8_t file_index);
 //==============================================================================
 UFR_STATUS DL_API DES_to_AES_key_type(void);
 UFR_STATUS DL_API AES_to_DES_key_type(void);
@@ -2683,6 +2722,8 @@ UFR_STATUS DL_API GetDisplayIntensityM(UFR_HANDLE hndUFR,
 
 UFR_STATUS DL_API SetISO14443_4_ModeM(UFR_HANDLE hndUFR);
 
+UFR_STATUS DL_API SetISO14443_4_DLStorageM(UFR_HANDLE hndUFR);
+
 UFR_STATUS DL_API uFR_i_block_transceiveM(UFR_HANDLE hndUFR,
                                           uint8_t chaining,
                                           uint8_t timeout,
@@ -2929,6 +2970,15 @@ UFR_STATUS DL_API JCAppGetEcKeySizeBitsM(UFR_HANDLE hndUFR,
                                          uint8_t key_index,
                                          VAR uint16_t *key_size_bits,
                                          VAR uint16_t *key_designator);
+//------------------------------------------------------------------------------
+UFR_STATUS DL_API JCStorageGetFilesListSizeM(UFR_HANDLE hndUFR, VAR uint32_t *list_size);
+UFR_STATUS DL_API JCStorageListFilesM(UFR_HANDLE hndUFR, OUT uint8_t *list, uint32_t list_bytes_allocated);
+UFR_STATUS DL_API JCStorageGetFileSizeM(UFR_HANDLE hndUFR, uint8_t card_file_index, VAR uint32_t *file_size);
+UFR_STATUS DL_API JCStorageReadFileM(UFR_HANDLE hndUFR, uint8_t card_file_index, OUT uint8_t *data, uint32_t data_bytes_allocated);
+UFR_STATUS DL_API JCStorageReadFileToFileSystemM(UFR_HANDLE hndUFR, uint8_t card_file_index, IN const char *file_system_path_name);
+UFR_STATUS DL_API JCStorageWriteFileM(UFR_HANDLE hndUFR, uint8_t card_file_index, IN const uint8_t *data, uint32_t data_size);
+UFR_STATUS DL_API JCStorageWriteFileFromFileSystemM(UFR_HANDLE hndUFR, uint8_t card_file_index, IN const char *file_system_path_name);
+UFR_STATUS DL_API JCStorageDeleteFileM(UFR_HANDLE hndUFR, uint8_t file_index);
 //#############################################################################
 
 UFR_STATUS DL_API uFR_DESFIRE_Start(void);
@@ -3643,6 +3693,7 @@ UFR_STATUS DL_API OriginalityCheck(IN const uint8_t *signature, IN const uint8_t
 //// debug functions:
 c_string DL_API GetDllVersionStr(void);
 c_string DL_API UFR_Status2String(const UFR_STATUS status);
+c_string DL_API UFR_DLCardType2String(uint8_t dl_type_code);
 
 //// Helper functions:
 #ifndef _WIN32
