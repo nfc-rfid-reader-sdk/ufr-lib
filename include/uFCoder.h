@@ -424,8 +424,8 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_APDU_UNSUPPORTED_KEY_SIZE,
 	UFR_APDU_UNSUPPORTED_ALGORITHMS,
 	UFR_APDU_PKI_OBJECT_NOT_FOUND,
-//	UFR_APDU_MAX_PIN_LENGTH_EXCEEDED,
-//	UFR_DIGEST_LENGTH_DOES_NOT_MATCH,
+	UFR_APDU_MAX_PIN_LENGTH_EXCEEDED,
+	UFR_DIGEST_LENGTH_DOES_NOT_MATCH,
 
 	// ISO7816-4 Errors (R-APDU) - 2 SW bytes returned by the card, prefixed with 0x000A:
 	UFR_APDU_SW_TAG = 0x000A0000,
@@ -1292,6 +1292,7 @@ UFR_STATUS DL_API JCAppGenerateSignature(uint8_t cipher, uint8_t digest, uint8_t
 		uint8_t key_index,
 		IN const uint8_t *plain_data, uint16_t plain_data_len, VAR uint16_t *sig_len,
 		IN const uint8_t *alg_param, uint16_t alg_parm_len);
+UFR_STATUS DL_API JCAppGetSignature(OUT uint8_t *sig, uint16_t sig_len);
 UFR_STATUS DL_API JCAppPutObj(uint8_t obj_type, uint8_t obj_index, IN uint8_t *obj, int16_t obj_size, IN uint8_t *id, uint8_t id_size);
 UFR_STATUS DL_API JCAppPutObjSubject(uint8_t obj_type, uint8_t obj_index, IN uint8_t *subject, uint8_t size);
 UFR_STATUS DL_API JCAppInvalidateCert(uint8_t obj_type, uint8_t obj_index);
