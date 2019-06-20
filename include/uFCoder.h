@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.9
+ * library version: 5.0.10
  *
  * Created on:  2009-01-14
- * Last edited: 2019-06-06
+ * Last edited: 2019-06-20
  *
  * Author: D-Logic
  */
@@ -1304,6 +1304,8 @@ UFR_STATUS DL_API JCAppLogin(uint8_t SO, IN uint8_t *pin, uint8_t pinSize);
 UFR_STATUS DL_API JCAppGetPinTriesRemaining(dl_sec_code_t secureCodeType, VAR uint16_t *triesRemaining);
 UFR_STATUS DL_API JCAppPinChange(dl_sec_code_t secureCodeType, IN uint8_t *newPin, uint8_t newPinSize);
 UFR_STATUS DL_API JCAppPinUnblock(uint8_t SO, IN uint8_t *puk, uint8_t pukSize);
+UFR_STATUS DL_API JCAppPinEnable(uint8_t SO);
+UFR_STATUS DL_API JCAppPinDisable(uint8_t SO);
 UFR_STATUS DL_API JCAppGetRsaPublicKey(uint8_t key_index, OUT uint8_t *modulus, VAR uint16_t *modulus_size,
 		OUT uint8_t *exponent, VAR uint16_t *exponent_size); // when modulus == NULL, returns sizes and exponent ignored
 UFR_STATUS DL_API JCAppGetEcPublicKey(uint8_t key_index, OUT uint8_t *keyW, VAR uint16_t *kexWSize, // when keyW == NULL, returns size
@@ -2943,6 +2945,10 @@ UFR_STATUS DL_API JCAppPinUnblockM(UFR_HANDLE hndUFR,
                                    uint8_t SO,
                                    IN uint8_t *puk,
                                    uint8_t pukSize);
+
+UFR_STATUS DL_API JCAppPinEnableM(UFR_HANDLE hndUFR, uint8_t SO);
+
+UFR_STATUS DL_API JCAppPinDisableM(UFR_HANDLE hndUFR, uint8_t SO);
 
 UFR_STATUS DL_API JCAppGetRsaPublicKeyM(UFR_HANDLE hndUFR,
                                         uint8_t key_index,
