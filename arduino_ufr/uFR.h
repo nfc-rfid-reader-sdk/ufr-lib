@@ -173,6 +173,8 @@ class uFR {
 	#ifdef ESP32
 		uFR(uint8_t uart);
 		uFR(uint8_t uart, uint8_t reset);
+		uFR(uint8_t uart, uint8_t rx_pin, uint8_t tx_pin);
+		uFR(uint8_t uart, uint8_t reset, uint8_t rx_pin, uint8_t tx_pin);
 	#else
 		uFR(uint8_t rx, uint8_t tx);
 		uFR(uint8_t rx, uint8_t tx, uint8_t reset);
@@ -231,10 +233,13 @@ class uFR {
 	private:
 		#ifdef ESP32
 		HardwareSerial readerSerial;
+		uint8_t esp32_rx_pin = 0;
+		uint8_t esp32_tx_pin = 0;
 		#else
 		SoftwareSerial readerSerial;
 		#endif
 		uint8_t resetPin = 0;
+		
 		void flushSerial(); // Flush serial input buffer
 
 		void sendPacketCMD(uint8_t command, uint8_t EXTlength = 0, uint8_t par0 = 0, uint8_t par1 = 0);

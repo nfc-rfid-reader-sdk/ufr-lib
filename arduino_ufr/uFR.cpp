@@ -17,10 +17,25 @@ uFR::uFR(uint8_t uart) : readerSerial(HardwareSerial(uart)) {
 	setPacketSerial();
 }
 
+uFR::uFR(uint8_t uart, uint8_t rx_pin, uint8_t tx_pin) : readerSerial(HardwareSerial(uart)) {
+	esp32_rx_pin = rx_pin;
+	esp32_tx_pin = tx_pin;
+	setPacketSerial();
+}
+
 uFR::uFR(uint8_t uart, uint8_t reset) : readerSerial(HardwareSerial(uart)) {
 	pinMode(reset, OUTPUT);
 	digitalWrite(reset, HIGH);
 	resetPin = reset;
+	setPacketSerial();
+}
+
+uFR::uFR(uint8_t uart, uint8_t reset, uint8_t rx_pin, uint8_t tx_pin) : readerSerial(HardwareSerial(uart)) {
+	pinMode(reset, OUTPUT);
+	digitalWrite(reset, HIGH);
+	resetPin = reset;
+	esp32_rx_pin = rx_pin;
+	esp32_tx_pin = tx_pin;
 	setPacketSerial();
 }
 
@@ -46,7 +61,18 @@ void uFR::begin(unsigned long baud) {
 		delay(10);
 		digitalWrite(resetPin, LOW);
 	}
-	readerSerial.begin(baud);
+	#ifdef ESP32
+		if(esp32_rx_pin != 0 && esp32_tx_pin != 0) {
+			readerSerial.begin(baud, SERIAL_8N1, esp32_rx_pin, esp32_tx_pin);	
+		}
+		else
+		{
+			readerSerial.begin(baud);	
+		}
+	#else
+		readerSerial.begin(baud);
+	#endif
+
 }
 
 void uFR::hardReset() {
