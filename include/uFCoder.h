@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.10
+ * library version: 5.0.11
  *
  * Created on:  2009-01-14
- * Last edited: 2019-06-20
+ * Last edited: 2019-06-21
  *
  * Author: D-Logic
  */
@@ -49,7 +49,7 @@ typedef const char * c_string;
 #	define DL_API
 #endif // _WIN32
 
-#if defined(DL_uFC_EXPORTS) || defined(DL_CREATE_STATIC_LIB)
+#if defined(DL_uFC_EXPORTS) || defined(DL_CREATE_STATIC_LIB) || defined(__ANDROID__)
 	typedef struct S_UFR_HANDLE * UFR_HANDLE;
 #else
 	typedef void * UFR_HANDLE;
@@ -3649,11 +3649,13 @@ UFR_STATUS DL_API ULC_write_3des_keyM(UFR_HANDLE hndUFR,
 //ESP32
 UFR_STATUS DL_API EspSetDisplayData(IN uint8_t *display_data, IN uint8_t data_length, uint16_t duration);
 UFR_STATUS DL_API EspReaderReset(void);
-UFR_STATUS DL_API EspChangeReaderPassword(uint8_t *old_password, uint8_t *new_password);
-UFR_STATUS DL_API EspReaderEepromWrite(uint8_t *data, uint32_t address, uint32_t size, uint8_t *password);
-UFR_STATUS DL_API EspReaderEepromRead(uint8_t *data, uint32_t address, uint32_t size);
-UFR_STATUS DL_API EspGetReaderTime(uint8_t *time);
-UFR_STATUS DL_API EspSetReaderTime(uint8_t *password, uint8_t *time);
+UFR_STATUS DL_API EspChangeReaderPassword(IN uint8_t *old_password, IN uint8_t *new_password);
+UFR_STATUS DL_API EspReaderEepromWrite(IN uint8_t *data, uint32_t address, uint32_t size, IN uint8_t *password);
+UFR_STATUS DL_API EspReaderEepromRead(OUT uint8_t *data, uint32_t address, uint32_t size);
+UFR_STATUS DL_API EspGetReaderTime(OUT uint8_t *time);
+UFR_STATUS DL_API EspSetReaderTime(IN uint8_t *password, IN uint8_t *time);
+UFR_STATUS DL_API EspSetIOState(uint8_t pin, uint8_t state);
+UFR_STATUS DL_API EspGetIOState(OUT uint8_t *state);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -3716,6 +3718,13 @@ c_string DL_API GetReaderDescriptionM(UFR_HANDLE hndUFR);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#ifdef __ANDROID__
+#include <jni.h>
+
+JNIEnv *global_env;
+jclass global_class;
+void DL_API initVM(JNIEnv *env, jclass class1);
+#endif
 
 #ifdef __cplusplus
 }
