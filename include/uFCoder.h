@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.11
+ * library version: 5.0.12
  *
  * Created on:  2009-01-14
- * Last edited: 2019-06-21
+ * Last edited: 2019-07-22
  *
  * Author: D-Logic
  */
@@ -413,19 +413,22 @@ typedef enum UFCODER_ERROR_CODES
 
 	// JC cards APDU Error Codes:
 	UFR_APDU_TRANSCEIVE_ERROR = 0xAE,
-	UFR_APDU_JC_APP_NOT_SELECTED  = 0x6000,
-	UFR_APDU_JC_APP_BUFF_EMPTY,
-	UFR_APDU_WRONG_SELECT_RESPONSE,
-	UFR_APDU_WRONG_KEY_TYPE,
-	UFR_APDU_WRONG_KEY_SIZE,
-	UFR_APDU_WRONG_KEY_PARAMS,
-	UFR_APDU_WRONG_SIGNING_ALGORITHM,
-	UFR_APDU_PLAIN_TEXT_MAX_SIZE_EXCEEDED,
-	UFR_APDU_UNSUPPORTED_KEY_SIZE,
-	UFR_APDU_UNSUPPORTED_ALGORITHMS,
-	UFR_APDU_PKI_OBJECT_NOT_FOUND,
-	UFR_APDU_MAX_PIN_LENGTH_EXCEEDED,
-	UFR_DIGEST_LENGTH_DOES_NOT_MATCH,
+	UFR_APDU_JC_APP_NOT_SELECTED = 0x6000,
+	UFR_APDU_JC_APP_BUFF_EMPTY = 0x6001,
+	UFR_APDU_WRONG_SELECT_RESPONSE = 0x6002,
+	UFR_APDU_WRONG_KEY_TYPE = 0x6003,
+	UFR_APDU_WRONG_KEY_SIZE = 0x6004,
+	UFR_APDU_WRONG_KEY_PARAMS = 0x6005,
+	UFR_APDU_WRONG_SIGNING_ALGORITHM = 0x6006,
+	UFR_APDU_PLAIN_TEXT_MAX_SIZE_EXCEEDED = 0x6007,
+	UFR_APDU_UNSUPPORTED_KEY_SIZE = 0x6008,
+	UFR_APDU_UNSUPPORTED_ALGORITHMS = 0x6009,
+	UFR_APDU_PKI_OBJECT_NOT_FOUND = 0x600A,
+	UFR_APDU_MAX_PIN_LENGTH_EXCEEDED = 0x600B,
+	UFR_DIGEST_LENGTH_DOES_NOT_MATCH = 0x600C,
+
+	// Secure channel specific errors:
+	UFR_SECURE_CHANNEL_SESSION_FAILED = 0x6C00,
 
 	// ISO7816-4 Errors (R-APDU) - 2 SW bytes returned by the card, prefixed with 0x000A:
 	UFR_APDU_SW_TAG = 0x000A0000,
@@ -1321,6 +1324,13 @@ UFR_STATUS DL_API JCStorageReadFileToFileSystem(uint8_t card_file_index, IN cons
 UFR_STATUS DL_API JCStorageWriteFile(uint8_t card_file_index, IN const uint8_t *data, uint32_t data_size);
 UFR_STATUS DL_API JCStorageWriteFileFromFileSystem(uint8_t card_file_index, IN const char *file_system_path_name);
 UFR_STATUS DL_API JCStorageDeleteFile(uint8_t file_index);
+UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBac(const uint8_t mrz_proto_key[25], uint8_t *ksenc, uint8_t *ksmac,
+                                                  uint64_t *send_sequence_cnt);
+UFR_STATUS DL_API MRTDFileReadBacToHeap(const uint8_t *file_index, uint8_t **output, uint32_t *outputlength, const uint8_t *ksenc,
+                                        const uint8_t *ksmac, uint64_t *send_sequence_cnt);
+UFR_STATUS DL_API MRTD_MRZDataToMRZProtoKey(const char *doc_number, const char *date_of_birth, const char *date_of_expiry,
+                                            uint8_t mrz_proto_key[25]);
+UFR_STATUS DL_API MRTD_MRZSubjacentToMRZProtoKey(const uint8_t mrz[44], uint8_t mrz_proto_key[25]);
 //==============================================================================
 UFR_STATUS DL_API DES_to_AES_key_type(void);
 UFR_STATUS DL_API AES_to_DES_key_type(void);
@@ -2986,6 +2996,10 @@ UFR_STATUS DL_API JCStorageReadFileToFileSystemM(UFR_HANDLE hndUFR, uint8_t card
 UFR_STATUS DL_API JCStorageWriteFileM(UFR_HANDLE hndUFR, uint8_t card_file_index, IN const uint8_t *data, uint32_t data_size);
 UFR_STATUS DL_API JCStorageWriteFileFromFileSystemM(UFR_HANDLE hndUFR, uint8_t card_file_index, IN const char *file_system_path_name);
 UFR_STATUS DL_API JCStorageDeleteFileM(UFR_HANDLE hndUFR, uint8_t file_index);
+UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBacM(UFR_HANDLE hndUFR, const uint8_t *kmrz, uint8_t *ksenc, uint8_t *ksmac,
+                                                   uint64_t *send_sequence_cnt);
+UFR_STATUS DL_API MRTDFileReadBacToHeapM(UFR_HANDLE hndUFR, const uint8_t *file_index, uint8_t **output, uint32_t *outputlength, const uint8_t *ksenc,
+                                         const uint8_t *ksmac, uint64_t *send_sequence_cnt);
 //#############################################################################
 
 UFR_STATUS DL_API uFR_DESFIRE_Start(void);
