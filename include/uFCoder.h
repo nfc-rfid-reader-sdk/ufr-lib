@@ -1324,13 +1324,14 @@ UFR_STATUS DL_API JCStorageReadFileToFileSystem(uint8_t card_file_index, IN cons
 UFR_STATUS DL_API JCStorageWriteFile(uint8_t card_file_index, IN const uint8_t *data, uint32_t data_size);
 UFR_STATUS DL_API JCStorageWriteFileFromFileSystem(uint8_t card_file_index, IN const char *file_system_path_name);
 UFR_STATUS DL_API JCStorageDeleteFile(uint8_t file_index);
-UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBac(const uint8_t mrz_proto_key[25], uint8_t *ksenc, uint8_t *ksmac,
-                                                  uint64_t *send_sequence_cnt);
-UFR_STATUS DL_API MRTDFileReadBacToHeap(const uint8_t *file_index, uint8_t **output, uint32_t *outputlength, const uint8_t *ksenc,
-                                        const uint8_t *ksmac, uint64_t *send_sequence_cnt);
-UFR_STATUS DL_API MRTD_MRZDataToMRZProtoKey(const char *doc_number, const char *date_of_birth, const char *date_of_expiry,
-                                            uint8_t mrz_proto_key[25]);
-UFR_STATUS DL_API MRTD_MRZSubjacentToMRZProtoKey(const uint8_t mrz[44], uint8_t mrz_proto_key[25]);
+//------------------------------------------------------------------------------
+UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBac(IN const uint8_t mrz_proto_key[25], OUT uint8_t *ksenc, OUT uint8_t *ksmac,
+                                                  VAR uint64_t *send_sequence_cnt);
+UFR_STATUS DL_API MRTDFileReadBacToHeap(IN const uint8_t *file_index, VAR uint8_t **output, OUT uint32_t *output_length, IN const uint8_t *ksenc,
+                                        IN const uint8_t *ksmac, VAR uint64_t *send_sequence_cnt);
+UFR_STATUS DL_API MRTD_MRZDataToMRZProtoKey(IN const char *doc_number, IN const char *date_of_birth, IN const char *date_of_expiry,
+                                            OUT uint8_t mrz_proto_key[25]);
+UFR_STATUS DL_API MRTD_MRZSubjacentToMRZProtoKey(IN const uint8_t mrz[44], OUT uint8_t mrz_proto_key[25]);
 //==============================================================================
 UFR_STATUS DL_API DES_to_AES_key_type(void);
 UFR_STATUS DL_API AES_to_DES_key_type(void);
@@ -2996,10 +2997,11 @@ UFR_STATUS DL_API JCStorageReadFileToFileSystemM(UFR_HANDLE hndUFR, uint8_t card
 UFR_STATUS DL_API JCStorageWriteFileM(UFR_HANDLE hndUFR, uint8_t card_file_index, IN const uint8_t *data, uint32_t data_size);
 UFR_STATUS DL_API JCStorageWriteFileFromFileSystemM(UFR_HANDLE hndUFR, uint8_t card_file_index, IN const char *file_system_path_name);
 UFR_STATUS DL_API JCStorageDeleteFileM(UFR_HANDLE hndUFR, uint8_t file_index);
-UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBacM(UFR_HANDLE hndUFR, const uint8_t *kmrz, uint8_t *ksenc, uint8_t *ksmac,
-                                                   uint64_t *send_sequence_cnt);
-UFR_STATUS DL_API MRTDFileReadBacToHeapM(UFR_HANDLE hndUFR, const uint8_t *file_index, uint8_t **output, uint32_t *outputlength, const uint8_t *ksenc,
-                                         const uint8_t *ksmac, uint64_t *send_sequence_cnt);
+//------------------------------------------------------------------------------
+UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBacM(UFR_HANDLE hndUFR, IN const uint8_t mrz_proto_key[25], OUT uint8_t *ksenc, OUT uint8_t *ksmac,
+                                                  VAR uint64_t *send_sequence_cnt);
+UFR_STATUS DL_API MRTDFileReadBacToHeapM(UFR_HANDLE hndUFR, IN const uint8_t *file_index, VAR uint8_t **output, OUT uint32_t *output_length, IN const uint8_t *ksenc,
+                                        IN const uint8_t *ksmac, VAR uint64_t *send_sequence_cnt);
 //#############################################################################
 
 UFR_STATUS DL_API uFR_DESFIRE_Start(void);
