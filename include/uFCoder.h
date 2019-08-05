@@ -15,9 +15,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define IN
-#define OUT
-#define VAR
+#define IN //array that you pass to function
+#define OUT //array that you receive from funciton
+#define VAR //first element of array that you receive from function (single variable)
 
 
 ////////////////////////////////////////////////////////////////////
@@ -330,6 +330,7 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_NDEF_CARD_FORMAT_ERROR = 0x83,
 	UFR_MAD_NOT_ENABLED = 0x84,
 	UFR_MAD_VERSION_NOT_SUPPORTED = 0x85,
+    UFR_NDEF_MESSAGE_NOT_COMPATIBLE = 0x86,
 
 	// Tag emulation mode errors:
 	FORBIDDEN_IN_TAG_EMULATION_MODE = 0x90,
@@ -3672,6 +3673,109 @@ UFR_STATUS DL_API EspGetReaderTime(OUT uint8_t *time);
 UFR_STATUS DL_API EspSetReaderTime(IN uint8_t *password, IN uint8_t *time);
 UFR_STATUS DL_API EspSetIOState(uint8_t pin, uint8_t state);
 UFR_STATUS DL_API EspGetIOState(OUT uint8_t *state);
+
+//NDEF MESSAGES
+//----------------------------------------------------------
+
+enum NDEF_STORAGE_MODE
+{
+    STORE_INTO_READER = 0,
+    STORE_INTO_CARD
+};
+
+enum NDEF_SKYPE_ACTION
+{
+    CALL = 0,
+    CHAT
+};
+
+//WiFi NDEF authentication type
+enum WIFI_AUTH_TYPE
+{
+    OPEN = 0,
+    WPA_PERSONAL,
+    WPA_ENTERPRISE,
+    WPA2_ENTERPRISE,
+    WPA2_PERSONAL
+};
+
+//WiFi NDEF encryption type
+enum WIFI_ENC_TYPE
+{
+    NONE = 0,
+    WEP,
+    TKIP,
+    AES,
+    AES_TKIP
+};
+
+UFR_STATUS DL_API WriteNdefRecord_WiFi(uint8_t ndef_storage, IN const char *ssid, uint8_t auth_type, uint8_t encryption_type, IN const char *password);
+UFR_STATUS DL_API WriteNdefRecord_Bluetooth(uint8_t ndef_storage, IN const char *bt_mac_address);
+UFR_STATUS DL_API WriteNdefRecord_SMS(uint8_t ndef_storage, IN const char *phone_number, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_Bitcoin(uint8_t ndef_storage, IN const char *bitcoin_address, IN const char *amount, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_GeoLocation(uint8_t ndef_storage, IN const char *latitude, IN const char *longitude);
+UFR_STATUS DL_API WriteNdefRecord_NaviDestination(uint8_t ndef_storage, IN const char *destination);
+UFR_STATUS DL_API WriteNdefRecord_Email(uint8_t ndef_storage, IN const char *email_address, IN const char *subject, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_Address(uint8_t ndef_storage, IN const char *address);
+UFR_STATUS DL_API WriteNdefRecord_AndroidApp(uint8_t ndef_storage, IN const char *package_name);
+UFR_STATUS DL_API WriteNdefRecord_Text(uint8_t ndef_storage, IN const char *text);
+UFR_STATUS DL_API WriteNdefRecord_StreetView(uint8_t ndef_storage, IN const char *latitude, IN const char *longitude);
+UFR_STATUS DL_API WriteNdefRecord_Skype(uint8_t ndef_storage, IN const char *user_name, uint8_t action);
+UFR_STATUS DL_API WriteNdefRecord_Whatsapp(uint8_t ndef_storage, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_Viber(uint8_t ndef_storage, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_Contact(uint8_t ndef_storage, IN const char *name, IN const char *company, IN const char *address, IN const char *phone, IN const char *email, IN const char *website);
+UFR_STATUS DL_API WriteNdefRecord_Phone(uint8_t ndef_storage, IN const char *phone_number);
+
+UFR_STATUS DL_API WriteNdefRecord_WiFiM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *ssid, uint8_t auth_type, uint8_t encryption_type, IN const char *password);
+UFR_STATUS DL_API WriteNdefRecord_BluetoothM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *bt_mac_address);
+UFR_STATUS DL_API WriteNdefRecord_SMSM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *phone_number, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_BitcoinM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *bitcoin_address, IN const char *amount, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_GeoLocationM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *latitude, IN const char *longitude);
+UFR_STATUS DL_API WriteNdefRecord_NaviDestinationM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *destination);
+UFR_STATUS DL_API WriteNdefRecord_EmailM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *email_address, IN const char *subject, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_AddressM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *address);
+UFR_STATUS DL_API WriteNdefRecord_AndroidAppM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *package_name);
+UFR_STATUS DL_API WriteNdefRecord_TextM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *text);
+UFR_STATUS DL_API WriteNdefRecord_StreetViewM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *latitude, IN const char *longitude);
+UFR_STATUS DL_API WriteNdefRecord_SkypeM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *user_name, uint8_t action);
+UFR_STATUS DL_API WriteNdefRecord_WhatsappM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_ViberM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *message);
+UFR_STATUS DL_API WriteNdefRecord_ContactM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *name, IN const char *company, IN const char *address, IN const char *phone, IN const char *email, IN const char *website);
+UFR_STATUS DL_API WriteNdefRecord_PhoneM(UFR_HANDLE hndUFR, uint8_t ndef_storage, IN const char *phone_number);
+//---------------------------------------------------------------------------------------------
+UFR_STATUS DL_API ReadNdefRecord_WiFi(OUT char *ssid, OUT char *auth_type, OUT char *encryption_type, OUT char *password);
+UFR_STATUS DL_API ReadNdefRecord_Bitcoin(OUT char *bitcoin_address, OUT char *amount, OUT char *message);
+UFR_STATUS DL_API ReadNdefRecord_GeoLocation(OUT char *latitude, OUT char *longitude);
+UFR_STATUS DL_API ReadNdefRecord_NaviDestination(OUT char *destination);
+UFR_STATUS DL_API ReadNdefRecord_Email(OUT char *email_address, OUT char *subject, OUT char *message);
+UFR_STATUS DL_API ReadNdefRecord_Address(OUT char *address);
+UFR_STATUS DL_API ReadNdefRecord_AndroidApp(OUT char *package_name);
+UFR_STATUS DL_API ReadNdefRecord_Text(OUT char *text);
+UFR_STATUS DL_API ReadNdefRecord_StreetView(OUT char *latitude, OUT char *longitude);
+UFR_STATUS DL_API ReadNdefRecord_Skype(OUT char *user_name, OUT char *action);
+UFR_STATUS DL_API ReadNdefRecord_Whatsapp(char *message);
+UFR_STATUS DL_API ReadNdefRecord_Viber(OUT char *message);
+UFR_STATUS DL_API ReadNdefRecord_Contact(OUT char *vCard);
+UFR_STATUS DL_API ReadNdefRecord_Phone(OUT char *phone_number);
+UFR_STATUS DL_API ReadNdefRecord_SMS(OUT char *phone_number, OUT char *message);
+UFR_STATUS DL_API ReadNdefRecord_Bluetooth(OUT char *bt_mac_address);
+
+UFR_STATUS DL_API ReadNdefRecord_WiFiM(UFR_HANDLE hndUFR, OUT char *ssid, OUT char *auth_type, OUT char *encryption_type, OUT char *password);
+UFR_STATUS DL_API ReadNdefRecord_BitcoinM(UFR_HANDLE hndUFR, OUT char *bitcoin_address, OUT char *amount, OUT char *message);
+UFR_STATUS DL_API ReadNdefRecord_GeoLocationM(UFR_HANDLE hndUFR, OUT char *latitude, OUT char *longitude);
+UFR_STATUS DL_API ReadNdefRecord_NaviDestinationM(UFR_HANDLE hndUFR, OUT char *destination);
+UFR_STATUS DL_API ReadNdefRecord_EmailM(UFR_HANDLE hndUFR, OUT char *email_address, OUT char *subject, OUT char *message);
+UFR_STATUS DL_API ReadNdefRecord_AddressM(UFR_HANDLE hndUFR, OUT char *address);
+UFR_STATUS DL_API ReadNdefRecord_AndroidAppM(UFR_HANDLE hndUFR, OUT char *package_name);
+UFR_STATUS DL_API ReadNdefRecord_TextM(UFR_HANDLE hndUFR, OUT char *text);
+UFR_STATUS DL_API ReadNdefRecord_StreetViewM(UFR_HANDLE hndUFR, OUT char *latitude, OUT char *longitude);
+UFR_STATUS DL_API ReadNdefRecord_SkypeM(UFR_HANDLE hndUFR, OUT char *user_name, OUT char *action);
+UFR_STATUS DL_API ReadNdefRecord_WhatsappM(UFR_HANDLE hndUFR, OUT char *message);
+UFR_STATUS DL_API ReadNdefRecord_ViberM(UFR_HANDLE hndUFR, OUT char *message);
+UFR_STATUS DL_API ReadNdefRecord_ContactM(UFR_HANDLE hndUFR, OUT char *vCard);
+UFR_STATUS DL_API ReadNdefRecord_PhoneM(UFR_HANDLE hndUFR, OUT char *phone_number);
+UFR_STATUS DL_API ReadNdefRecord_SMSM(UFR_HANDLE hndUFR, OUT char *phone_number, OUT char *message);
+UFR_STATUS DL_API ReadNdefRecord_BluetoothM(UFR_HANDLE hndUFR, OUT char *bt_mac_address);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
