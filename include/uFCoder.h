@@ -3753,7 +3753,7 @@ UFR_STATUS DL_API ReadNdefRecord_AndroidApp(OUT char *package_name);
 UFR_STATUS DL_API ReadNdefRecord_Text(OUT char *text);
 UFR_STATUS DL_API ReadNdefRecord_StreetView(OUT char *latitude, OUT char *longitude);
 UFR_STATUS DL_API ReadNdefRecord_Skype(OUT char *user_name, OUT char *action);
-UFR_STATUS DL_API ReadNdefRecord_Whatsapp(char *message);
+UFR_STATUS DL_API ReadNdefRecord_Whatsapp(OUT char *message);
 UFR_STATUS DL_API ReadNdefRecord_Viber(OUT char *message);
 UFR_STATUS DL_API ReadNdefRecord_Contact(OUT char *vCard);
 UFR_STATUS DL_API ReadNdefRecord_Phone(OUT char *phone_number);
