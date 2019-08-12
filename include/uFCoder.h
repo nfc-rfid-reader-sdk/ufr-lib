@@ -4,7 +4,8 @@
  * library version: 5.0.14
  *
  * Created on:  2009-01-14
- * Last edited: 2019-08-12 *
+ * Last edited: 2019-08-12
+ *
  * Author: D-Logic
  */
 
