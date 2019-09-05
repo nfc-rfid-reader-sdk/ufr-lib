@@ -8671,6 +8671,8 @@ UFR_STATUS DL_API ReadNdefRecord_PhoneM(UFR_HANDLE hndUFR, OUT char *phone_numbe
 UFR_STATUS DL_API ReadNdefRecord_SMSM(UFR_HANDLE hndUFR, OUT char *phone_number, OUT char *message);
 UFR_STATUS DL_API ReadNdefRecord_BluetoothM(UFR_HANDLE hndUFR, OUT char *bt_mac_address);
 
+c_string DL_API ParseNdefMessage(IN uint8_t *type_record, uint8_t type_len, IN uint8_t *payload, uint32_t payload_len);
+
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 // DLL version ----------------------------------------------------------------
