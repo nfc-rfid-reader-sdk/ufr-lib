@@ -12,6 +12,7 @@
 #ifndef uFCoder_H_
 #define uFCoder_H_
 
+#include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -1614,7 +1615,6 @@ UFR_STATUS DL_API JCStorageWriteFile(uint8_t card_file_index, IN const uint8_t *
 UFR_STATUS DL_API JCStorageWriteFileFromFileSystem(uint8_t card_file_index, IN const char *file_system_path_name);
 UFR_STATUS DL_API JCStorageDeleteFile(uint8_t file_index);
 //------------------------------------------------------------------------------
-char DL_API *DLGetHashName(uint32_t hash_algo);
 UFR_STATUS DL_API DLGetHashOutputByteLength(uint32_t hash_algo, VAR uint32_t *out_byte_len);
 UFR_STATUS DL_API DLGetHash(uint32_t hash_algo, IN const uint8_t *in, uint32_t in_len, OUT uint8_t *hash, uint32_t hash_alocated);
 /* GetHashToHeap() automatically allocates memory, which *hash parameter will points to after successful execution.
@@ -1630,6 +1630,59 @@ UFR_STATUS DL_API DigitalSignatureVerifyHash(uint32_t digest_alg, uint32_t paddi
                                              uint32_t tbs_len, IN const uint8_t *signature, uint32_t signature_len,
                                              IN const void *sig_params, VAR uint32_t sig_params_len, IN const uint8_t *pub_key,
                                              VAR uint32_t pub_key_len, IN const void *pub_key_params, VAR uint32_t pub_key_params_len);
+c_string DL_API DLGetHashName(uint32_t hash_algo);
+c_string DL_API DLGetEccCurveName(uint32_t eccCurve);
+c_string DL_API DLGetSignatureSchemeName(uint32_t signatureScheme);
+
+UFR_STATUS DL_API pkcs7GetDigestAlgorithms(IN const uint8_t *data, uint32_t data_len, VAR uint32_t *digest_algorithm,
+                                           VAR uint8_t **digest_param);
+UFR_STATUS DL_API pkcs7GetLDSSecurityObject(IN uint8_t *data, uint32_t data_len, VAR uint8_t **LDSSecurityObject,
+                                            VAR uint32_t *LDSSecurityObject_len);
+UFR_STATUS DL_API pkcs7GetDataGroupsHashAlgorithm(IN uint8_t *data, uint32_t data_len, VAR uint32_t *digest_algorithm);
+UFR_STATUS DL_API pkcs7GetDataGroupHash(IN uint8_t *data, uint32_t data_len, uint8_t dg_idx, VAR uint8_t **hash, VAR uint32_t *hash_len);
+UFR_STATUS DL_API pkcs7GetCert(IN const uint8_t *data, uint32_t data_len, VAR uint8_t **cert, VAR uint32_t *cert_len);
+UFR_STATUS DL_API pkcs7GetSignerIdVersion(IN uint8_t *data, uint32_t data_len, VAR uint8_t *sid_version);
+UFR_STATUS DL_API pkcs7GetSignerId(IN uint8_t *data, uint32_t data_len, VAR uint8_t **signer_id, VAR uint32_t *signer_id_len);
+UFR_STATUS DL_API pkcs7GetSignedAttrsDigestAlgorithm(IN uint8_t *data, uint32_t data_len, VAR uint32_t *digest_algorithm);
+UFR_STATUS DL_API pkcs7GetSignedAttrs(IN uint8_t *data, uint32_t data_len, VAR uint8_t **signed_attrs, VAR uint32_t *signed_attrs_len);
+UFR_STATUS DL_API pkcs7GetSignatureAlgorithm(IN uint8_t *data, uint32_t data_len, OUT uint8_t **sig_alg, VAR uint32_t *sig_alg_len);
+UFR_STATUS DL_API pkcs7GetLDSSecurityObjectDigest(IN const uint8_t *data, uint32_t data_len, VAR uint8_t **digest, VAR uint32_t *digest_len);
+UFR_STATUS DL_API pkcs7ParseDERSignatureShceme(IN const uint8_t *seq, VAR uint32_t *sig_sch, VAR uint32_t *sig_sch_type,
+                                               OUT uint8_t **sig_sch_params, VAR uint32_t *sig_sch_params_len);
+UFR_STATUS DL_API pkcs7ParseRsaPSSParams(IN const uint8_t *rsa_pss_params, uint32_t sig_sch_params_len, VAR uint32_t *sch_hash_algo,
+                                         VAR uint32_t *mask_gen_algo, VAR uint32_t *salt_len);
+UFR_STATUS DL_API pkcs7GetSignature(IN uint8_t *data, uint32_t data_len, VAR uint8_t **sig, uint32_t *sig_len);
+UFR_STATUS DL_API pkcs7VerifySignature(IN const uint8_t *data, uint32_t data_len);
+
+UFR_STATUS DL_API X509GetTbs(IN const uint8_t *cert, uint32_t cert_len, OUT uint8_t **tbs, VAR uint32_t *tbs_len);
+UFR_STATUS DL_API X509GetVersion(IN const uint8_t *cert, uint32_t cert_len, VAR uint8_t *x509_version);
+UFR_STATUS DL_API X509GetSerialNumberSeq(IN const uint8_t *cert, uint32_t cert_len, OUT uint8_t **out_seq, VAR uint32_t *out_seq_len);
+UFR_STATUS DL_API X509GetSerialNumberByteArr(IN const uint8_t *cert, uint32_t cert_len, OUT uint8_t **ser_num, VAR uint32_t *ser_num_len);
+UFR_STATUS DL_API X509GetIssuerSeq(IN const uint8_t *cert, uint32_t cert_len, OUT uint8_t **issuer, VAR uint32_t *issuer_len);
+UFR_STATUS DL_API X509GetValidityPeriodSeq(IN const uint8_t *cert, uint32_t cert_len, OUT uint8_t **validity, VAR uint32_t *validity_len);
+UFR_STATUS DL_API X509GetSubjectSeq(IN const uint8_t *cert, uint32_t cert_len, OUT uint8_t **subject, VAR uint32_t *subject_len);
+UFR_STATUS DL_API X509GetExtensionsSeq(IN const uint8_t *cert, uint32_t cert_len, OUT uint8_t **extensions, VAR uint32_t *extensions_len);
+UFR_STATUS DL_API X509GetExtension(IN const uint8_t *seq, uint32_t seq_len, IN uint8_t *extension_oid, OUT uint8_t **extension,
+                            VAR uint32_t *extension_len, VAR /*bool*/int32_t *isCritical);
+UFR_STATUS DL_API X509GetSKIFromExtension(IN const uint8_t *extensions, uint32_t extensions_len, OUT uint8_t **ski, VAR uint32_t *ski_len);
+UFR_STATUS DL_API X509GetAKIFromExtension(IN const uint8_t *extensions, uint32_t extensions_len, OUT uint8_t **aki, VAR uint32_t *aki_len);
+UFR_STATUS DL_API X509GetSKIFromCert(IN const uint8_t *cert, uint32_t cert_len, OUT uint8_t **ski, VAR uint32_t *ski_len);
+UFR_STATUS DL_API X509GetAKIFromCert(IN const uint8_t *cert, uint32_t cert_len, OUT uint8_t **aki, VAR uint32_t *aki_len);
+UFR_STATUS DL_API X509GetSignatureAlgorithm(IN uint8_t *cert, uint32_t cert_len, OUT uint8_t **sig_alg, VAR uint32_t *sig_alg_len);
+// For parsing SignatureShceme use pkcs7ParseDERSignatureShceme() from pkcs7.c (include pkcs7.h)
+UFR_STATUS DL_API X509GetSignature(IN uint8_t *cert, uint32_t cert_len, VAR uint8_t **sig, uint32_t *sig_len);
+UFR_STATUS DL_API X509GetRSAPubKeyExponent(IN const uint8_t *der_integer, VAR int32_t *rsa_exponent);
+UFR_STATUS DL_API X509ParsePubKey(IN const uint8_t *seq, OUT uint8_t **pub_key, VAR uint32_t *pub_key_byte_size, VAR uint32_t *pub_key_bit_size,
+                           VAR uint32_t *pub_key_type, VAR uint32_t *ecc_curve, OUT uint8_t **pub_key_params);
+UFR_STATUS DL_API X509VerifyDerCertSignature(IN uint8_t *cert, uint32_t cert_len, OUT uint8_t *issuer_cert, uint32_t issuer_cert_len);
+/* X509GetFromFile() automatically allocates memory, which * parameter will points to after successful execution.
+   User is obligated to cleanup allocated memory space, occupied by the *, after use (e.g. by calling free()).                        */
+UFR_STATUS DL_API X509GetCertFromFile(IN const char *pathName, OUT uint8_t **cert, VAR uint32_t *cert_len);
+
+UFR_STATUS DL_API icaoMlOpen(const char *pathName, FILE **f);
+void DL_API icaoMlClearSearchCriteria(icaoMlSearchCriteria_t *criteria);
+UFR_STATUS DL_API icaoMlFindCert(FILE *f, icaoMlSearchCriteria_t *criteria, uint8_t **cert, uint32_t *cert_len);
+UFR_STATUS DL_API icaoMlClose(FILE *f);
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBac(IN const uint8_t mrz_proto_key[25], OUT uint8_t ksenc[16], OUT uint8_t ksmac[16],
                                                   VAR uint64_t *send_sequence_cnt);
@@ -1638,6 +1691,9 @@ UFR_STATUS DL_API MRTDFileReadBacToHeap(IN const uint8_t file_index[2], VAR uint
 UFR_STATUS DL_API MRTD_MRZDataToMRZProtoKey(IN const char *doc_number, IN const char *date_of_birth, IN const char *date_of_expiry,
                                             OUT uint8_t mrz_proto_key[25]);
 UFR_STATUS DL_API MRTD_MRZSubjacentToMRZProtoKey(IN const char mrz[44], OUT uint8_t mrz_proto_key[25]);
+uint32_t DL_API MRTDGetDgIndex(uint8_t dg_tag);
+UFR_STATUS DL_API MRTDGetDGTagListFromCOM(const uint8_t *com, uint32_t com_len, uint8_t **dg_list, uint8_t *dg_list_cnt);
+c_string DL_API MRTDGetDgName(uint8_t dg_tag);
 //==============================================================================
 UFR_STATUS DL_API DES_to_AES_key_type(void);
 UFR_STATUS DL_API AES_to_DES_key_type(void);
