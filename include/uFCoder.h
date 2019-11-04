@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.14
+ * library version: 5.0.20
  *
  * Created on:  2009-01-14
- * Last edited: 2019-08-28
+ * Last edited: 2019-11-02
  *
  * Author: D-Logic
  */
@@ -18,7 +18,6 @@
 #define IN //array that you pass to function
 #define OUT //array that you receive from funciton
 #define VAR //first element of array that you receive from function (single variable)
-
 
 ////////////////////////////////////////////////////////////////////
 /**
@@ -143,12 +142,14 @@ enum E_SIGNER_CIPHERS {
 	SIG_CIPHER_MAX_SUPPORTED
 };
 
-enum E_SIGNER_PADDINGS {
+enum E_SIGNER_RSA_PADDINGS {
 	PAD_NULL = 0,
-	PAD_PKCS1,
+	PAD_PKCS1_V1_5,
+	PAD_PKCS1_PSS,
 
 	SIG_PAD_MAX_SUPPORTED
 };
+#define PAD_PKCS1 PAD_PKCS1_V1_5
 
 enum E_SIGNER_DIGESTS {
 	ALG_NULL = 0,
@@ -157,6 +158,8 @@ enum E_SIGNER_DIGESTS {
 	ALG_SHA_384,
 	ALG_SHA_512,
 	ALG_SHA_224,
+	ALG_SHA_512_224,
+	ALG_SHA_512_256,
 
 	SIG_DIGEST_MAX_SUPPORTED
 };
@@ -293,7 +296,7 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_WRONG_ADDRESS_MODE = 0x0C,
 	UFR_WRONG_ACCESS_BITS_VALUES = 0x0D,
 	UFR_AUTH_ERROR = 0x0E,
-	UFR_PARAMETERS_ERROR = 0x0F, // ToDo, point 5.
+	UFR_PARAMETERS_ERROR = 0x0F,
 	UFR_MAX_SIZE_EXCEEDED = 0x10,
 	UFR_UNSUPPORTED_CARD_TYPE = 0x11,
 
@@ -381,6 +384,7 @@ typedef enum UFCODER_ERROR_CODES
 	PC_READER_COMM_ERROR = 0xBBE,			// 3006 [dec]
 	COMMIT_TRANSACTION_NO_REPLY = 0xBBF,	// 3007 [dec]
 	COMMIT_TRANSACTION_ERROR = 0xBC0,		// 3008 [dec]
+	NOT_SUPPORTED_KEY_TYPE = 0xBC2,			// 3010 [dec]
 
 	DESFIRE_CARD_NO_CHANGES = 0x0C0C,
 	DESFIRE_CARD_OUT_OF_EEPROM_ERROR = 0x0C0E,
@@ -412,7 +416,12 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_FILE_SYSTEM_PATH_NOT_EXISTS = 0x1004,
 	UFR_FILE_NOT_EXISTS = 0x1005,
 
-	// JC cards APDU Error Codes:
+    //SAM module error codes:
+    UFR_SAM_APDU_ERROR = 0x2000,
+    UFR_SAM_AUTH_ERROR,
+    UFR_SAM_CRYPTO_ERROR,
+
+    // JC cards APDU Error Codes:
 	UFR_APDU_TRANSCEIVE_ERROR = 0xAE,
 	UFR_APDU_JC_APP_NOT_SELECTED  = 0x6000,
 	UFR_APDU_JC_APP_BUFF_EMPTY = 0x6001,
@@ -428,11 +437,67 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_APDU_MAX_PIN_LENGTH_EXCEEDED = 0x600B,
 	UFR_DIGEST_LENGTH_DOES_NOT_MATCH = 0x600C,
 
-	// Secure channel specific errors:
-	UFR_SECURE_CHANNEL_SESSION_FAILED = 0x6C00,
+    // reserved: 0x6100,
+	CRYPTO_SUBSYS_NOT_INITIALIZED = 0x6101,
+	CRYPTO_SUBSYS_SIGNATURE_VERIFICATION_ERROR = 0x6102,
+	CRYPTO_SUBSYS_MAX_HASH_INPUT_EXCEEDED = 0x6103,
+	CRYPTO_SUBSYS_INVALID_HASH_ALGORITHM = 0x6104,
+	CRYPTO_SUBSYS_INVALID_CIPHER_ALGORITHM = 0x6105,
+	CRYPTO_SUBSYS_INVALID_PADDING_ALGORITHM = 0x6106,
+	CRYPTO_SUBSYS_WRONG_SIGNATURE = 0x6107,
+	CRYPTO_SUBSYS_WRONG_HASH_OUTPUT_LENGTH = 0x6108,
+	CRYPTO_SUBSYS_UNKNOWN_ECC_CURVE = 0x6109,
+	CRYPTO_SUBSYS_HASHING_ERROR = 0x610A,
+	CRYPTO_SUBSYS_INVALID_SIGNATURE_PARAMS = 0x610B,
+	CRYPTO_SUBSYS_INVALID_RSA_PUB_KEY = 0x610C,
+	CRYPTO_SUBSYS_INVALID_ECC_PUB_KEY_PARAMS = 0x610D,
+	CRYPTO_SUBSYS_INVALID_ECC_PUB_KEY = 0x610E,
+
+	UFR_WRONG_PEM_CERT_FORMAT = 0x61C0,
+
+	// X.509 specific statuses:
+	X509_CAN_NOT_OPEN_FILE = 0x6200,
+	X509_WRONG_DATA = 0x6201,
+	X509_WRONG_LENGTH = 0x6202,
+    X509_UNSUPPORTED_PUBLIC_KEY_TYPE = 0x6203,
+    X509_UNSUPPORTED_PUBLIC_KEY_SIZE = 0x6204,
+    X509_UNSUPPORTED_PUBLIC_KEY_EXPONENT = 0x6205,
+    X509_EXTENSION_NOT_FOUND = 0x6206,
+    X509_WRONG_SIGNATURE = 0x6207,
+    X509_UNKNOWN_PUBLIC_KEY_TYPE = 0x6208,
+    X509_WRONG_RSA_PUBLIC_KEY_FORMAT = 0x6209,
+    X509_WRONG_ECC_PUBLIC_KEY_FORMAT = 0x620A,
+    X509_SIGNATURE_NOT_MATCH_CA_PUBLIC_KEY = 0x620B,
+    X509_UNSUPPORTED_SIGNATURE_SCH = 0x620C,
+    X509_UNSUPPORTED_ECC_CURVE = 0x620D,
+
+    // PKCS#7 specific statuses:
+    PKCS7_WRONG_DATA = 0x6241,
+    PKCS7_UNSUPPORTED_SIGNATURE_SCHEME = 0x6242,
+    PKCS7_SIG_SCH_NOT_MATCH_CERT_KEY_TYPE = 0x6243,
+
+    PKCS7_WRONG_SIGNATURE = 0x6247,
+
+	// MRTD specific statuses:
+	MRTD_SECURE_CHANNEL_SESSION_FAILED = 0x6280,
+    MRTD_WRONG_SOD_DATA = 0x6281,
+    MRTD_WRONG_SOD_LENGTH = 0x6282,
+    MRTD_UNKNOWN_DIGEST_ALGORITHM = 0x6283,
+    MRTD_WARNING_DOES_NOT_CONTAINS_DS_CERT = 0x6284,
+    MRTD_DATA_GROUOP_INDEX_NOT_EXIST = 0x6285,
+    MRTD_EF_COM_WRONG_DATA = 0x6286,
+
+    // ICAO Master List specific statuses:
+    ICAO_ML_WRONG_FORMAT = 0x6300,
+    ICAO_ML_CAN_NOT_OPEN_FILE = 0x6301,
+    ICAO_ML_CAN_NOT_READ_FILE = 0x6302,
+    ICAO_ML_CERTIFICATE_NOT_FOUND = 0x6303,
+
+    ICAO_ML_WRONG_SIGNATURE = 0x6307,
 
 	// ISO7816-4 Errors (R-APDU) - 2 SW bytes returned by the card, prefixed with 0x000A:
 	UFR_APDU_SW_TAG = 0x000A0000,
+	UFR_APDU_SW_OPERATION_IS_FAILED = 0x000A6300,
 	UFR_APDU_SW_WRONG_LENGTH = 0x000A6700,
 	UFR_APDU_SW_SECURITY_STATUS_NOT_SATISFIED = 0x000A6982,
 	UFR_APDU_SW_AUTHENTICATION_METHOD_BLOCKED = 0x000A6983,
@@ -445,10 +510,6 @@ typedef enum UFCODER_ERROR_CODES
 	UFR_APDU_SW_ENTITY_ALREADY_EXISTS = 0x000A6A89,
 	UFR_APDU_SW_INS_NOT_SUPPORTED = 0x000A6D00,
 	UFR_APDU_SW_NO_PRECISE_DIAGNOSTIC = 0x000A6F00,
-	//SAM module error codes:
-	UFR_SAM_APDU_ERROR = 0x2000,
-	UFR_SAM_AUTH_ERROR,
-	UFR_SAM_CRYPTO_ERROR,
 
 	MAX_UFR_STATUS = 0x7FFFFFFF
 
@@ -477,13 +538,141 @@ typedef enum UFCODER_ERROR_CODES
 #define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_CHANGE_KEY_NOT_CHANGE_APP_IDS_WIDTHOUT_AUTH		0x0A
 #define DESFIRE_KEY_SET_CREATE_WITH_AUTH_SET_NOT_CHANGE_KEY_NOT_CHANGE_APP_IDS_WIDTHOUT_AUTH	0x02
 
-
 enum E_ASYMMETRIC_KEY_TYPES {
 	RSA_PRIVATE_KEY = 0,
 	ECDSA_PRIVATE_KEY,
 
 	ASYMMETRIC_KEY_TYPES_NUM
 };
+
+#define MAX_ECC_CURVE_NAME_LEN  30
+
+enum E_ECC_CURVE_DEFINITION_TYPES {
+    ECC_CURVE_INDEX,
+    ECC_CURVE_NAME,
+    ECC_CURVE_DOMAIN_PARAMETERS,
+
+    ECC_CURVE_DEFINITION_TYPES_NUM
+};
+
+enum E_SIGNATURE_SCHEMES {
+    SHA1_WITH_RSA,
+    SHA256_WITH_RSA,
+    SHA384_WITH_RSA,
+    SHA512_WITH_RSA,
+    SHA224_WITH_RSA,
+    SHA512_224_WITH_RSA,
+    SHA512_256_WITH_RSA,
+
+    RSA_PSS,
+
+    ECDSA_WITH_SHA1,
+    ECDSA_WITH_SHA256,
+    ECDSA_WITH_SHA384,
+    ECDSA_WITH_SHA512,
+    ECDSA_WITH_SHA224,
+
+    SIGNATURE_SCHEMES_NUM // Don't change the order. NEVER!
+};
+enum E_SIGNATURE_SCH_TYPES {
+    RSA_PKCS1,
+    RSA_PKCS1_PSS,
+    ECDSA,
+
+    SIGNATURE_SCH_TYPES_NUM
+};
+enum E_PUB_KEY_TYPES {
+    PUB_KEY_TYPE_RSA,
+    PUB_KEY_TYPE_ECDSA_NAMED_CURVE,
+    PUB_KEY_TYPE_ECDSA_DOMAIN_PARAMS,
+
+    PUB_KEY_TYPES_NUM
+};
+enum E_ECC_CURVES {
+    secp112r1,
+    secp112r2,
+    secp128r1,
+    secp128r2,
+    secp160r1,
+    secp160r2,
+    secp160k1,
+    secp192r1,
+    prime192v2,
+    prime192v3,
+    secp192k1,
+    secp224r1,
+    secp224k1,
+    secp256r1,
+    secp256k1,
+    secp384r1,
+    secp521r1,
+    prime239v1,
+    prime239v2,
+    prime239v3,
+    brainpoolP160r1,
+    brainpoolP192r1,
+    brainpoolP224r1,
+    brainpoolP256r1,
+    brainpoolP320r1,
+    brainpoolP384r1,
+    brainpoolP512r1,
+    brainpoolP160t1,
+    brainpoolP192t1,
+    brainpoolP224t1,
+    brainpoolP256t1,
+    brainpoolP320t1,
+    brainpoolP384t1,
+    brainpoolP512t1,
+
+    ECC_CURVES_NUM
+
+/* Not supported in uFCoder library yet:
+    sect113r1,
+    sect113r2,
+    sect131r1,
+    sect131r2,
+    sect163k1,
+    sect163r1,
+    sect163r2,
+    sect193r1,
+    sect193r2,
+    sect233k1,
+    sect233r1,
+    sect239k1,
+    sect283k1,
+    sect283r1,
+    sect409k1,
+    sect409r1,
+    sect571k1,
+    sect571r1
+*/
+};
+//#define F2M_CURVES sect113r1
+
+typedef struct {
+    uint8_t *serial;
+    uint8_t *subject;
+    uint8_t *issuer;
+    uint8_t *SKI;
+    uint8_t *AKI;
+    uint32_t serial_len;
+    uint32_t subject_len;
+    uint32_t issuer_len;
+    uint32_t SKI_len;
+    uint32_t AKI_len;
+} icaoMlSearchCriteria_t;
+
+typedef struct {
+    uint32_t ecc_curve_field_type;
+    void *field_domain_params; // To be defined. For now only a named primary field curves are supported.
+} ecc_curve_domain_params_t;
+
+typedef struct {
+    uint32_t ecc_curve_definition_type; // one of the E_ECC_CURVE_DEFINITION_TYPES
+    uint32_t ecc_curve_index;
+    char *ecc_curve_name;
+    ecc_curve_domain_params_t *ecc_curve_domain_params;
+} ecc_key_param_t;
 
 typedef enum {
 	USER_PIN = 0,
@@ -650,6 +839,17 @@ UFR_STATUS DL_API LinearFormatCard(IN const uint8_t *new_key_A,
                                        uint8_t key_index);
                                      
 UFR_STATUS DL_API SectorTrailerWrite(uint8_t addressing_mode,
+                                         uint8_t address,
+                                     IN const uint8_t *new_key_A,
+                                         uint8_t block0_access_bits,
+                                         uint8_t block1_access_bits,
+                                         uint8_t block2_access_bits,
+                                         uint8_t sector_trailer_access_bits,
+                                         uint8_t sector_trailer_byte9,
+                                      IN const uint8_t *new_key_B,
+                                         uint8_t auth_mode,
+                                         uint8_t key_index);
+UFR_STATUS DL_API SectorTrailerWriteSamKey(uint8_t addressing_mode,
                                          uint8_t address,
                                      IN const uint8_t *new_key_A,
                                          uint8_t block0_access_bits,
@@ -1400,7 +1600,7 @@ UFR_STATUS DL_API JCAppPinEnable(uint8_t SO);
 UFR_STATUS DL_API JCAppPinDisable(uint8_t SO);
 UFR_STATUS DL_API JCAppGetRsaPublicKey(uint8_t key_index, OUT uint8_t *modulus, VAR uint16_t *modulus_size,
 		OUT uint8_t *exponent, VAR uint16_t *exponent_size); // when modulus == NULL, returns sizes and exponent ignored
-UFR_STATUS DL_API JCAppGetEcPublicKey(uint8_t key_index, OUT uint8_t *keyW, VAR uint16_t *kexWSize, // when keyW == NULL, returns size
+UFR_STATUS DL_API JCAppGetEcPublicKey(uint8_t key_index, OUT uint8_t *keyW, VAR uint16_t *keyWSize, // when keyW == NULL, returns size
 		OUT uint8_t *field, VAR uint16_t *field_size, OUT uint8_t *ab , VAR uint16_t *ab_size, OUT uint8_t *g, VAR uint16_t *g_size,
 		OUT uint8_t *r, VAR uint16_t *r_size, VAR uint16_t *k, VAR uint16_t *key_size_bits, VAR uint16_t *key_designator);
 UFR_STATUS DL_API JCAppGetEcKeySizeBits(uint8_t key_index, VAR uint16_t *key_size_bits, VAR uint16_t *key_designator);
@@ -1414,13 +1614,30 @@ UFR_STATUS DL_API JCStorageWriteFile(uint8_t card_file_index, IN const uint8_t *
 UFR_STATUS DL_API JCStorageWriteFileFromFileSystem(uint8_t card_file_index, IN const char *file_system_path_name);
 UFR_STATUS DL_API JCStorageDeleteFile(uint8_t file_index);
 //------------------------------------------------------------------------------
-UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBac(IN const uint8_t mrz_proto_key[25], OUT uint8_t *ksenc, OUT uint8_t *ksmac,
+char DL_API *DLGetHashName(uint32_t hash_algo);
+UFR_STATUS DL_API DLGetHashOutputByteLength(uint32_t hash_algo, VAR uint32_t *out_byte_len);
+UFR_STATUS DL_API DLGetHash(uint32_t hash_algo, IN const uint8_t *in, uint32_t in_len, OUT uint8_t *hash, uint32_t hash_alocated);
+/* GetHashToHeap() automatically allocates memory, which *hash parameter will points to after successful execution.
+   User is obligated to cleanup allocated memory space, occupied by the *hash, after use (e.g. by calling free()).                        */
+UFR_STATUS DL_API DLGetHashToHeap(uint32_t hash_algo, IN const uint8_t *in, uint32_t in_len, VAR uint8_t **hash, VAR uint32_t *hash_len);
+UFR_STATUS DL_API DLHashInitChunked(uint32_t hash_algo);
+UFR_STATUS DL_API DLHashUpdateChunked(IN const uint8_t *in, uint32_t in_len);
+UFR_STATUS DL_API DLHashFinishChunked(OUT uint8_t *hash, uint32_t hash_alocated);
+/* DLHashFinishChunkedToHeap() automatically allocates memory, which *hash parameter will points to after successful execution.
+   User is obligated to cleanup allocated memory space, occupied by the *hash, after use (e.g. by calling free()).                        */
+UFR_STATUS DL_API DLHashFinishChunkedToHeap(OUT uint8_t **hash, uint32_t *hash_alocated);
+UFR_STATUS DL_API DigitalSignatureVerifyHash(uint32_t digest_alg, uint32_t padding_alg, uint32_t cypher_alg, IN const uint8_t *tbs,
+                                             uint32_t tbs_len, IN const uint8_t *signature, uint32_t signature_len,
+                                             IN const void *sig_params, VAR uint32_t sig_params_len, IN const uint8_t *pub_key,
+                                             VAR uint32_t pub_key_len, IN const void *pub_key_params, VAR uint32_t pub_key_params_len);
+//------------------------------------------------------------------------------
+UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBac(IN const uint8_t mrz_proto_key[25], OUT uint8_t ksenc[16], OUT uint8_t ksmac[16],
                                                   VAR uint64_t *send_sequence_cnt);
-UFR_STATUS DL_API MRTDFileReadBacToHeap(IN const uint8_t *file_index, VAR uint8_t **output, OUT uint32_t *output_length, IN const uint8_t *ksenc,
-                                        IN const uint8_t *ksmac, VAR uint64_t *send_sequence_cnt);
+UFR_STATUS DL_API MRTDFileReadBacToHeap(IN const uint8_t file_index[2], VAR uint8_t **output, OUT uint32_t *output_length,
+		                                IN const uint8_t ksenc[16], IN const uint8_t ksmac[16], VAR uint64_t *send_sequence_cnt);
 UFR_STATUS DL_API MRTD_MRZDataToMRZProtoKey(IN const char *doc_number, IN const char *date_of_birth, IN const char *date_of_expiry,
                                             OUT uint8_t mrz_proto_key[25]);
-UFR_STATUS DL_API MRTD_MRZSubjacentToMRZProtoKey(IN const uint8_t mrz[44], OUT uint8_t mrz_proto_key[25]);
+UFR_STATUS DL_API MRTD_MRZSubjacentToMRZProtoKey(IN const char mrz[44], OUT uint8_t mrz_proto_key[25]);
 //==============================================================================
 UFR_STATUS DL_API DES_to_AES_key_type(void);
 UFR_STATUS DL_API AES_to_DES_key_type(void);
@@ -1531,6 +1748,22 @@ UFR_STATUS DL_API uFR_SAM_GetDesfireUid3k3desAuth(
 								VAR uint8_t *card_uid_len,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_GetDesfireUidDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								OUT uint8_t *card_uid,
+								VAR uint8_t *card_uid_len,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_GetDesfireUid2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								OUT uint8_t *card_uid,
+								VAR uint8_t *card_uid_len,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireFreeMem(
 								VAR uint32_t *free_mem_byte,
@@ -1582,6 +1815,14 @@ UFR_STATUS DL_API uFR_SAM_DesfireFormatCardAesAuth(
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireFormatCard3k3desAuth(
+								uint8_t des3k_key_nr,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireFormatCardDesAuth(
+								uint8_t des3k_key_nr,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireFormatCard2k3desAuth(
 								uint8_t des3k_key_nr,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
@@ -1730,6 +1971,30 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateStdDataFile3k3desAuth(
 								uint8_t communication_settings,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateStdDataFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								uint32_t file_size,
+								uint8_t read_key_no,
+								uint8_t write_key_no,
+								uint8_t read_write_key_no,
+								uint8_t change_key_no,
+								uint8_t communication_settings,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateStdDataFile2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								uint32_t file_size,
+								uint8_t read_key_no,
+								uint8_t write_key_no,
+								uint8_t read_write_key_no,
+								uint8_t change_key_no,
+								uint8_t communication_settings,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireCreateStdDataFile_no_auth(
 								uint32_t aid,
 								uint8_t file_id,
@@ -1810,6 +2075,18 @@ UFR_STATUS DL_API uFR_SAM_DesfireDeleteFileAesAuth(
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireDeleteFile3k3desAuth(
 								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDeleteFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDeleteFile2k3desAuth(
+								uint8_t des2k_key_nr,
 								uint32_t aid,
 								uint8_t file_id,
 								VAR uint16_t *card_status,
@@ -2016,6 +2293,13 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreate3k3desApplicationAesAuth(
 								uint8_t max_key_no,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateDesApplicationAesAuth(
+								uint8_t aes_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								uint8_t max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireCreateAesApplication3k3desAuth(
 								uint8_t des3k_key_nr,
 								uint32_t aid,
@@ -2025,6 +2309,55 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateAesApplication3k3desAuth(
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireCreate3k3desApplication3k3desAuth(
 								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								uint8_t max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateDesApplication3k3desAuth(
+								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								uint8_t max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateAesApplicationDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								uint8_t max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreate3k3desApplicationDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								uint8_t max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateDesApplicationDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								uint8_t max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateAesApplication2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								uint8_t max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreate3k3desApplication2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								uint8_t max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateDesApplication2k3desAuth(
+								uint8_t des2k_key_nr,
 								uint32_t aid,
 								uint8_t setting,
 								uint8_t max_key_no,
@@ -2109,6 +2442,16 @@ UFR_STATUS DL_API uFR_SAM_DesfireDeleteApplication3k3desAuth(
 								uint32_t aid,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDeleteApplicationDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDeleteApplication2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireSetConfiguration(
 								uint8_t aes_key_nr,
@@ -2178,6 +2521,18 @@ UFR_STATUS DL_API uFR_SAM_DesfireSetConfigurationAesAuth(
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireSetConfiguration3k3desAuth(
 								uint8_t des3k_key_nr,
+								uint8_t random_uid,
+								uint8_t format_disable,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireSetConfigurationDesAuth(
+								uint8_t des_key_nr,
+								uint8_t random_uid,
+								uint8_t format_disable,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireSetConfiguration2k3desAuth(
+								uint8_t des2k_key_nr,
 								uint8_t random_uid,
 								uint8_t format_disable,
 								VAR uint16_t *card_status,
@@ -2267,6 +2622,20 @@ UFR_STATUS DL_API uFR_SAM_DesfireGetKeySettings3k3desAuth(
 								VAR uint8_t *max_key_no,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireGetKeySettingsDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								VAR uint8_t *setting,
+								VAR uint8_t *max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireGetKeySettings2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								VAR uint8_t *setting,
+								VAR uint8_t *max_key_no,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireChangeKeySettings(
 								uint8_t aes_key_nr,
@@ -2336,6 +2705,18 @@ UFR_STATUS DL_API uFR_SAM_DesfireChangeKeySettingsAesAuth(
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireChangeKeySettings3k3desAuth(
 								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeKeySettingsDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t setting,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeKeySettings2k3desAuth(
+								uint8_t des2k_key_nr,
 								uint32_t aid,
 								uint8_t setting,
 								VAR uint16_t *card_status,
@@ -2491,7 +2872,7 @@ UFR_STATUS DL_API uFR_int_DesfireChangeMasterKey_PK(
 								uint8_t new_key_type,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireChangeKey_AesAuth(
+UFR_STATUS DL_API uFR_SAM_DesfireChangeAesKey_AesAuth(
 								uint8_t aes_key_nr,
 								uint32_t aid,
 								uint8_t aid_key_no_auth,
@@ -2500,13 +2881,56 @@ UFR_STATUS DL_API uFR_SAM_DesfireChangeKey_AesAuth(
 								uint8_t old_aes_key_nr,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireChangeKey_3k3desAuth(
+UFR_STATUS DL_API uFR_SAM_DesfireChange3k3desKey_3k3desAuth(
 								uint8_t des3k_key_nr,
 								uint32_t aid,
 								uint8_t aid_key_no_auth,
-								uint8_t new_aes_key_nr,
+								uint8_t new_des3k_key_nr,
 								uint8_t aid_key_no,
-								uint8_t old_aes_key_nr,
+								uint8_t old_des3k_key_nr,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeDesKey_DesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_no_auth,
+								uint8_t new_des_key_nr,
+								uint8_t aid_key_no,
+								uint8_t old_des_key_nr,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChange2k3desKey_DesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_no_auth,
+								uint8_t new_des2k_key_nr,
+								uint8_t aid_key_no,
+								uint8_t old_des_key_nr,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeDesKey_2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_no_auth,
+								uint8_t new_des_key_nr,
+								uint8_t aid_key_no,
+								uint8_t old_des2k_key_nr,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChange2k3desKey_2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_no_auth,
+								uint8_t new_des2k_key_nr,
+								uint8_t aid_key_no,
+								uint8_t old_des2k_key_nr,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeMasterKey(
+								uint8_t auth_key_nr,
+								uint8_t auth_key_type,
+								uint8_t new_key_nr,
+								uint8_t new_key_type,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
 
@@ -2650,6 +3074,28 @@ UFR_STATUS DL_API uFR_SAM_DesfireReadStdDataFile3k3desAuth(
 								OUT uint8_t *data,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadStdDataFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint16_t offset,
+								uint16_t data_length,
+								uint8_t communication_settings,
+								OUT uint8_t *data,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadStdDataFile2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint16_t offset,
+								uint16_t data_length,
+								uint8_t communication_settings,
+								OUT uint8_t *data,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireReadStdDataFile_no_auth(
 								uint32_t aid,
 								uint8_t aid_key_nr,
@@ -2784,6 +3230,28 @@ UFR_STATUS DL_API uFR_SAM_DesfireWriteStdDataFileAesAuth(
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireWriteStdDataFile3k3desAuth(
 								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint16_t offset,
+								uint16_t data_length,
+								uint8_t communication_settings,
+								IN uint8_t *data,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireWriteStdDataFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint16_t offset,
+								uint16_t data_length,
+								uint8_t communication_settings,
+								IN uint8_t *data,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireWriteStdDataFile2k3desAuth(
+								uint8_t des2k_key_nr,
 								uint32_t aid,
 								uint8_t aid_key_nr,
 								uint8_t file_id,
@@ -2984,6 +3452,36 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateValueFile3k3desAuth(
 								uint8_t communication_settings,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateValueFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								int32_t lower_limit,
+								int32_t upper_limit,
+								int32_t value,
+								uint8_t limited_credit_enabled,
+								uint8_t read_key_no,
+								uint8_t write_key_no,
+								uint8_t read_write_key_no,
+								uint8_t change_key_no,
+								uint8_t communication_settings,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateValueFile2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								int32_t lower_limit,
+								int32_t upper_limit,
+								int32_t value,
+								uint8_t limited_credit_enabled,
+								uint8_t read_key_no,
+								uint8_t write_key_no,
+								uint8_t read_write_key_no,
+								uint8_t change_key_no,
+								uint8_t communication_settings,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireCreateValueFile_no_auth(
 								uint32_t aid,
 								uint8_t file_id,
@@ -3100,6 +3598,24 @@ UFR_STATUS DL_API uFR_SAM_DesfireReadValueFileAesAuth(
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireReadValueFile3k3desAuth(
 								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint8_t communication_settings,
+								VAR int32_t *value,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadValueFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint8_t communication_settings,
+								VAR int32_t *value,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadValueFile2k3desAuth(
+								uint8_t des2k_key_nr,
 								uint32_t aid,
 								uint8_t aid_key_nr,
 								uint8_t file_id,
@@ -3224,6 +3740,24 @@ UFR_STATUS DL_API uFR_SAM_DesfireIncreaseValueFile3k3desAuth(
 								uint32_t value,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireIncreaseValueFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint8_t communication_settings,
+								uint32_t value,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireIncreaseValueFile2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint8_t communication_settings,
+								uint32_t value,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_no_auth(
 								uint32_t aid,
 								uint8_t aid_key_nr,
@@ -3341,6 +3875,24 @@ UFR_STATUS DL_API uFR_SAM_DesfireDecreaseValueFile3k3desAuth(
 								uint32_t value,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDecreaseValueFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint8_t communication_settings,
+								uint32_t value,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDecreaseValueFile2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint8_t communication_settings,
+								uint32_t value,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_no_auth(
 								uint32_t aid,
 								uint8_t aid_key_nr,
@@ -3388,6 +3940,18 @@ UFR_STATUS DL_API uFR_SAM_DesfireGetApplicationIdsAesAuth(
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireGetApplicationIds3k3desAuth(
 								uint8_t des3k_key_nr,
+								OUT uint32_t *application_ids,
+								VAR uint8_t *number_of_aplication_ids,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireGetApplicationIdsDesAuth(
+								uint8_t des_key_nr,
+								OUT uint32_t *application_ids,
+								VAR uint8_t *number_of_aplication_ids,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireGetApplicationIds2k3desAuth(
+								uint8_t des2k_key_nr,
 								OUT uint32_t *application_ids,
 								VAR uint8_t *number_of_aplication_ids,
 								VAR uint16_t *card_status,
@@ -3502,7 +4066,32 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateLinearRecordFile3k3desAuth(
 								uint8_t communication_settings,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
-
+UFR_STATUS DL_API uFR_SAM_DesfireCreateLinearRecordFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								uint32_t record_size,
+								uint32_t max_rec_no,
+								uint8_t read_key_no,
+								uint8_t write_key_no,
+								uint8_t read_write_key_no,
+								uint8_t change_key_no,
+								uint8_t communication_settings,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateLinearRecordFile2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								uint32_t record_size,
+								uint32_t max_rec_no,
+								uint8_t read_key_no,
+								uint8_t write_key_no,
+								uint8_t read_write_key_no,
+								uint8_t change_key_no,
+								uint8_t communication_settings,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireCreateLinearRecordFile_aes_PK(
 								IN uint8_t *aes_key_ext,
 								uint32_t aid,
@@ -3646,6 +4235,32 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateCyclicRecordFile3k3desAuth(
 								uint8_t communication_settings,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateCyclicRecordFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								uint32_t record_size,
+								uint32_t max_rec_no,
+								uint8_t read_key_no,
+								uint8_t write_key_no,
+								uint8_t read_write_key_no,
+								uint8_t change_key_no,
+								uint8_t communication_settings,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateCyclicRecordFile2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								uint32_t record_size,
+								uint32_t max_rec_no,
+								uint8_t read_key_no,
+								uint8_t write_key_no,
+								uint8_t read_write_key_no,
+								uint8_t change_key_no,
+								uint8_t communication_settings,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireCreateCyclicRecordFile_aes_PK(
 								IN uint8_t *aes_key_ext,
 								uint32_t aid,
@@ -3768,6 +4383,28 @@ UFR_STATUS DL_API uFR_SAM_DesfireWriteRecordAesAuth(
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireWriteRecord3k3desAuth(
 								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint16_t offset,
+								uint16_t data_length,
+								uint8_t communication_settings,
+								IN uint8_t *data,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireWriteRecordDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint16_t offset,
+								uint16_t data_length,
+								uint8_t communication_settings,
+								IN uint8_t *data,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireWriteRecord2k3desAuth(
+								uint8_t des2k_key_nr,
 								uint32_t aid,
 								uint8_t aid_key_nr,
 								uint8_t file_id,
@@ -3904,6 +4541,30 @@ UFR_STATUS DL_API uFR_SAM_DesfireReadRecords3k3desAuth(
 								OUT uint8_t *data,
 								VAR uint16_t *card_status,
 								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadRecordsDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint16_t offset,
+								uint16_t number_of_records,
+								uint16_t record_size,
+								uint8_t communication_settings,
+								OUT uint8_t *data,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadRecords2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								uint16_t offset,
+								uint16_t number_of_records,
+								uint16_t record_size,
+								uint8_t communication_settings,
+								OUT uint8_t *data,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireReadRecords_aes_PK(
 								IN uint8_t *aes_key_ext,
 								uint32_t aid,
@@ -4002,6 +4663,18 @@ UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileAesAuth(
 								VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile3k3desAuth(
 								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile2k3desAuth(
+								uint8_t des2k_key_nr,
 								uint32_t aid,
 								uint8_t file_id,
 								VAR uint16_t *card_status,
@@ -4110,7 +4783,7 @@ UFR_STATUS DL_API SAM_authenticate_host_no_div_des(uint8_t key_no,
 UFR_STATUS DL_API SAM_pre_pesonalization_master_AES128_key(IN uint8_t *aes_key_ver_a, uint8_t ver_a, IN uint8_t *aes_key_ver_b, uint8_t ver_b,
 														IN uint8_t *aes_key_ver_c, uint8_t ver_c, OUT uint8_t *apdu_sw);
 UFR_STATUS DL_API SAM_pre_personalization_switch_to_AV2_mode(IN uint8_t *master_aes_key, uint8_t key_version, OUT uint8_t *apdu_sw);
-UFR_STATUS DL_API SAM_authenticate_host_AV2(IN uint8_t *master_aes_key, uint8_t key_nr, uint8_t key_version, uint8_t host_mode, OUT uint8_t *apdu_sw);
+UFR_STATUS DL_API SAM_authenticate_host_AV2_plain(IN uint8_t *host_aes_key, uint8_t key_nr, uint8_t key_version, OUT uint8_t *apdu_sw);
 
 UFR_STATUS DL_API SAM_change_key_entry_mifare_AV2_plain_one_key(uint8_t key_entry_no, IN uint8_t *keyA, IN uint8_t *keyB,
 																 uint8_t key_no_CEK, uint8_t key_v_CEK, uint8_t ref_no_KUC, OUT uint8_t *apdu_sw);
@@ -4118,14 +4791,20 @@ UFR_STATUS DL_API SAM_change_key_entry_AES_AV2_plain_one_key(uint8_t key_entry_n
 																 uint8_t key_no_CEK, uint8_t key_v_CEK, uint8_t ref_no_KUC, OUT uint8_t *apdu_sw);
 UFR_STATUS DL_API SAM_change_key_entry_3K3DES_AV2_plain_one_key(uint8_t key_entry_no, IN uint8_t *key,
 																 uint8_t key_no_CEK, uint8_t key_v_CEK, uint8_t ref_no_KUC, OUT uint8_t *apdu_sw);
-UFR_STATUS DL_API SAM_change_key_entry_2K3DES_AV2_plain_one_key(uint8_t key_entry_no, IN uint8_t *key,
+UFR_STATUS DL_API SAM_change_key_entry_2K3DES_ULC_AV2_plain_one_key(uint8_t key_entry_no, IN uint8_t *key,
+																 uint8_t key_no_CEK, uint8_t key_v_CEK, uint8_t ref_no_KUC, OUT uint8_t *apdu_sw);
+UFR_STATUS DL_API SAM_change_key_entry_2K3DES_desfire_AV2_plain_one_key(uint8_t key_entry_no, IN uint8_t *key,
+																 uint8_t key_no_CEK, uint8_t key_v_CEK, uint8_t ref_no_KUC, OUT uint8_t *apdu_sw);
+UFR_STATUS DL_API SAM_change_key_entry_DES_AV2_plain_one_key(uint8_t key_entry_no, IN uint8_t *key,
 																 uint8_t key_no_CEK, uint8_t key_v_CEK, uint8_t ref_no_KUC, OUT uint8_t *apdu_sw);
 UFR_STATUS DL_API SAM_change_key_entry_aes_AV2_plain_host_key(uint8_t key_entry_no,
 											IN uint8_t *aes_key_ver_a, uint8_t ver_a, IN uint8_t *aes_key_ver_b, uint8_t ver_b,
 											IN uint8_t *aes_key_ver_c, uint8_t ver_c,
 											uint8_t key_no_CEK, uint8_t key_v_CEK, uint8_t ref_no_KUC,
-											uint8_t sam_lock_unlock, OUT uint8_t *apdu_sw);
+											uint8_t sam_lock_unlock, uint8_t sam_auth_host, OUT uint8_t *apdu_sw);
 UFR_STATUS DL_API WriteSamUnlockKey(uint8_t key_no, uint8_t key_ver, IN uint8_t *aes_key);
+UFR_STATUS DL_API CheckUidChangeable(void);
+UFR_STATUS DL_API ReaderRfReset(void);
 
 //MIFARE PLUS
 UFR_STATUS DL_API MFP_WritePerso(uint16_t address, IN uint8_t *data);
@@ -4139,15 +4818,16 @@ UFR_STATUS DL_API MFP_AesAuthSecurityLevel1(uint8_t key_index);
 UFR_STATUS DL_API MFP_AesAuthSecurityLevel1_PK(IN uint8_t *aes_key);
 UFR_STATUS DL_API MFP_ChangeMasterKey(uint8_t key_index, IN uint8_t *new_key);
 UFR_STATUS DL_API MFP_ChangeMasterKey_PK(IN uint8_t *old_key, IN uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeMasterKeySamKey(uint8_t key_index, uint8_t new_key_index);
 UFR_STATUS DL_API MFP_ChangeConfigurationKey(uint8_t key_index, IN uint8_t *new_key);
 UFR_STATUS DL_API MFP_ChangeConfigurationKey_PK(IN uint8_t *old_key, IN uint8_t *new_key);
 UFR_STATUS DL_API MFP_ChangeConfigurationKeySamKey(uint8_t key_index, uint8_t new_key_index);
-
 UFR_STATUS DL_API MFP_FieldConfigurationSet(uint8_t configuration_key_index, uint8_t rid_use, uint8_t prox_check_use);
 UFR_STATUS DL_API MFP_FieldConfigurationSet_PK(IN uint8_t *configuration_key, uint8_t rid_use, uint8_t prox_check_use);
 UFR_STATUS DL_API MFP_FieldConfigurationSetSamKey(uint8_t configuration_key_index, uint8_t rid_use, uint8_t prox_check_use);
 UFR_STATUS DL_API MFP_ChangeSectorKey(uint8_t sector_nr, uint8_t auth_mode, uint8_t key_index, IN uint8_t *new_key);
 UFR_STATUS DL_API MFP_ChangeSectorKey_PK(uint8_t sector_nr, uint8_t auth_mode, IN uint8_t *old_key, IN uint8_t *new_key);
+UFR_STATUS DL_API MFP_ChangeSectorKeySamKey(uint8_t sector_nr, uint8_t auth_mode, uint8_t key_index, uint8_t new_key_index);
 UFR_STATUS DL_API MFP_GetUid(uint8_t key_index_vc_poll_enc_key, uint8_t key_index_vc_poll_mac_key, OUT uint8_t *uid, VAR uint8_t *uid_len);
 UFR_STATUS DL_API MFP_GetUidSamKey(uint8_t key_index_vc_poll_enc_key, uint8_t key_index_vc_poll_mac_key, OUT uint8_t *uid, VAR uint8_t *uid_len);
 UFR_STATUS DL_API MFP_GetUid_PK(IN uint8_t *vc_poll_enc_key, IN uint8_t *vc_poll_mac_key, OUT uint8_t *uid, VAR uint8_t *uid_len);
@@ -4425,6 +5105,19 @@ UFR_STATUS DL_API LinearFormatCardM(UFR_HANDLE hndUFR,
 
 
 UFR_STATUS DL_API SectorTrailerWriteM(UFR_HANDLE hndUFR,
+                                      uint8_t addressing_mode,
+                                         uint8_t address,
+                                      IN const uint8_t *new_key_A,
+                                         uint8_t block0_access_bits,
+                                         uint8_t block1_access_bits,
+                                         uint8_t block2_access_bits,
+                                         uint8_t sector_trailer_access_bits,
+                                         uint8_t sector_trailer_byte9,
+                                      IN const uint8_t *new_key_B,
+                                         uint8_t auth_mode,
+                                         uint8_t key_index);
+
+UFR_STATUS DL_API SectorTrailerWriteSamKeyM(UFR_HANDLE hndUFR,
                                       uint8_t addressing_mode,
                                          uint8_t address,
                                       IN const uint8_t *new_key_A,
@@ -5609,7 +6302,7 @@ UFR_STATUS DL_API JCAppGetRsaPublicKeyM(UFR_HANDLE hndUFR,
 UFR_STATUS DL_API JCAppGetEcPublicKeyM(UFR_HANDLE hndUFR,
                                        uint8_t key_index,
                                        OUT uint8_t *keyW,
-                                       VAR uint16_t *kexWSize,
+                                       VAR uint16_t *keyWSize,
                                        OUT uint8_t *field,
                                        VAR uint16_t *field_size,
                                        OUT uint8_t *ab,
@@ -5636,10 +6329,10 @@ UFR_STATUS DL_API JCStorageWriteFileM(UFR_HANDLE hndUFR, uint8_t card_file_index
 UFR_STATUS DL_API JCStorageWriteFileFromFileSystemM(UFR_HANDLE hndUFR, uint8_t card_file_index, IN const char *file_system_path_name);
 UFR_STATUS DL_API JCStorageDeleteFileM(UFR_HANDLE hndUFR, uint8_t file_index);
 //------------------------------------------------------------------------------
-UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBacM(UFR_HANDLE hndUFR, IN const uint8_t mrz_proto_key[25], OUT uint8_t *ksenc, OUT uint8_t *ksmac,
-                                                  VAR uint64_t *send_sequence_cnt);
-UFR_STATUS DL_API MRTDFileReadBacToHeapM(UFR_HANDLE hndUFR, IN const uint8_t *file_index, VAR uint8_t **output, OUT uint32_t *output_length, IN const uint8_t *ksenc,
-                                        IN const uint8_t *ksmac, VAR uint64_t *send_sequence_cnt);
+UFR_STATUS DL_API MRTDAppSelectAndAuthenticateBacM(UFR_HANDLE hndUFR, IN const uint8_t mrz_proto_key[25], OUT uint8_t ksenc[16],
+		                                          OUT uint8_t ksmac[16], VAR uint64_t *send_sequence_cnt);
+UFR_STATUS DL_API MRTDFileReadBacToHeapM(UFR_HANDLE hndUFR, IN const uint8_t *file_index, VAR uint8_t **output, OUT uint32_t *output_length,
+		                                IN const uint8_t ksenc[16], IN const uint8_t ksmac[16], VAR uint64_t *send_sequence_cnt);
 //#############################################################################
 
 UFR_STATUS DL_API uFR_DESFIRE_Start(void);
@@ -5749,6 +6442,22 @@ UFR_STATUS DL_API uFR_SAM_GetDesfireUid3k3desAuthM(UFR_HANDLE hndUFR,
 											VAR uint8_t *card_uid_len,
 											VAR uint16_t *card_status,
 											VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_GetDesfireUidDesAuthM(UFR_HANDLE hndUFR,
+											uint8_t des_key_nr,
+											uint32_t aid,
+											uint8_t aid_key_nr,
+											OUT uint8_t *card_uid,
+											VAR uint8_t *card_uid_len,
+											VAR uint16_t *card_status,
+											VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_GetDesfireUid2k3desAuthM(UFR_HANDLE hndUFR,
+											uint8_t des2k_key_nr,
+											uint32_t aid,
+											uint8_t aid_key_nr,
+											OUT uint8_t *card_uid,
+											VAR uint8_t *card_uid_len,
+											VAR uint16_t *card_status,
+											VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireFreeMemM(UFR_HANDLE hndUFR,
                                           VAR uint32_t *free_mem_byte,
@@ -5801,6 +6510,14 @@ UFR_STATUS DL_API uFR_SAM_DesfireFormatCardAesAuthM(UFR_HANDLE hndUFR,
 											VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireFormatCard3k3desAuthM(UFR_HANDLE hndUFR,
 											uint8_t des3k_key_nr,
+											VAR uint16_t *card_status,
+											VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireFormatCardDesAuthM(UFR_HANDLE hndUFR,
+											uint8_t des_key_nr,
+											VAR uint16_t *card_status,
+											VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireFormatCard2k3desAuthM(UFR_HANDLE hndUFR,
+											uint8_t des2k_key_nr,
 											VAR uint16_t *card_status,
 											VAR uint16_t *exec_time);
 
@@ -5948,6 +6665,30 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateStdDataFile3k3desAuthM(UFR_HANDLE hndUFR,
 												uint8_t communication_settings,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateStdDataFileDesAuthM(UFR_HANDLE hndUFR,
+												uint8_t des_key_nr,
+												uint32_t aid,
+												uint8_t file_id,
+												uint32_t file_size,
+												uint8_t read_key_no,
+												uint8_t write_key_no,
+												uint8_t read_write_key_no,
+												uint8_t change_key_no,
+												uint8_t communication_settings,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateStdDataFile2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
+												uint32_t aid,
+												uint8_t file_id,
+												uint32_t file_size,
+												uint8_t read_key_no,
+												uint8_t write_key_no,
+												uint8_t read_write_key_no,
+												uint8_t change_key_no,
+												uint8_t communication_settings,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireCreateStdDataFile_no_auth_M(UFR_HANDLE hndUFR,
                                                              uint32_t aid,
 															 uint8_t file_id,
@@ -6028,6 +6769,18 @@ UFR_STATUS DL_API uFR_SAM_DesfireDeleteFileAesAuthM(UFR_HANDLE hndUFR,
 											VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireDeleteFile3k3desAuthM(UFR_HANDLE hndUFR,
 											uint8_t des3k_key_nr,
+											uint32_t aid,
+											uint8_t file_id,
+											VAR uint16_t *card_status,
+											VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDeleteFileDesAuthM(UFR_HANDLE hndUFR,
+											uint8_t des_key_nr,
+											uint32_t aid,
+											uint8_t file_id,
+											VAR uint16_t *card_status,
+											VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDeleteFile2k3desAuthM(UFR_HANDLE hndUFR,
+											uint8_t des2k_key_nr,
 											uint32_t aid,
 											uint8_t file_id,
 											VAR uint16_t *card_status,
@@ -6233,6 +6986,12 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreate3k3desApplicationAesAuthM(UFR_HANDLE hndU
 														uint8_t max_key_no,
 														VAR uint16_t *card_status,
 														VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateDesApplicationAesAuthM(UFR_HANDLE hndUFR,
+														uint8_t aes_key_nr, uint32_t aid,
+														uint8_t setting,
+														uint8_t max_key_no,
+														VAR uint16_t *card_status,
+														VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireCreateAesApplication3k3desAuthM(UFR_HANDLE hndUFR,
 														uint8_t des3k_key_nr,
 														uint32_t aid,
@@ -6242,6 +7001,55 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateAesApplication3k3desAuthM(UFR_HANDLE hndU
 														VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireCreate3k3desApplication3k3desAuthM(UFR_HANDLE hndUFR,
 														uint8_t des3k_key_nr,
+														uint32_t aid,
+														uint8_t setting,
+														uint8_t max_key_no,
+														VAR uint16_t *card_status,
+														VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateDesApplication3k3desAuthM(UFR_HANDLE hndUFR,
+														uint8_t des3k_key_nr,
+														uint32_t aid,
+														uint8_t setting,
+														uint8_t max_key_no,
+														VAR uint16_t *card_status,
+														VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateAesApplicationDesAuthM(UFR_HANDLE hndUFR,
+														uint8_t des_key_nr,
+														uint32_t aid,
+														uint8_t setting,
+														uint8_t max_key_no,
+														VAR uint16_t *card_status,
+														VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreate3k3desApplicationDesAuthM(UFR_HANDLE hndUFR,
+														uint8_t des_key_nr,
+														uint32_t aid,
+														uint8_t setting,
+														uint8_t max_key_no,
+														VAR uint16_t *card_status,
+														VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateDesApplicationDesAuthM(UFR_HANDLE hndUFR,
+														uint8_t des_key_nr,
+														uint32_t aid,
+														uint8_t setting,
+														uint8_t max_key_no,
+														VAR uint16_t *card_status,
+														VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateAesApplication2k3desAuthM(UFR_HANDLE hndUFR,
+														uint8_t des2k_key_nr,
+														uint32_t aid,
+														uint8_t setting,
+														uint8_t max_key_no,
+														VAR uint16_t *card_status,
+														VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreate3k3desApplication2k3desAuthM(UFR_HANDLE hndUFR,
+														uint8_t des2k_key_nr,
+														uint32_t aid,
+														uint8_t setting,
+														uint8_t max_key_no,
+														VAR uint16_t *card_status,
+														VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateDesApplication2k3desAuthM(UFR_HANDLE hndUFR,
+														uint8_t des2k_key_nr,
 														uint32_t aid,
 														uint8_t setting,
 														uint8_t max_key_no,
@@ -6326,6 +7134,16 @@ UFR_STATUS DL_API uFR_SAM_DesfireDeleteApplication3k3desAuthM(UFR_HANDLE hndUFR,
 													uint32_t aid,
 													VAR uint16_t *card_status,
 													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDeleteApplicationDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDeleteApplicationd2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
+													uint32_t aid,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireSetConfigurationM(UFR_HANDLE hndUFR,
                                                    uint8_t aes_key_nr,
@@ -6395,6 +7213,18 @@ UFR_STATUS DL_API uFR_SAM_DesfireSetConfigurationAesAuthM(UFR_HANDLE hndUFR,
 												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireSetConfiguration3k3desAuthM(UFR_HANDLE hndUFR,
 												uint8_t des3k_key_nr,
+												uint8_t random_uid,
+												uint8_t format_disable,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireSetConfigurationDesAuthM(UFR_HANDLE hndUFR,
+												uint8_t des_key_nr,
+												uint8_t random_uid,
+												uint8_t format_disable,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireSetConfiguration2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
 												uint8_t random_uid,
 												uint8_t format_disable,
 												VAR uint16_t *card_status,
@@ -6484,7 +7314,20 @@ UFR_STATUS DL_API uFR_SAM_DesfireGetKeySettings3k3desAuthM(UFR_HANDLE hndUFR,
 												VAR uint8_t *max_key_no,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
-
+UFR_STATUS DL_API uFR_SAM_DesfireGetKeySettingsDesAuthM(UFR_HANDLE hndUFR,
+												uint8_t des_key_nr,
+												uint32_t aid,
+												VAR uint8_t *setting,
+												VAR uint8_t *max_key_no,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireGetKeySettings2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
+												uint32_t aid,
+												VAR uint8_t *setting,
+												VAR uint8_t *max_key_no,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
 
 UFR_STATUS DL_API uFR_int_DesfireChangeKeySettingsM(UFR_HANDLE hndUFR,
 												uint8_t aes_key_nr,
@@ -6554,6 +7397,18 @@ UFR_STATUS DL_API uFR_SAM_DesfireChangeKeySettingsAesAuthM(UFR_HANDLE hndUFR,
 												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireChangeKeySettings3k3desAuthM(UFR_HANDLE hndUFR,
 												uint8_t des3k_key_nr,
+												uint32_t aid,
+												uint8_t setting,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeKeySettingsDesAuthM(UFR_HANDLE hndUFR,
+												uint8_t des_key_nr,
+												uint32_t aid,
+												uint8_t setting,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeKeySettings2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
 												uint32_t aid,
 												uint8_t setting,
 												VAR uint16_t *card_status,
@@ -6708,7 +7563,7 @@ UFR_STATUS DL_API uFR_int_DesfireChangeMasterKey_PK_M(UFR_HANDLE hndUFR,
 												uint8_t new_key_type,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireChangeKey_AesAuthM(UFR_HANDLE hndUFR,
+UFR_STATUS DL_API uFR_SAM_DesfireChangeAesKey_AesAuthM(UFR_HANDLE hndUFR,
 												uint8_t aes_key_nr,
 												uint32_t aid,
 												uint8_t aid_key_no_auth,
@@ -6717,13 +7572,56 @@ UFR_STATUS DL_API uFR_SAM_DesfireChangeKey_AesAuthM(UFR_HANDLE hndUFR,
 												uint8_t old_aes_key_nr,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireChangeKey_3k3desAuthM(UFR_HANDLE hndUFR,
+UFR_STATUS DL_API uFR_SAM_DesfireChange3k3desKey_3k3desAuthM(UFR_HANDLE hndUFR,
 												uint8_t des3k_key_nr,
 												uint32_t aid,
 												uint8_t aid_key_no_auth,
-												uint8_t new_aes_key_nr,
+												uint8_t new_des3k_key_nr,
 												uint8_t aid_key_no,
-												uint8_t old_aes_key_nr,
+												uint8_t old_des3k_key_nr,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeDesKey_DesAuthM(UFR_HANDLE hndUFR,
+												uint8_t desk_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_no_auth,
+												uint8_t new_des_key_nr,
+												uint8_t aid_key_no,
+												uint8_t old_des_key_nr,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChange2k3desKey_DesAuthM(UFR_HANDLE hndUFR,
+												uint8_t des_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_no_auth,
+												uint8_t new_des2k_key_nr,
+												uint8_t aid_key_no,
+												uint8_t old_des_key_nr,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeDesKey_2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_no_auth,
+												uint8_t new_des_key_nr,
+												uint8_t aid_key_no,
+												uint8_t old_des2k_key_nr,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChange2k3desKey_2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_no_auth,
+												uint8_t new_des2k_key_nr,
+												uint8_t aid_key_no,
+												uint8_t old_des2k_key_nr,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireChangeMasterKeyM(UFR_HANDLE hndUFR,
+												uint8_t auth_key_nr,
+												uint8_t auth_key_type,
+												uint8_t new_key_nr,
+												uint8_t new_key_type,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
 
@@ -6757,7 +7655,7 @@ UFR_STATUS DL_API uFR_int_DesfireReadStddDataFile_aesM(UFR_HANDLE hndUFR,
 												  OUT uint8_t *data,
 		                                          VAR uint16_t *card_status,
 												  VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireReadStddDataFile_desM(UFR_HANDLE hndUFR,
+UFR_STATUS DL_API uFR_int_DesfireReadStdDataFile_desM(UFR_HANDLE hndUFR,
 												uint8_t des_key_nr,
 												uint32_t aid,
 												uint8_t aid_key_nr,
@@ -6768,7 +7666,7 @@ UFR_STATUS DL_API uFR_int_DesfireReadStddDataFile_desM(UFR_HANDLE hndUFR,
 												OUT uint8_t *data,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireReadStddDataFile_2k3desM(UFR_HANDLE hndUFR,
+UFR_STATUS DL_API uFR_int_DesfireReadStdDataFile_2k3desM(UFR_HANDLE hndUFR,
 												uint8_t des2k_key_nr,
 												uint32_t aid,
 												uint8_t aid_key_nr,
@@ -6779,7 +7677,7 @@ UFR_STATUS DL_API uFR_int_DesfireReadStddDataFile_2k3desM(UFR_HANDLE hndUFR,
 												OUT uint8_t *data,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireReadStddDataFile_3k3desM(UFR_HANDLE hndUFR,
+UFR_STATUS DL_API uFR_int_DesfireReadStdDataFile_3k3desM(UFR_HANDLE hndUFR,
 												uint8_t des3k_key_nr,
 												uint32_t aid,
 												uint8_t aid_key_nr,
@@ -6789,6 +7687,17 @@ UFR_STATUS DL_API uFR_int_DesfireReadStddDataFile_3k3desM(UFR_HANDLE hndUFR,
 												uint8_t communication_settings,
 												OUT uint8_t *data,
 												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadStdDataFile_aesM(UFR_HANDLE hndUFR, 
+												uint8_t aes_key_nr, 
+												uint32_t aid, 
+												uint8_t aid_key_nr, 
+												uint8_t file_id,
+												uint16_t offset, 
+												uint16_t data_length,
+												uint8_t communication_settings,
+												OUT uint8_t *data,
+												VAR uint16_t *card_status, 
 												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireReadStdDataFile_PK_M(UFR_HANDLE hndUFR,
                                                   IN uint8_t *aes_key_ext,
@@ -6858,6 +7767,28 @@ UFR_STATUS DL_API uFR_SAM_DesfireReadStdDataFileAesAuthM(UFR_HANDLE hndUFR,
 												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireReadStdDataFile3k3desAuthM(UFR_HANDLE hndUFR,
 												uint8_t des3k_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_nr,
+												uint8_t file_id,
+												uint16_t offset,
+												uint16_t data_length,
+												uint8_t communication_settings,
+												OUT uint8_t *data,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadStdDataFileDesAuthM(UFR_HANDLE hndUFR,
+												uint8_t des_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_nr,
+												uint8_t file_id,
+												uint16_t offset,
+												uint16_t data_length,
+												uint8_t communication_settings,
+												OUT uint8_t *data,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadStdDataFile2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
 												uint32_t aid,
 												uint8_t aid_key_nr,
 												uint8_t file_id,
@@ -7010,6 +7941,28 @@ UFR_STATUS DL_API uFR_SAM_DesfireWriteStdDataFile3k3desAuthM(UFR_HANDLE hndUFR,
 												IN uint8_t *data,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireWriteStdDataFileDesAuthM(UFR_HANDLE hndUFR,
+												uint8_t des_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_nr,
+												uint8_t file_id,
+												uint16_t offset,
+												uint16_t data_length,
+												uint8_t communication_settings,
+												IN uint8_t *data,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireWriteStdDataFile2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_nr,
+												uint8_t file_id,
+												uint16_t offset,
+												uint16_t data_length,
+												uint8_t communication_settings,
+												IN uint8_t *data,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireWriteStdDataFile_no_auth_M(UFR_HANDLE hndUFR,
                                                    uint32_t aid,
                                                    uint8_t aid_key_nr,
@@ -7081,6 +8034,21 @@ UFR_STATUS DL_API uFR_int_DesfireCreateValueFile_3k3desM(UFR_HANDLE hndUFR,
 												uint8_t communication_settings,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireCreateValueFile_aesM(UFR_HANDLE hndUFR, 
+												uint8_t aes_key_nr, 
+												uint32_t aid, 
+												uint8_t file_id,
+												int32_t lower_limit, 
+												int32_t upper_limit, 
+												int32_t value, 
+												uint8_t limited_credit_enabled,
+												uint8_t read_key_no, 
+												uint8_t write_key_no, 
+												uint8_t read_write_key_no, 
+												uint8_t change_key_no,
+												uint8_t communication_settings, 
+												VAR uint16_t *card_status, 
+												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireCreateValueFile_PK_M(UFR_HANDLE hndUFR,
                                                   IN uint8_t *aes_key_ext,
                                                   uint32_t aid,
@@ -7141,6 +8109,21 @@ UFR_STATUS DL_API uFR_int_DesfireCreateValueFile_3k3des_PK_M(UFR_HANDLE hndUFR,
 												uint8_t communication_settings,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireCreateValueFile_aes_PK_M(UFR_HANDLE hndUFR, 
+												uint8_t *aes_key_ext, 
+												uint32_t aid, 
+												uint8_t file_id,
+												int32_t lower_limit, 
+												int32_t upper_limit, 
+												int32_t value, 
+												uint8_t limited_credit_enabled,
+												uint8_t read_key_no, 
+												uint8_t write_key_no, 
+												uint8_t read_write_key_no, 
+												uint8_t change_key_no,
+												uint8_t communication_settings, 
+												VAR uint16_t *card_status, 
+												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireCreateValueFileAesAuthM(UFR_HANDLE hndUFR,
 												uint8_t aes_key_nr,
 												uint32_t aid,
@@ -7158,6 +8141,36 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateValueFileAesAuthM(UFR_HANDLE hndUFR,
 												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireCreateValueFile3k3desAuthM(UFR_HANDLE hndUFR,
 												uint8_t des3k_key_nr,
+												uint32_t aid,
+												uint8_t file_id,
+												int32_t lower_limit,
+												int32_t upper_limit,
+												int32_t value,
+												uint8_t limited_credit_enabled,
+												uint8_t read_key_no,
+												uint8_t write_key_no,
+												uint8_t read_write_key_no,
+												uint8_t change_key_no,
+												uint8_t communication_settings,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateValueFileDesAuthM(UFR_HANDLE hndUFR,
+												uint8_t des_key_nr,
+												uint32_t aid,
+												uint8_t file_id,
+												int32_t lower_limit,
+												int32_t upper_limit,
+												int32_t value,
+												uint8_t limited_credit_enabled,
+												uint8_t read_key_no,
+												uint8_t write_key_no,
+												uint8_t read_write_key_no,
+												uint8_t change_key_no,
+												uint8_t communication_settings,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateValueFile2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
 												uint32_t aid,
 												uint8_t file_id,
 												int32_t lower_limit,
@@ -7294,6 +8307,24 @@ UFR_STATUS DL_API uFR_SAM_DesfireReadValueFile3k3desAuthM(UFR_HANDLE hndUFR,
 												VAR int32_t *value,
 												VAR uint16_t *card_status,
 												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadValueFileDesAuthM(UFR_HANDLE hndUFR,
+												uint8_t des_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_nr,
+												uint8_t file_id,
+												uint8_t communication_settings,
+												VAR int32_t *value,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadValueFile2k3desAuthM(UFR_HANDLE hndUFR,
+												uint8_t des2k_key_nr,
+												uint32_t aid,
+												uint8_t aid_key_nr,
+												uint8_t file_id,
+												uint8_t communication_settings,
+												VAR int32_t *value,
+												VAR uint16_t *card_status,
+												VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireReadValueFile_no_auth_M(UFR_HANDLE hndUFR,
                                                 uint32_t aid,
                                                 uint8_t aid_key_nr,
@@ -7404,6 +8435,24 @@ UFR_STATUS DL_API uFR_SAM_DesfireIncreaseValueFileAesAuthM(UFR_HANDLE hndUFR,
 													VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireIncreaseValueFile3k3desAuthM(UFR_HANDLE hndUFR,
 													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint8_t communication_settings,
+													uint32_t value,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireIncreaseValueFileDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint8_t communication_settings,
+													uint32_t value,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireIncreaseValueFile2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
 													uint32_t aid,
 													uint8_t aid_key_nr,
 													uint8_t file_id,
@@ -7528,6 +8577,24 @@ UFR_STATUS DL_API uFR_SAM_DesfireDecreaseValueFile3k3desAuthM(UFR_HANDLE hndUFR,
 													uint32_t value,
 													VAR uint16_t *card_status,
 													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDecreaseValueFileDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint8_t communication_settings,
+													uint32_t value,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireDecreaseValueFile2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint8_t communication_settings,
+													uint32_t value,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_no_auth_M(UFR_HANDLE hndUFR,
                                                     uint32_t aid,
                                                     uint8_t aid_key_nr,
@@ -7575,6 +8642,18 @@ UFR_STATUS DL_API uFR_SAM_DesfireGetApplicationIdsAesAuthM(UFR_HANDLE hndUFR,
 													VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireGetApplicationIds3k3desAuthM(UFR_HANDLE hndUFR,
 													uint8_t des3k_key_nr,
+													OUT uint32_t *application_ids,
+													VAR uint8_t *number_of_aplication_ids,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireGetApplicationIdsDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													OUT uint32_t *application_ids,
+													VAR uint8_t *number_of_aplication_ids,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireGetApplicationIds2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
 													OUT uint32_t *application_ids,
 													VAR uint8_t *number_of_aplication_ids,
 													VAR uint16_t *card_status,
@@ -7682,6 +8761,32 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateLinearRecordFileAesAuthM(UFR_HANDLE hndUF
 													VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireCreateLinearRecordFile3k3desAuthM(UFR_HANDLE hndUFR,
 													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													uint32_t record_size,
+													uint32_t max_rec_no,
+													uint8_t read_key_no,
+													uint8_t write_key_no,
+													uint8_t read_write_key_no,
+													uint8_t change_key_no,
+													uint8_t communication_settings,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateLinearRecordFileDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													uint32_t record_size,
+													uint32_t max_rec_no,
+													uint8_t read_key_no,
+													uint8_t write_key_no,
+													uint8_t read_write_key_no,
+													uint8_t change_key_no,
+													uint8_t communication_settings,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateLinearRecordFile2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
 													uint32_t aid,
 													uint8_t file_id,
 													uint32_t record_size,
@@ -7836,6 +8941,58 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateCyclicRecordFile3k3desAuthM(UFR_HANDLE hn
 													uint8_t communication_settings,
 													VAR uint16_t *card_status,
 													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateCyclicRecordFileDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													uint32_t record_size,
+													uint32_t max_rec_no,
+													uint8_t read_key_no,
+													uint8_t write_key_no,
+													uint8_t read_write_key_no,
+													uint8_t change_key_no,
+													uint8_t communication_settings,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateCyclicRecordFile2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													uint32_t record_size,
+													uint32_t max_rec_no,
+													uint8_t read_key_no,
+													uint8_t write_key_no,
+													uint8_t read_write_key_no,
+													uint8_t change_key_no,
+													uint8_t communication_settings,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateCyclicRecordFileDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													uint32_t record_size,
+													uint32_t max_rec_no,
+													uint8_t read_key_no,
+													uint8_t write_key_no,
+													uint8_t read_write_key_no,
+													uint8_t change_key_no,
+													uint8_t communication_settings,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireCreateCyclicRecordFile2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													uint32_t record_size,
+													uint32_t max_rec_no,
+													uint8_t read_key_no,
+													uint8_t write_key_no,
+													uint8_t read_write_key_no,
+													uint8_t change_key_no,
+													uint8_t communication_settings,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_int_DesfireCreateCyclicRecordFile_aes_PK_M(UFR_HANDLE hndUFR,
 													IN uint8_t *aes_key_ext,
 													uint32_t aid,
@@ -7957,7 +9114,29 @@ UFR_STATUS DL_API uFR_SAM_DesfireWriteRecordAesAuthM(UFR_HANDLE hndUFR,
 													VAR uint16_t *card_status,
 													VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireWriteRecord3k3desAuthM(UFR_HANDLE hndUFR,
-													uint8_t aes_key_nr,
+													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t data_length,
+													uint8_t communication_settings,
+													IN uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireWriteRecordDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t data_length,
+													uint8_t communication_settings,
+													IN uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireWriteRecord2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
 													uint32_t aid,
 													uint8_t aid_key_nr,
 													uint8_t file_id,
@@ -8083,7 +9262,31 @@ UFR_STATUS DL_API uFR_SAM_DesfireReadRecordsAesAuthM(UFR_HANDLE hndUFR,
 													VAR uint16_t *card_status,
 													VAR uint16_t *exec_time);
 UFR_STATUS DL_API uFR_SAM_DesfireReadRecords3k3desAuthM(UFR_HANDLE hndUFR,
-													uint8_t aes_key_nr,
+													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadRecordsDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadRecords2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
 													uint32_t aid,
 													uint8_t aid_key_nr,
 													uint8_t file_id,
@@ -8378,11 +9581,10 @@ UFR_STATUS DL_API SAM_pre_personalization_switch_to_AV2_modeM(UFR_HANDLE hndUFR,
 								IN uint8_t *master_aes_key,
 								uint8_t key_version,
 								OUT uint8_t *apdu_sw);
-UFR_STATUS DL_API SAM_authenticate_host_AV2M(UFR_HANDLE hndUFR,
-								IN uint8_t *master_aes_key,
+UFR_STATUS DL_API SAM_authenticate_host_AV2_plainM(UFR_HANDLE hndUFR,
+								IN uint8_t *host_aes_key,
 								uint8_t key_nr,
 								uint8_t key_version,
-								uint8_t host_mode,
 								OUT uint8_t *apdu_sw);
 UFR_STATUS DL_API SAM_change_key_entry_mifare_AV2_plain_one_keyM(UFR_HANDLE hndUFR,
 								uint8_t key_entry_no,
@@ -8406,7 +9608,14 @@ UFR_STATUS DL_API SAM_change_key_entry_3K3DES_AV2_plain_one_keyM(UFR_HANDLE hndU
 								uint8_t key_v_CEK,
 								uint8_t ref_no_KUC,
 								OUT uint8_t *apdu_sw);
-UFR_STATUS DL_API SAM_change_key_entry_2K3DES_AV2_plain_one_keyM(UFR_HANDLE hndUFR,
+UFR_STATUS DL_API SAM_change_key_entry_2K3DES_AV2_ULC_plain_one_keyM(UFR_HANDLE hndUFR,
+								uint8_t key_entry_no,
+								IN uint8_t *key,
+								uint8_t key_no_CEK,
+								uint8_t key_v_CEK,
+								uint8_t ref_no_KUC,
+								OUT uint8_t *apdu_sw);
+UFR_STATUS DL_API SAM_change_key_entry_2K3DES_AV2_desfire_plain_one_keyM(UFR_HANDLE hndUFR,
 								uint8_t key_entry_no,
 								IN uint8_t *key,
 								uint8_t key_no_CEK,
@@ -8425,11 +9634,14 @@ UFR_STATUS DL_API SAM_change_key_entry_aes_AV2_plain_host_keyM(UFR_HANDLE hndUFR
 								uint8_t key_v_CEK,
 								uint8_t ref_no_KUC,
 								uint8_t sam_lock_unlock,
+								uint8_t sam_auth_host,
 								OUT uint8_t *apdu_sw);
 UFR_STATUS DL_API WriteSamUnlockKeyM(UFR_HANDLE hndUFR,
 								uint8_t key_no,
 								uint8_t key_ver,
 								IN uint8_t *aes_key);
+UFR_STATUS DL_API CheckUidChangeableM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API ReaderRfResetM(UFR_HANDLE hndUFR);
 
 //MIFARE PLUS
 UFR_STATUS DL_API MFP_WritePersoM(UFR_HANDLE hndUFR,
