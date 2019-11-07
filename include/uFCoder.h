@@ -711,6 +711,15 @@ UFR_STATUS DL_API ReaderOpen(void);
  */
 UFR_STATUS DL_API ReaderOpenByType(uint32_t reader_type);
 
+enum E_READER_TYPE
+{
+	AUTO = 0,
+	UFR_TYPE = 1,
+	UFR_RS232_TYPE = 2,
+	BASEHD_UFR_TYPE = 3,
+	UFR_ONLINE_TYPE = 4
+};
+
 /**
  * ReaderOpenEx() is a function for opening port with
  *
@@ -748,7 +757,7 @@ UFR_STATUS DL_API ReaderOpenEx(uint32_t reader_type,
 							   IN c_string port_name,
 		                       uint32_t port_interface,
 							   IN void *arg);
-
+UFR_STATUS DL_API ReaderOpen_uFROnline(c_string serial_number);
 UFR_STATUS DL_API ReaderReset(void);
 UFR_STATUS DL_API ReaderClose(void);
 UFR_STATUS DL_API ReaderSoftRestart(void);
