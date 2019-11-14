@@ -727,6 +727,7 @@ enum E_READER_TYPE
  *                      1 : uFR type (1 Mbps)
  *                      2 : uFR RS232 type (115200 bps)
  *                      3 : BASE HD uFR (XRC) type (250 Kbps)
+						4 : uFR Online type
  * @param port_name : serial port name, identifier, like
  *                      "COM3" on Window or
  *                      "/dev/ttyS0" on Linux or
