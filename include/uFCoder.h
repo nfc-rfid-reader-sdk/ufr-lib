@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.25
+ * library version: 5.0.26
  *
  * Created on:  2009-01-14
- * Last edited: 2019-12-14
+ * Last edited: 2020-01-09
  *
  * Author: D-Logic
  */
@@ -486,7 +486,7 @@ typedef enum UFCODER_ERROR_CODES {
     MRTD_VERIFY_CSCA_NOT_EXIST = 0x6289,
     MRTD_VERIFY_WRONG_DS_SIGNATURE = 0x628A,
     MRTD_VERIFY_WRONG_CSCA_SIGNATURE = 0x628B,
-
+    MRTD_MRZ_CHECK_ERROR = 0x628C,
 
     // ICAO Master List specific statuses:
     ICAO_ML_WRONG_FORMAT = 0x6300,
@@ -1336,6 +1336,7 @@ UFR_STATUS DL_API MRTDValidate(IN const char *cert_storage_folder, VAR char **ou
 UFR_STATUS DL_API MRTD_MRZDataToMRZProtoKey(IN const char *doc_number, IN const char *date_of_birth, IN const char *date_of_expiry,
                                             OUT uint8_t mrz_proto_key[25]);
 UFR_STATUS DL_API MRTD_MRZSubjacentToMRZProtoKey(IN const char mrz[44], OUT uint8_t mrz_proto_key[25]);
+UFR_STATUS DL_API MRTD_MRZSubjacentCheck(const char mrz[44]);
 UFR_STATUS DL_API MRTDParseDG1ToHeap(VAR char **sbuffer, IN const char *newln, IN const uint8_t *dg1, uint8_t dg1_len);
 UFR_STATUS DL_API MRTDGetImageFromDG2(IN const uint8_t *dg2, uint32_t dg2_size, VAR uint8_t **image, VAR uint32_t *image_size,
                                       VAR uint32_t *img_type);
