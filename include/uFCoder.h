@@ -1,7 +1,7 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.26
+ * library version: 5.0.28
  *
  * Created on:  2009-01-14
  * Last edited: 2020-01-09
@@ -764,6 +764,17 @@ enum E_READER_TYPE {
  *                      "RTS_ALWAYS_HIGH"           : not implemented yet
  *                      "RTS_ALWAYS_LOW"            : not implemented yet
  *                      "RTS_DISCONNECTED"          : disconnect RTS (RTS is not initiate nor use)
+ *                      Custom baud rate
+ *                      "BR_1000000"				: 1 Mbps
+ *						"BR_115200"					: 115200 bps
+ * 						"BR_250000"					: 250000 bps
+ *						"BR_9600"					: 9600 bps
+ * 						"BR_19200"					: 19200 bps
+ * 						"BR_38400"					: 38400 bps
+ * 						"BR_57600"					: 57600 bps
+ *						"BR_230400"					: 234000 bps
+ *						"BR_460800"					: 460800 bps
+ *						"BR_500000"					: 500000 bps
  *
  * @return
  */
@@ -2499,6 +2510,9 @@ UFR_STATUS DL_API BalanceGet(uint32_t auth_mode, IN void *auth_value, VAR int32_
  * @return execution status
  */
 UFR_STATUS DL_API BalanceSet(uint32_t auth_mode, IN void *auth_value, int32_t credit);
+
+UFR_STATUS DL_API SetUartSpeed(uint32_t baud_rate);
+UFR_STATUS DL_API SetDefaultUartSpeed(uint8_t reader_type, uint8_t comm_type, IN c_string port_name);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
