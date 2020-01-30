@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.28
+ * library version: 5.0.29
  *
  * Created on:  2009-01-14
- * Last edited: 2020-01-09
+ * Last edited: 2020-01-30
  *
  * Author: D-Logic
  */
@@ -81,6 +81,8 @@ typedef void * UFR_HANDLE;
 #define DL_NT3H_1201                    0x0E
 #define DL_NT3H_2111                    0x0F
 #define DL_NT3H_2211                    0x10
+#define DL_NTAG_413_DNA                 0x11
+#define DL_NTAG_424_DNA                 0x12
 
 #define DL_MIFARE_MINI					0x20
 #define	DL_MIFARE_CLASSIC_1K			0x21
@@ -110,6 +112,10 @@ typedef void * UFR_HANDLE;
 #define DL_MIFARE_PLUS_S_4K_SL3			0x39
 #define DL_MIFARE_PLUS_X_4K_SL3			0x3A
 #define DL_MIFARE_PLUS_EV1_4K_SL3       0x3B
+#define DL_MIFARE_PLUS_SE_SL0           0x3C
+#define DL_MIFARE_PLUS_SE_SL1           0x3D
+#define DL_MIFARE_PLUS_SE_SL3           0x3E
+#define DL_MIFARE_DESFIRE_LIGHT         0x3F
 
 #define DL_UNKNOWN_ISO_14443_4			0x40
 #define DL_GENERIC_ISO14443_4			0x40
@@ -266,9 +272,18 @@ enum T2T_AUTHENTICATION {
     T2T_WITH_PWD_AUTH = 0x61,
 };
 
-enum ADDRESS_MODE {
-    ADDRESS_MODE_BLOCK = 0,
-    ADDRESS_MODE_SECTOR,
+// T4T authentication constants
+enum T4T_AUTHENTICATION
+{
+	T4T_WITHOUT_PWD_AUTH = 0x60,
+	T4T_PK_PWD_AUTH = 0x80,
+	T4T_RKA_PWD_AUTH = 0x02,
+};
+
+enum ADDRESS_MODE
+{
+	ADDRESS_MODE_BLOCK = 0,
+	ADDRESS_MODE_SECTOR,
 };
 
 #define MAX_UID_LEN		10
@@ -356,12 +371,26 @@ typedef enum UFCODER_ERROR_CODES {
     UFR_MFP_ILLEGAL_STATUS_CODE = 0xB8,
     UFR_MFP_MULTI_BLOCKS_READ = 0xB9,
 
-    // multiple units - return from the functions with ReaderList_ prefix in name
-    UFR_DEVICE_WRONG_HANDLE = 0x100,
-    UFR_DEVICE_INDEX_OUT_OF_BOUND,
-    UFR_DEVICE_ALREADY_OPENED,
-    UFR_DEVICE_ALREADY_CLOSED,
-    UFR_DEVICE_IS_NOT_CONNECTED,
+	//NT4H error codes
+	NT4H_COMMAND_ABORTED  =   0xC0,
+	NT4H_LENGTH_ERROR = 0xC1,
+	NT4H_PARAMETER_ERROR = 0xC2,
+	NT4H_NO_SUCH_KEY = 0xC3,
+	NT4H_PERMISSION_DENIED = 0xC4,
+	NT4H_AUTHENTICATION_DELAY = 0xC5,
+	NT4H_MEMORY_ERROR = 0xC6,
+	NT4H_INTEGRITY_ERROR = 0xC7,
+	NT4H_FILE_NOT_FOUND = 0xC8,
+	NT4H_BOUNDARY_ERROR = 0xC9,
+	NT4H_INVALID_MAC = 0xCA,
+	NT4H_NO_CHANGES	= 0xCB,
+
+	// multiple units - return from the functions with ReaderList_ prefix in name
+	UFR_DEVICE_WRONG_HANDLE = 0x100,
+	UFR_DEVICE_INDEX_OUT_OF_BOUND,
+	UFR_DEVICE_ALREADY_OPENED,
+	UFR_DEVICE_ALREADY_CLOSED,
+	UFR_DEVICE_IS_NOT_CONNECTED,
 
     // Originality Check Error Codes:
     UFR_NOT_NXP_GENUINE = 0x200,
@@ -402,6 +431,7 @@ typedef enum UFCODER_ERROR_CODES {
     DESFIRE_CARD_EEPROM_ERROR_DES = 0x0CEE,
     DESFIRE_CARD_FILE_NOT_FOUND = 0x0CF0,
     DESFIRE_CARD_FILE_INTEGRITY_ERROR = 0x0CF1,
+	DESFIRE_CATD_AUTHENTICATION_DELAY = 0X0CAD,
 
     // uFCoder library errors:
     UFR_NOT_IMPLEMENTED = 0x1000,
@@ -2339,35 +2369,179 @@ UFR_STATUS DL_API uFR_int_DesfireReadRecords_no_auth(uint32_t aid, uint8_t aid_k
                                                      uint16_t number_of_records, uint16_t record_size, uint8_t communication_settings,
                                                      OUT uint8_t *data, VAR uint16_t *card_status, VAR uint16_t *exec_time);
 
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile(uint8_t aes_key_nr, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                 VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes(uint8_t aes_key_nr, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                     VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des(uint8_t des_key_nr, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                     VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des(uint8_t des2k_key_nr, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                        VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des(uint8_t des3k_key_nr, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                        VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileAesAuth(uint8_t aes_key_nr, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                        VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile3k3desAuth(uint8_t des3k_key_nr, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                           VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileDesAuth(uint8_t des_key_nr, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                        VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile2k3desAuth(uint8_t des2k_key_nr, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                           VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_PK( IN uint8_t *aes_key_ext, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                    VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes_PK( IN uint8_t *aes_key_ext, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                        VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des_PK( IN uint8_t *des_key_ext, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                        VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des_PK( IN uint8_t *des2k_key_ext, uint32_t aid, uint8_t file_id,
-                                                           VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des_PK( IN uint8_t *des3k_key_ext, uint32_t aid, uint8_t file_id,
-                                                           VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_no_auth(uint32_t aid, uint8_t file_id, VAR uint16_t *card_status, VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile(
+								uint8_t aes_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes(
+								uint8_t aes_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des(
+								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileAesAuth(
+								uint8_t aes_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile3k3desAuth(
+								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileDesAuth(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile2k3desAuth(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_PK(
+								IN uint8_t *aes_key_ext,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes_PK(
+								IN uint8_t *aes_key_ext,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des_PK(
+								IN uint8_t *des_key_ext,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des_PK(
+								IN uint8_t *des2k_key_ext,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des_PK(
+								IN uint8_t *des3k_key_ext,
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_no_auth(
+								uint32_t aid,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes_2(
+								uint8_t aes_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des_2(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des_2(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des_2(
+								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileAesAuth_2(
+								uint8_t aes_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile3k3desAuth_2(
+								uint8_t des3k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileDesAuth_2(
+								uint8_t des_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile2k3desAuth_2(
+								uint8_t des2k_key_nr,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes_PK_2(
+								IN uint8_t *aes_key_ext,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des_PK_2(
+								IN uint8_t *des_key_ext,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des_PK_2(
+								IN uint8_t *des2k_key_ext,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des_PK_2(
+								IN uint8_t *des3k_key_ext,
+								uint32_t aid,
+								uint8_t aid_key_nr,
+								uint8_t file_id,
+								VAR uint16_t *card_status,
+								VAR uint16_t *exec_time);
 
 /////////////////////////////////////////////////////////////////////
 
@@ -2513,6 +2687,58 @@ UFR_STATUS DL_API BalanceSet(uint32_t auth_mode, IN void *auth_value, int32_t cr
 
 UFR_STATUS DL_API SetUartSpeed(uint32_t baud_rate);
 UFR_STATUS DL_API SetDefaultUartSpeed(uint8_t reader_type, uint8_t comm_type, IN c_string port_name);
+
+//NT4H
+
+UFR_STATUS DL_API nt4h_set_global_parameters(uint8_t file_no, uint8_t key_no, uint8_t communication_mode);
+UFR_STATUS DL_API nt4h_change_standard_file_settings_pk(IN uint8_t *aes_key_ext, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+														uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no);
+UFR_STATUS DL_API nt4h_change_standard_file_settings(uint8_t aes_key_no, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+														uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no);
+UFR_STATUS DL_API nt4h_change_sdm_file_settings_pk(IN uint8_t *aes_key_ext, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+														uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no,
+														uint8_t uid_enable, uint8_t read_ctr_enable, uint8_t read_ctr_limit_enable, uint8_t enc_file_data_enable,
+														uint8_t meta_data_key_no, uint8_t file_data_read_key_no, uint8_t read_ctr_key_no,
+														uint32_t uid_offset, uint32_t read_ctr_offset, uint32_t picc_data_offset, uint32_t mac_input_offset,
+														uint32_t enc_offset, uint32_t enc_length, uint32_t mac_offset, uint32_t read_ctr_limit);
+UFR_STATUS DL_API nt4h_change_sdm_file_settings(uint8_t aes_key_no, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+														uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no,
+														uint8_t uid_enable, uint8_t read_ctr_enable, uint8_t read_ctr_limit_enable, uint8_t enc_file_data_enable,
+														uint8_t meta_data_key_no, uint8_t file_data_read_key_no, uint8_t read_ctr_key_no,
+														uint32_t uid_offset, uint32_t read_ctr_offset, uint32_t picc_data_offset, uint32_t mac_input_offset,
+														uint32_t enc_offset, uint32_t enc_length, uint32_t mac_offset, uint32_t read_ctr_limit);
+UFR_STATUS DL_API nt4h_get_file_settings(uint8_t file_no, VAR uint8_t *file_type, VAR uint8_t *communication_mode, VAR uint8_t *sdm_enable, VAR uint32_t *file_size,
+							VAR uint8_t *read_key_no, VAR uint8_t *write_key_no, VAR uint8_t *read_write_key_no, VAR uint8_t *change_key_no,
+							VAR uint8_t *uid_enable, VAR uint8_t *read_ctr_enable, VAR uint8_t *read_ctr_limit_enable, VAR uint8_t *enc_file_data_enable,
+							VAR uint8_t *meta_data_key_no, VAR uint8_t *file_data_read_key_no, VAR uint8_t *read_ctr_key_no,
+							VAR uint32_t *uid_offset, VAR uint32_t *read_ctr_offset, VAR uint32_t *picc_data_offset, VAR uint32_t *mac_input_offset,
+							VAR uint32_t *enc_offset, VAR uint32_t *enc_length, VAR uint32_t *mac_offset, VAR uint32_t *read_ctr_limit);
+UFR_STATUS DL_API nt4h_set_rid_pk(IN uint8_t *aes_key_ext);
+UFR_STATUS DL_API nt4h_set_rid(uint8_t aes_key_no);
+UFR_STATUS DL_API nt4h_get_uid_pk(IN uint8_t *auth_key, uint8_t key_no, OUT uint8_t *uid);
+UFR_STATUS DL_API nt4h_get_uid(uint8_t auth_key_no, uint8_t key_no, OUT uint8_t *uid);
+UFR_STATUS DL_API nt4h_change_key_pk(IN uint8_t *auth_key, uint8_t key_no, IN uint8_t *new_key, IN uint8_t *old_key);
+UFR_STATUS DL_API nt4h_change_key(uint8_t auth_key_no, uint8_t key_no, IN uint8_t *new_key, IN uint8_t *old_key);
+UFR_STATUS DL_API nt4h_get_sdm_ctr_pk(IN uint8_t *auth_key, uint8_t file_no, uint8_t key_no, VAR uint32_t *sdm_read_ctr);
+UFR_STATUS DL_API nt4h_get_sdm_ctr(uint8_t auth_key_no, uint8_t file_no, uint8_t key_no, VAR uint32_t *sdm_read_ctr);
+UFR_STATUS DL_API nt4h_get_sdm_ctr_no_auth(uint8_t file_no, VAR uint32_t *sdm_read_ctr);
+UFR_STATUS DL_API nt4h_check_sdm_mac(uint32_t smd_read_counter, IN uint8_t *uid, IN uint8_t *auth_key, IN uint8_t *mac_in_data, IN uint8_t mac_in_len, IN uint8_t *sdm_mac);
+UFR_STATUS DL_API nt4h_decrypt_sdm_enc_file_data(uint32_t smd_read_counter, IN uint8_t *uid, IN uint8_t *auth_key, IN uint8_t *enc_file_data, IN uint8_t enc_file_data_len);
+UFR_STATUS DL_API nt4h_decrypt_picc_data(IN uint8_t *picc_data, IN uint8_t *auth_key, IN uint8_t *picc_data_tag, IN uint8_t *uid, IN uint32_t *smd_read_cnt);
+
+//Desfire light
+UFR_STATUS DL_API dfl_get_file_settings(uint8_t file_no, VAR uint8_t *file_type, VAR uint8_t *communication_mode,
+							VAR uint8_t *read_key_no, VAR uint8_t *write_key_no, VAR uint8_t *read_write_key_no, VAR uint8_t *change_key_no,
+							VAR uint32_t *file_size,
+							VAR int32_t *lower_limit, VAR int32_t *upper_limit, VAR uint32_t *limited_credit_value, VAR uint8_t *limited_credit_enable, VAR uint8_t *free_get_value,
+							VAR uint32_t *record_size, VAR uint32_t *max_number_of_rec, VAR uint32_t *curr_number_of_rec,
+							VAR uint8_t *ex_unauth_operation, VAR uint8_t *tmc_limit_conf, VAR uint8_t *tm_key_type, VAR uint8_t *tm_key_version, VAR uint32_t *tmc_limit);
+UFR_STATUS DL_API dfl_change_file_settings_pk(IN uint8_t *aes_key_ext, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+									uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no);
+UFR_STATUS DL_API dfl_change_file_settings(uint8_t aes_key_no, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+									uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no);
+UFR_STATUS DL_API dfl_delete_tmc_file_pk(IN uint8_t *aes_key_ext, uint8_t file_no);
+UFR_STATUS DL_API dfl_delete_tmc_file(uint8_t aes_key_no, uint8_t file_no);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
@@ -4338,30 +4564,304 @@ UFR_STATUS DL_API uFR_int_DesfireReadRecords_no_authM(UFR_HANDLE hndUFR, uint32_
                                                       uint16_t number_of_records, uint16_t record_size, uint8_t communication_settings,
                                                       uint8_t *data, uint16_t *card_status, uint16_t *exec_time);
 
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aesM(UFR_HANDLE hndUFR, uint8_t aes_key_nr, uint32_t aid, uint8_t file_id,
-                                                      VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_desM(UFR_HANDLE hndUFR, uint8_t des_key_nr, uint32_t aid, uint8_t file_id,
-                                                      VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3desM(UFR_HANDLE hndUFR, uint8_t des2k_key_nr, uint32_t aid, uint8_t file_id,
-                                                         VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3desM(UFR_HANDLE hndUFR, uint8_t des3k_key_nr, uint32_t aid, uint8_t file_id,
-                                                         VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileAesAuthM(UFR_HANDLE hndUFR, uint8_t aes_key_nr, uint32_t aid, uint8_t file_id,
-                                                         VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile3k3desAuthM(UFR_HANDLE hndUFR, uint8_t des3k_key_nr, uint32_t aid, uint8_t file_id,
-                                                            VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_PK_M(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint32_t aid, uint8_t file_id,
-                                                      VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes_PK_M(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint32_t aid, uint8_t file_id,
-                                                          VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des_PK_M(UFR_HANDLE hndUFR, IN uint8_t *des_key_ext, uint32_t aid, uint8_t file_id,
-                                                          VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des_PK_M(UFR_HANDLE hndUFR, IN uint8_t *des2k_key_ext, uint32_t aid, uint8_t file_id,
-                                                             VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des_PK_M(UFR_HANDLE hndUFR, IN uint8_t *des3k_key_ext, uint32_t aid, uint8_t file_id,
-                                                             VAR uint16_t *card_status, VAR uint16_t *exec_time);
-UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_no_authM(UFR_HANDLE hndUFR, uint32_t aid, uint8_t file_id, VAR uint16_t *card_status,
-                                                          VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadRecords_aesM(UFR_HANDLE hndUFR,
+													uint8_t aes_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadRecords_desM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadRecords_2k3desM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadRecords_3k3desM(UFR_HANDLE hndUFR,
+													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadRecordsAesAuthM(UFR_HANDLE hndUFR,
+													uint8_t aes_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadRecords3k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadRecordsDesAuthM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireReadRecords2k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadRecords_aes_PK_M(UFR_HANDLE hndUFR,
+													IN uint8_t *aes_key_ext,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status, VAR
+													uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadRecords_des_PK_M(UFR_HANDLE hndUFR,
+													IN uint8_t *des_key_ext,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status, VAR
+													uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadRecords_2k3des_PK_M(UFR_HANDLE hndUFR,
+													IN uint8_t *des2k_key_ext,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status, VAR
+													uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadRecords_3k3des_PK_M(UFR_HANDLE hndUFR,
+													IN uint8_t *des3k_key_ext,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													OUT uint8_t *data,
+													VAR uint16_t *card_status, VAR
+													uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireReadRecords_no_authM(UFR_HANDLE hndUFR,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													uint16_t offset,
+													uint16_t number_of_records,
+													uint16_t record_size,
+													uint8_t communication_settings,
+													uint8_t *data,
+													uint16_t *card_status,
+													uint16_t *exec_time);
+
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aesM(UFR_HANDLE hndUFR,
+													uint8_t aes_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_desM(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3desM(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3desM(UFR_HANDLE hndUFR,
+													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileAesAuthM(UFR_HANDLE hndUFR,
+													uint8_t aes_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile3k3desAuthM(UFR_HANDLE hndUFR,
+													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes_PK_M(UFR_HANDLE hndUFR,
+													IN uint8_t *aes_key_ext,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des_PK_M(UFR_HANDLE hndUFR,
+													IN uint8_t *des_key_ext,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des_PK_M(UFR_HANDLE hndUFR,
+													IN uint8_t *des2k_key_ext,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des_PK_M(UFR_HANDLE hndUFR,
+													IN uint8_t *des3k_key_ext,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_no_authM(UFR_HANDLE hndUFR,
+													uint32_t aid,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes_2M(UFR_HANDLE hndUFR,
+													uint8_t aes_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des_2M(UFR_HANDLE hndUFR,
+													uint8_t des_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des_2M(UFR_HANDLE hndUFR,
+													uint8_t des2k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des_2M(UFR_HANDLE hndUFR,
+													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFileAesAuth_2M(UFR_HANDLE hndUFR,
+													uint8_t aes_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_SAM_DesfireClearRecordFile3k3desAuth_2M(UFR_HANDLE hndUFR,
+													uint8_t des3k_key_nr,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_PK_2M(UFR_HANDLE hndUFR,
+													IN uint8_t *aes_key_ext,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_aes_PK_2M(UFR_HANDLE hndUFR,
+													IN uint8_t *aes_key_ext,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_des_PK_2M(UFR_HANDLE hndUFR,
+													IN uint8_t *des_key_ext,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_2k3des_PK_2M(UFR_HANDLE hndUFR,
+													IN uint8_t *des2k_key_ext,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
+UFR_STATUS DL_API uFR_int_DesfireClearRecordFile_3k3des_PK_2M(UFR_HANDLE hndUFR,
+													IN uint8_t *des3k_key_ext,
+													uint32_t aid,
+													uint8_t aid_key_nr,
+													uint8_t file_id,
+													VAR uint16_t *card_status,
+													VAR uint16_t *exec_time);
 //---------------------------------------------------------------------------------------------
 
 UFR_STATUS DL_API GreenLedBlinkingTurnOnM(UFR_HANDLE hndUFR);
@@ -4636,6 +5136,47 @@ UFR_STATUS DL_API ReadNdefRecord_SMSM(UFR_HANDLE hndUFR, OUT char *phone_number,
 UFR_STATUS DL_API ReadNdefRecord_BluetoothM(UFR_HANDLE hndUFR, OUT char *bt_mac_address);
 
 c_string DL_API ParseNdefMessage(IN uint8_t *type_record, uint8_t type_len, IN uint8_t *payload, uint32_t payload_len);
+
+//NT4H
+
+UFR_STATUS DL_API nt4h_set_global_parametersM(UFR_HANDLE hndUFR, uint8_t file_no, uint8_t key_no, uint8_t communication_mode);
+UFR_STATUS DL_API nt4h_change_standard_file_settings_pkM(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+											uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no);
+UFR_STATUS DL_API nt4h_change_standard_file_settingsM(UFR_HANDLE hndUFR, uint8_t aes_key_no, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+											uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no);
+UFR_STATUS DL_API nt4h_change_sdm_file_settings_pkM(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+											uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no,
+														uint8_t uid_enable, uint8_t read_ctr_enable, uint8_t read_ctr_limit_enable, uint8_t enc_file_data_enable,
+														uint8_t meta_data_key_no, uint8_t file_data_read_key_no, uint8_t read_ctr_key_no,
+														uint32_t uid_offset, uint32_t read_ctr_offset, uint32_t picc_data_offset, uint32_t mac_input_offset,
+														uint32_t enc_offset, uint32_t enc_length, uint32_t mac_offset, uint32_t read_ctr_limit);
+UFR_STATUS DL_API nt4h_change_sdm_file_settingsM(UFR_HANDLE hndUFR, uint8_t aes_key_no, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+											uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no,
+														uint8_t uid_enable, uint8_t read_ctr_enable, uint8_t read_ctr_limit_enable, uint8_t enc_file_data_enable,
+														uint8_t meta_data_key_no, uint8_t file_data_read_key_no, uint8_t read_ctr_key_no,
+														uint32_t uid_offset, uint32_t read_ctr_offset, uint32_t picc_data_offset, uint32_t mac_input_offset,
+														uint32_t enc_offset, uint32_t enc_length, uint32_t mac_offset, uint32_t read_ctr_limit);
+UFR_STATUS DL_API nt4h_get_file_settingsM(UFR_HANDLE hndUFR, uint8_t file_no, VAR uint8_t *file_type, VAR uint8_t *communication_mode, VAR uint8_t *sdm_enable, VAR uint32_t *file_size,
+							VAR uint8_t *read_key_no, VAR uint8_t *write_key_no, VAR uint8_t *read_write_key_no, VAR uint8_t *change_key_no,
+							VAR uint8_t *uid_enable, VAR uint8_t *read_ctr_enable, VAR uint8_t *read_ctr_limit_enable, VAR uint8_t *enc_file_data_enable,
+							VAR uint8_t *meta_data_key_no, VAR uint8_t *file_data_read_key_no, VAR uint8_t *read_ctr_key_no,
+							VAR uint32_t *uid_offset, VAR uint32_t *read_ctr_offset, VAR uint32_t *picc_data_offset, VAR uint32_t *mac_input_offset,
+							VAR uint32_t *enc_offset, VAR uint32_t *enc_length, VAR uint32_t *mac_offset, VAR uint32_t *read_ctr_limit);
+UFR_STATUS DL_API nt4h_set_rid_pkM(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext);
+UFR_STATUS DL_API nt4h_set_ridM(UFR_HANDLE hndUFR, uint8_t aes_key_no);
+UFR_STATUS DL_API nt4h_get_uid_pkM(UFR_HANDLE hndUFR, IN uint8_t *auth_key, uint8_t key_no, OUT uint8_t *uid);
+UFR_STATUS DL_API nt4h_get_uidM(UFR_HANDLE hndUFR, uint8_t auth_key_no, uint8_t key_no, OUT uint8_t *uid);
+UFR_STATUS DL_API nt4h_change_key_pkM(UFR_HANDLE hndUFR, IN uint8_t *auth_key, uint8_t key_no, IN uint8_t *new_key, IN uint8_t *old_key);
+UFR_STATUS DL_API nt4h_change_keyM(UFR_HANDLE hndUFR, uint8_t auth_key_no, uint8_t key_no, IN uint8_t *new_key, IN uint8_t *old_key);
+UFR_STATUS DL_API nt4h_get_sdm_ctr_pkM(UFR_HANDLE hndUFR, IN uint8_t *auth_key, uint8_t file_no, uint8_t key_no, VAR uint32_t *sdm_read_ctr);
+UFR_STATUS DL_API nt4h_get_sdm_ctrM(UFR_HANDLE hndUFR, uint8_t auth_key_no, uint8_t file_no, uint8_t key_no, VAR uint32_t *sdm_read_ctr);
+UFR_STATUS DL_API nt4h_get_sdm_ctr_no_authM(UFR_HANDLE hndUFR, uint8_t file_no, VAR uint32_t *sdm_read_ctr);
+UFR_STATUS DL_API dfl_change_file_settings_pkM(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+									uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no);
+UFR_STATUS DL_API dfl_change_file_settingsM(UFR_HANDLE hndUFR, uint8_t aes_key_no, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+									uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no);
+UFR_STATUS DL_API dfl_delete_tmc_file_pkM(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint8_t file_no);
+UFR_STATUS DL_API dfl_delete_tmc_fileM(UFR_HANDLE hndUFR, uint8_t aes_key_no, uint8_t file_no);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
