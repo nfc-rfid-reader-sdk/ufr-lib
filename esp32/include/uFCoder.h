@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.30
+ * library version: 5.0.31
  *
  * Created on:  2009-01-14
- * Last edited: 2020-02-03
+ * Last edited: 2020-02-12
  *
  * Author: D-Logic
  */
@@ -735,6 +735,37 @@ typedef enum E_SAM_HW_VER {
     SAM_T1AR1070_AV2_MODE
 } SAM_HW_TYPE;
 
+
+//Reader status
+typedef enum E_EMULATION_MODES {
+	TAG_EMU_DISABLED,
+	TAG_EMU_DEDICATED,
+	TAG_EMU_COMBINED,
+	TAG_EMU_AUTO_AD_HOC
+}emul_modes_t;
+
+typedef enum E_EMULATION_STATES
+{
+	EMULATION_NONE,
+	EMULATION_IDLE,
+	EMULATION_AUTO_COLL,
+	EMULATION_ACTIVE,
+	EMULATION_HALT,
+	EMULATION_POWER_OFF
+}emul_states_t;
+
+typedef enum E_PCD_MGR_STATES
+{
+	PCD_MGR_NO_RF_GENERATED,
+	PCD_MGR_14443A_POLLING,
+	PCD_MGR_14443A_SELECTED,
+	PCD_MGR_CE_DEDICATED,
+	PCD_MGR_CE_COMBO_START,
+	PCD_MGR_CE_COMBO,
+	PCD_MGR_CE_COMBO_IN_FIELD
+}pcd_states_t;
+
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -1095,6 +1126,10 @@ UFR_STATUS DL_API EnterShareRamCommMode(void);
 UFR_STATUS DL_API ExitShareRamCommMode(void);
 UFR_STATUS DL_API WriteShareRam(IN uint8_t *ram_data, uint8_t addr, uint8_t data_len);
 UFR_STATUS DL_API ReadShareRam(OUT uint8_t *ram_data, uint8_t addr, uint8_t data_len);
+UFR_STATUS DL_API WriteEmulationNdefRam(uint8_t tnf, IN uint8_t* type_record, uint8_t type_length,
+							IN uint8_t* id, uint8_t id_length,	IN uint8_t* payload, uint32_t payload_length);
+UFR_STATUS DL_API TagEmulationStartRam(void);
+UFR_STATUS DL_API TagEmulationStopRam(void);
 
 //------------------------------------------------------------------------------
 
@@ -2740,6 +2775,9 @@ UFR_STATUS DL_API dfl_change_file_settings(uint8_t aes_key_no, uint8_t file_no, 
 UFR_STATUS DL_API dfl_delete_tmc_file_pk(IN uint8_t *aes_key_ext, uint8_t file_no);
 UFR_STATUS DL_API dfl_delete_tmc_file(uint8_t aes_key_no, uint8_t file_no);
 
+//reader
+UFR_STATUS DL_API GetReaderStatus(VAR pcd_states_t *state, VAR emul_modes_t *emul_mode, VAR emul_states_t *emul_state, VAR uint8_t *sleep_mode);
+
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
 //#############################################################################
@@ -3223,6 +3261,18 @@ UFR_STATUS DL_API SetAdHocEmulationParamsM(UFR_HANDLE hndUFR, uint8_t ThresholdM
                                            uint8_t RxGain, uint8_t RFLevel);
 
 UFR_STATUS DL_API GetExternalFieldStateM(UFR_HANDLE hndUFR, VAR uint8_t *is_field_present);
+
+UFR_STATUS DL_API EnterShareRamCommModeM(UFR_HANDLE hndUFR);
+
+UFR_STATUS DL_API ExitShareRamCommModeM(UFR_HANDLE hndUFR);
+
+UFR_STATUS DL_API WriteShareRamM(UFR_HANDLE hndUFR, uint8_t *ram_data, uint8_t addr, uint8_t data_len);
+
+UFR_STATUS DL_API ReadShareRamM(UFR_HANDLE hndUFR, uint8_t *ram_data, uint8_t addr, uint8_t data_len);
+
+UFR_STATUS DL_API WriteEmulationNdefRamM(UFR_HANDLE hndUFR, uint8_t tnf, uint8_t* type_record, uint8_t type_length,
+							uint8_t* id, uint8_t id_length,	uint8_t* payload, uint32_t payload_length);
+
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API ReadECCSignatureM(UFR_HANDLE hndUFR, IN uint8_t lpucECCSignature[ECC_SIG_LEN], OUT uint8_t lpucUid[MAX_UID_LEN],
                                     VAR uint8_t *lpucUidLen, VAR uint8_t *lpucDlogicCardType);
