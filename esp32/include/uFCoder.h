@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.31
+ * library version: 5.0.34
  *
  * Created on:  2009-01-14
- * Last edited: 2020-02-12
+ * Last edited: 2020-02-26
  *
  * Author: D-Logic
  */
@@ -287,6 +287,7 @@ enum ADDRESS_MODE
 };
 
 #define MAX_UID_LEN		10
+#define MAX_ATS_LEN     25
 #define ECC_SIG_LEN		32
 
 // API Status Codes Type:
@@ -1301,6 +1302,8 @@ UFR_STATUS DL_API GetDisplayIntensity(VAR uint8_t *intensity);
  * @return
  */
 UFR_STATUS DL_API SetISO14443_4_Mode(void);
+UFR_STATUS DL_API SetISO14443_4_Mode_GetATS(OUT uint8_t ats[MAX_ATS_LEN], VAR uint8_t *ats_len,
+                                            OUT uint8_t uid[MAX_UID_LEN], VAR uint8_t *uid_len, VAR uint8_t *sak);
 UFR_STATUS DL_API SetISO14443_4_DLStorage(void);
 UFR_STATUS DL_API uFR_i_block_transceive(uint8_t chaining, uint8_t timeout, uint8_t block_length, IN uint8_t *snd_data_array,
                                          VAR size_t *rcv_length, OUT uint8_t *rcv_data_array, VAR uint32_t *ufr_status);
@@ -3400,7 +3403,8 @@ UFR_STATUS DL_API GetDisplayIntensityM(UFR_HANDLE hndUFR, VAR uint8_t *intensity
 //#############################################################################
 
 UFR_STATUS DL_API SetISO14443_4_ModeM(UFR_HANDLE hndUFR);
-
+UFR_STATUS DL_API SetISO14443_4_Mode_GetATSM(OUT UFR_HANDLE hndUFR, uint8_t ats[MAX_ATS_LEN], VAR uint8_t *ats_len,
+                                             OUT uint8_t uid[MAX_UID_LEN], VAR uint8_t *uid_len, VAR uint8_t *sak);
 UFR_STATUS DL_API SetISO14443_4_DLStorageM(UFR_HANDLE hndUFR);
 
 UFR_STATUS DL_API uFR_i_block_transceiveM(UFR_HANDLE hndUFR, uint8_t chaining, uint8_t timeout, uint8_t block_length,
