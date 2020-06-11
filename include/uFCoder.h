@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.38
+ * library version: 5.0.39
  *
  * Created on:  2009-01-14
- * Last edited: 2020-04-24
+ * Last edited: 2020-06-11
  *
  * Author: D-Logic
  */
@@ -48,7 +48,7 @@ typedef const char * c_string;
 #	define DL_API
 #endif // _WIN32
 
-#if defined(DL_uFC_EXPORTS) || defined(DL_CREATE_STATIC_LIB) || defined(__ANDROID__) || defined(ESP_PLATFORM)
+#if defined(DL_uFC_EXPORTS) || defined(DL_CREATE_STATIC_LIB) || defined(__ANDROID__) || defined(ESP_PLATFORM) || defined(IOS_PLATFORM)
 typedef struct S_UFR_HANDLE * UFR_HANDLE;
 #else
 typedef void * UFR_HANDLE;
@@ -6161,6 +6161,14 @@ JNIEnv *global_env;
 jclass global_class;
 void DL_API initVM(JNIEnv *env, jclass class1);
 #endif
+
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+void setNFCMessage(char* message);
+#endif
+#endif
+
 
 #ifdef __cplusplus
 }
