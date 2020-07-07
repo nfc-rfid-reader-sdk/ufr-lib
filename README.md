@@ -7,6 +7,7 @@ Windows ARM
 Linux 32 and 64 bit (dynamic only)
 Linux ARM and ARM-HF (dynamic only)
 Mac OSX 32 and 64 bit (dynamic only)
+iOS 64 bit (static only)
 
  
 
