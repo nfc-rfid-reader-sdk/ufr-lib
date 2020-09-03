@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.40
+ * library version: 5.0.41
  *
  * Created on:  2009-01-14
- * Last edited: 2020-07-07
+ * Last edited: 2020-09-03
  *
  * Author: D-Logic
  */
@@ -525,6 +525,20 @@ typedef enum UFCODER_ERROR_CODES {
     ICAO_ML_CAN_NOT_READ_FILE = 0x6302,
     ICAO_ML_CERTIFICATE_NOT_FOUND = 0x6303,
     ICAO_ML_WRONG_SIGNATURE = 0x6307,
+
+    // EMV specific statuses
+	SYS_ERR_OUT_OF_MEMORY = 0x7001,
+	EMV_ERR_WRONG_INPUT_DATA = 0x7002,
+	EMV_ERR_MAX_TAG_LEN_BYTES_EXCEEDED = 0x7004,
+	EMV_ERR_TAG_NOT_FOUND = 0x7005,
+	EMV_ERR_TAG_WRONG_SIZE = 0x7006,
+	EMV_ERR_TAG_WRONG_TYPE = 0x7007,
+	EMV_ERR_IN_CARD_READER = 0x7008,
+	EMV_ERR_READING_RECORD = 0x7009,
+	EMV_ERR_PDOL_IS_EMPTY = 0x7010,
+	EMV_ERR_LIST_FORMAT_NOT_FOUND = 0x7011,
+    EMV_ERR_AFL_NOT_FOUND = 0x7012,
+    EMV_ERR_AID_NOT_FOUND = 0x7013,
 
     // ISO7816-4 Errors (R-APDU) - 2 SW bytes returned by the card, prefixed with 0x000A:
     UFR_APDU_SW_TAG = 0x000A0000,
@@ -3212,6 +3226,12 @@ UFR_STATUS DL_API desfire_check_clear_record_transaction_mac(uint8_t file_no, ui
 										IN uint8_t *reader_id, IN uint8_t *prev_enc_reader_id, IN uint8_t *trans_mac_value, OUT uint8_t *prev_reader_id);
 //reader
 UFR_STATUS DL_API GetReaderStatus(VAR pcd_states_t *state, VAR emul_modes_t *emul_mode, VAR emul_states_t *emul_state, VAR uint8_t *sleep_mode);
+
+//EMV FUNCTIONS
+
+UFR_STATUS DL_API EMV_GetPAN(IN c_string df_name, OUT char* pan_str);
+UFR_STATUS DL_API EMV_GetLastTransaction(IN c_string df_name, OUT char* last_transaction_info);
+
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
