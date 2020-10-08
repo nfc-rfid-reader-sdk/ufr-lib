@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.37
+ * library version: 5.0.43
  *
  * Created on:  2009-01-14
- * Last edited: 2020-04-08
+ * Last edited: 2020-10-07
  *
  * Author: D-Logic
  */
@@ -48,7 +48,7 @@ typedef const char * c_string;
 #	define DL_API
 #endif // _WIN32
 
-#if defined(DL_uFC_EXPORTS) || defined(DL_CREATE_STATIC_LIB) || defined(__ANDROID__) || defined(ESP_PLATFORM)
+#if defined(DL_uFC_EXPORTS) || defined(DL_CREATE_STATIC_LIB) || defined(__ANDROID__) || defined(ESP_PLATFORM) || defined(IOS_PLATFORM)
 typedef struct S_UFR_HANDLE * UFR_HANDLE;
 #else
 typedef void * UFR_HANDLE;
@@ -83,6 +83,7 @@ typedef void * UFR_HANDLE;
 #define DL_NT3H_2211                    0x10
 #define DL_NTAG_413_DNA                 0x11
 #define DL_NTAG_424_DNA                 0x12
+#define DL_NTAG_424_DNA_TT				0x13
 
 #define DL_MIFARE_MINI					0x20
 #define	DL_MIFARE_CLASSIC_1K			0x21
@@ -525,6 +526,20 @@ typedef enum UFCODER_ERROR_CODES {
     ICAO_ML_CAN_NOT_READ_FILE = 0x6302,
     ICAO_ML_CERTIFICATE_NOT_FOUND = 0x6303,
     ICAO_ML_WRONG_SIGNATURE = 0x6307,
+
+    // EMV specific statuses
+	SYS_ERR_OUT_OF_MEMORY = 0x7001,
+	EMV_ERR_WRONG_INPUT_DATA = 0x7002,
+	EMV_ERR_MAX_TAG_LEN_BYTES_EXCEEDED = 0x7004,
+	EMV_ERR_TAG_NOT_FOUND = 0x7005,
+	EMV_ERR_TAG_WRONG_SIZE = 0x7006,
+	EMV_ERR_TAG_WRONG_TYPE = 0x7007,
+	EMV_ERR_IN_CARD_READER = 0x7008,
+	EMV_ERR_READING_RECORD = 0x7009,
+	EMV_ERR_PDOL_IS_EMPTY = 0x7010,
+	EMV_ERR_LIST_FORMAT_NOT_FOUND = 0x7011,
+    EMV_ERR_AFL_NOT_FOUND = 0x7012,
+    EMV_ERR_AID_NOT_FOUND = 0x7013,
 
     // ISO7816-4 Errors (R-APDU) - 2 SW bytes returned by the card, prefixed with 0x000A:
     UFR_APDU_SW_TAG = 0x000A0000,
@@ -1156,8 +1171,10 @@ typedef struct t2t_version_struct {
 // or GetNfcT2TVersionM(). Conversion is "alignment safe"
 // (you don't need to pay attention on structure byte alignment):
 void DL_API NfcT2TSafeConvertVersion(t2t_version_t *version, const uint8_t *version_record);
-UFR_STATUS DL_API ReadECCSignature(IN uint8_t lpucECCSignature[ECC_SIG_LEN], OUT uint8_t lpucUid[MAX_UID_LEN], VAR uint8_t *lpucUidLen,
+UFR_STATUS DL_API ReadECCSignature(OUT uint8_t lpucECCSignature[ECC_SIG_LEN], OUT uint8_t lpucUid[MAX_UID_LEN], VAR uint8_t *lpucUidLen,
                                    VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API ReadECCSignatureExt(OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucECCSignatureLen,
+								OUT uint8_t *lpucUid, VAR uint8_t *lpucUidLen, VAR uint8_t *lpucDlogicCardType);
 
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API ReadCounter(uint8_t counter_address, VAR uint32_t *value);
@@ -2169,22 +2186,22 @@ UFR_STATUS DL_API uFR_SAM_DesfireIncreaseValueFile_TransMac_3k3desAuth(uint8_t d
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_aes_PK(uint8_t *aes_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_aes_PK(IN uint8_t *aes_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_des_PK(uint8_t *des_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_des_PK(IN uint8_t *des_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_2k3des_PK(uint8_t *des2k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_2k3des_PK(IN uint8_t *des2k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_3k3des_PK(uint8_t *des3k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_3k3des_PK(IN uint8_t *des3k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
@@ -2280,22 +2297,22 @@ UFR_STATUS DL_API uFR_SAM_DesfireDecreaseValueFile_TransMac_3k3desAuth(uint8_t d
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_TransMac_aes_PK(uint8_t *aes_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_TransMac_aes_PK(IN uint8_t *aes_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_TransMac_des_PK(uint8_t *des_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_TransMac_des_PK(IN uint8_t *des_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_TransMac_2k3des_PK(uint8_t *des2k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_TransMac_2k3des_PK(IN uint8_t *des2k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_TransMac_3k3des_PK(uint8_t *des3k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireDecreaseValueFile_TransMac_3k3des_PK(IN uint8_t *des3k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
@@ -3075,7 +3092,7 @@ UFR_STATUS DL_API SAM_change_key_entry_aes_AV2_plain_host_key(uint8_t key_entry_
 UFR_STATUS DL_API WriteSamUnlockKey(uint8_t key_no, uint8_t key_ver, IN uint8_t *aes_key);
 UFR_STATUS DL_API CheckUidChangeable(void);
 UFR_STATUS DL_API ReaderRfReset(void);
-UFR_STATUS DL_API WriteReaderId(uint8_t *reader_id);
+UFR_STATUS DL_API WriteReaderId(IN uint8_t *reader_id);
 
 //MIFARE PLUS
 UFR_STATUS DL_API MFP_WritePerso(uint16_t address, IN uint8_t *data);
@@ -3178,6 +3195,37 @@ UFR_STATUS DL_API nt4h_get_sdm_ctr_no_auth(uint8_t file_no, VAR uint32_t *sdm_re
 UFR_STATUS DL_API nt4h_check_sdm_mac(uint32_t smd_read_counter, IN uint8_t *uid, IN uint8_t *auth_key, IN uint8_t *mac_in_data, IN uint8_t mac_in_len, IN uint8_t *sdm_mac);
 UFR_STATUS DL_API nt4h_decrypt_sdm_enc_file_data(uint32_t smd_read_counter, IN uint8_t *uid, IN uint8_t *auth_key, IN uint8_t *enc_file_data, IN uint8_t enc_file_data_len);
 UFR_STATUS DL_API nt4h_decrypt_picc_data(IN uint8_t *picc_data, IN uint8_t *auth_key, IN uint8_t *picc_data_tag, IN uint8_t *uid, IN uint32_t *smd_read_cnt);
+UFR_STATUS DL_API nt4h_tt_change_sdm_file_settings_pk(IN uint8_t *aes_key_ext, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+											uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no,
+											uint8_t uid_enable, uint8_t read_ctr_enable, uint8_t read_ctr_limit_enable, uint8_t enc_file_data_enable,
+											uint8_t meta_data_key_no, uint8_t file_data_read_key_no, uint8_t read_ctr_key_no,
+											uint32_t uid_offset, uint32_t read_ctr_offset, uint32_t picc_data_offset, uint32_t mac_input_offset,
+											uint32_t enc_offset, uint32_t enc_length, uint32_t mac_offset, uint32_t read_ctr_limit,
+											uint8_t tt_status_enable, uint32_t tt_status_offset);
+UFR_STATUS DL_API nt4h_tt_change_sdm_file_settings(uint8_t aes_key_no, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+										uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no,
+										uint8_t uid_enable, uint8_t read_ctr_enable, uint8_t read_ctr_limit_enable, uint8_t enc_file_data_enable,
+										uint8_t meta_data_key_no, uint8_t file_data_read_key_no, uint8_t read_ctr_key_no,
+										uint32_t uid_offset, uint32_t read_ctr_offset, uint32_t picc_data_offset, uint32_t mac_input_offset,
+										uint32_t enc_offset, uint32_t enc_length, uint32_t mac_offset, uint32_t read_ctr_limit,
+										uint8_t tt_status_enable, uint32_t tt_status_offset);
+UFR_STATUS DL_API nt4h_tt_get_file_settings(uint8_t file_no, VAR uint8_t *file_type, VAR uint8_t *communication_mode, VAR uint8_t *sdm_enable, VAR uint32_t *file_size,
+										VAR uint8_t *read_key_no, VAR uint8_t *write_key_no, VAR uint8_t *read_write_key_no, VAR uint8_t *change_key_no,
+										VAR uint8_t *uid_enable, VAR uint8_t *read_ctr_enable, VAR uint8_t *read_ctr_limit_enable, VAR uint8_t *enc_file_data_enable,
+										VAR uint8_t *meta_data_key_no, VAR uint8_t *file_data_read_key_no, VAR uint8_t *read_ctr_key_no,
+										VAR uint32_t *uid_offset, VAR uint32_t *read_ctr_offset, VAR uint32_t *picc_data_offset, VAR uint32_t *mac_input_offset,
+										VAR uint32_t *enc_offset, VAR uint32_t *enc_length, VAR uint32_t *mac_offset, VAR uint32_t *read_ctr_limit,
+										VAR uint8_t *tt_status_enable, VAR uint32_t *tt_status_offset);
+UFR_STATUS DL_API nt4h_rid_read_ecc_signature_pk(IN uint8_t *auth_key, uint8_t key_no, OUT uint8_t *uid,
+										OUT uint8_t *ecc_signature, VAR uint8_t *dlogic_card_type);
+UFR_STATUS DL_API nt4h_rid_read_ecc_signature(uint8_t auth_key_nr, uint8_t key_no, OUT uint8_t *uid,
+										OUT uint8_t *ecc_signature, OUT uint8_t *dlogic_card_type);
+UFR_STATUS DL_API nt4h_get_tt_status_pk(IN uint8_t *aes_key_ext, uint8_t key_no, VAR uint8_t *tt_perm_status, VAR uint8_t *tt_curr_status);
+UFR_STATUS DL_API nt4h_get_tt_status(uint8_t aes_key_nr, uint8_t key_no, VAR uint8_t *tt_perm_status, VAR uint8_t *tt_curr_status);
+UFR_STATUS DL_API nt4h_get_tt_status_no_auth(VAR uint8_t *tt_perm_status, VAR uint8_t *tt_curr_status);
+UFR_STATUS DL_API nt4h_enable_tt_pk(IN uint8_t *aes_key_ext, uint8_t tt_status_key_no);
+UFR_STATUS DL_API nt4h_enable_tt(uint8_t aes_key_no, uint8_t tt_status_key_no);
+
 
 //Desfire light
 UFR_STATUS DL_API dfl_get_file_settings(uint8_t file_no, VAR uint8_t *file_type, VAR uint8_t *communication_mode,
@@ -3198,20 +3246,28 @@ UFR_STATUS DL_API dfl_change_tmc_file_settings_pk(IN uint8_t *aes_key_ext, uint8
 									uint8_t ex_unauth_operation, uint8_t tmc_limit_conf, uint32_t tmc_limit);
 UFR_STATUS DL_API dfl_delete_tmc_file_pk(IN uint8_t *aes_key_ext, uint8_t file_no);
 UFR_STATUS DL_API dfl_delete_tmc_file(uint8_t aes_key_no, uint8_t file_no);
-UFR_STATUS DL_API dfl_check_credit_value_transaction_mac(uint8_t file_no, uint32_t value, uint32_t trans_mac_counter, uint8_t *uid, uint8_t *trans_mac_key,
-											uint8_t *reader_id, uint8_t *prev_enc_reader_id, uint8_t *trans_mac_value, uint8_t *prev_reader_id);
-UFR_STATUS DL_API dfl_check_debit_value_transaction_mac(uint8_t file_no, uint32_t value, uint32_t trans_mac_counter, uint8_t *uid, uint8_t *trans_mac_key,
-											uint8_t *reader_id, uint8_t *prev_enc_reader_id, uint8_t *trans_mac_value, uint8_t *prev_reader_id);
-UFR_STATUS DL_API desfire_check_write_record_transaction_mac(uint8_t file_no, uint32_t offset, uint32_t data_len, uint8_t *data, uint32_t trans_mac_counter,
-		uint8_t *uid, uint8_t *trans_mac_key,
-		uint8_t *reader_id, uint8_t *prev_enc_reader_id, uint8_t *trans_mac_value, uint8_t *prev_reader_id);
-UFR_STATUS DL_API dfl_check_write_record_transaction_mac(uint8_t file_no, uint32_t offset, uint32_t data_len, uint8_t *data, uint32_t trans_mac_counter,
-		uint8_t *uid, uint8_t *trans_mac_key,
-		uint8_t *reader_id, uint8_t *prev_enc_reader_id, uint8_t *trans_mac_value, uint8_t *prev_reader_id);
-UFR_STATUS DL_API desfire_check_clear_record_transaction_mac(uint8_t file_no, uint32_t trans_mac_counter, uint8_t *uid, uint8_t *trans_mac_key,
-										uint8_t *reader_id, uint8_t *prev_enc_reader_id, uint8_t *trans_mac_value, uint8_t *prev_reader_id);
+UFR_STATUS DL_API dfl_check_credit_value_transaction_mac(uint8_t file_no, uint32_t value, uint32_t trans_mac_counter, IN uint8_t *uid, IN uint8_t *trans_mac_key,
+											IN uint8_t *reader_id, IN uint8_t *prev_enc_reader_id, IN uint8_t *trans_mac_value, OUT uint8_t *prev_reader_id);
+UFR_STATUS DL_API dfl_check_debit_value_transaction_mac(uint8_t file_no, uint32_t value, uint32_t trans_mac_counter, IN uint8_t *uid, IN uint8_t *trans_mac_key,
+											IN uint8_t *reader_id, IN uint8_t *prev_enc_reader_id, IN uint8_t *trans_mac_value, OUT uint8_t *prev_reader_id);
+UFR_STATUS DL_API desfire_check_write_record_transaction_mac(uint8_t file_no, uint32_t offset, uint32_t data_len, IN uint8_t *data, uint32_t trans_mac_counter,
+		IN uint8_t *uid, IN uint8_t *trans_mac_key,
+		IN uint8_t *reader_id, IN uint8_t *prev_enc_reader_id, IN uint8_t *trans_mac_value, OUT uint8_t *prev_reader_id);
+UFR_STATUS DL_API dfl_check_write_record_transaction_mac(uint8_t file_no, uint32_t offset, uint32_t data_len, IN uint8_t *data, uint32_t trans_mac_counter,
+		IN uint8_t *uid, IN uint8_t *trans_mac_key,
+		IN uint8_t *reader_id, IN uint8_t *prev_enc_reader_id, IN uint8_t *trans_mac_value, OUT uint8_t *prev_reader_id);
+UFR_STATUS DL_API desfire_check_clear_record_transaction_mac(uint8_t file_no, uint32_t trans_mac_counter, IN uint8_t *uid, IN uint8_t *trans_mac_key,
+										IN uint8_t *reader_id, IN uint8_t *prev_enc_reader_id, IN uint8_t *trans_mac_value, OUT uint8_t *prev_reader_id);
 //reader
 UFR_STATUS DL_API GetReaderStatus(VAR pcd_states_t *state, VAR emul_modes_t *emul_mode, VAR emul_states_t *emul_state, VAR uint8_t *sleep_mode);
+
+//EMV FUNCTIONS
+
+UFR_STATUS DL_API EMV_GetPAN(IN c_string df_name, OUT char* pan_str);
+UFR_STATUS DL_API EMV_GetLastTransaction(IN c_string df_name, OUT char* last_transaction_info);
+
+
+
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 // XXX: Support for multiple readers with same DLL
@@ -3712,6 +3768,9 @@ UFR_STATUS DL_API WriteEmulationNdefRamM(UFR_HANDLE hndUFR, uint8_t tnf, uint8_t
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API ReadECCSignatureM(UFR_HANDLE hndUFR, IN uint8_t lpucECCSignature[ECC_SIG_LEN], OUT uint8_t lpucUid[MAX_UID_LEN],
                                     VAR uint8_t *lpucUidLen, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API ReadECCSignatureExtM(UFR_HANDLE hndUFR, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucECCSignatureLen,
+								OUT uint8_t *lpucUid, VAR uint8_t *lpucUidLen, VAR uint8_t *lpucDlogicCardType);
+
 
 //------------------------------------------------------------------------------
 UFR_STATUS DL_API ReadCounterM(UFR_HANDLE hndUFR, uint8_t counter_address, VAR uint32_t *value);
@@ -4787,22 +4846,22 @@ UFR_STATUS DL_API uFR_SAM_DesfireIncreaseValueFile_TransMac_3k3desAuthM(UFR_HAND
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_aes_PK_M(UFR_HANDLE hndUFR, uint8_t *aes_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_aes_PK_M(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_des_PK_M(UFR_HANDLE hndUFR, uint8_t *des_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_des_PK_M(UFR_HANDLE hndUFR, IN uint8_t *des_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_2k3des_PK_M(UFR_HANDLE hndUFR, uint8_t *des2k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_2k3des_PK_M(UFR_HANDLE hndUFR, IN uint8_t *des2k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
 														VAR uint32_t *trans_mac_cnt, OUT uint8_t *trans_mac_value);
-UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_3k3des_PK_M(UFR_HANDLE hndUFR, uint8_t *des3k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
+UFR_STATUS DL_API uFR_int_DesfireIncreaseValueFile_TransMac_3k3des_PK_M(UFR_HANDLE hndUFR, IN uint8_t *des3k_key_ext, uint32_t aid, uint8_t aid_key_nr, uint8_t file_id,
 														uint8_t communication_settings, uint32_t value,
 														VAR uint16_t *card_status, VAR uint16_t *exec_time,
 														uint8_t use_reader_id, OUT uint8_t *reader_id, OUT uint8_t *prev_enc_reader_id,
@@ -6086,6 +6145,36 @@ UFR_STATUS DL_API nt4h_change_keyM(UFR_HANDLE hndUFR, uint8_t auth_key_no, uint8
 UFR_STATUS DL_API nt4h_get_sdm_ctr_pkM(UFR_HANDLE hndUFR, IN uint8_t *auth_key, uint8_t file_no, uint8_t key_no, VAR uint32_t *sdm_read_ctr);
 UFR_STATUS DL_API nt4h_get_sdm_ctrM(UFR_HANDLE hndUFR, uint8_t auth_key_no, uint8_t file_no, uint8_t key_no, VAR uint32_t *sdm_read_ctr);
 UFR_STATUS DL_API nt4h_get_sdm_ctr_no_authM(UFR_HANDLE hndUFR, uint8_t file_no, VAR uint32_t *sdm_read_ctr);
+UFR_STATUS DL_API nt4h_tt_change_sdm_file_settings_pkM(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+											uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no,
+											uint8_t uid_enable, uint8_t read_ctr_enable, uint8_t read_ctr_limit_enable, uint8_t enc_file_data_enable,
+											uint8_t meta_data_key_no, uint8_t file_data_read_key_no, uint8_t read_ctr_key_no,
+											uint32_t uid_offset, uint32_t read_ctr_offset, uint32_t picc_data_offset, uint32_t mac_input_offset,
+											uint32_t enc_offset, uint32_t enc_length, uint32_t mac_offset, uint32_t read_ctr_limit,
+											uint8_t tt_status_enable, uint32_t tt_status_offset);
+UFR_STATUS DL_API nt4h_tt_change_sdm_file_settingsM(UFR_HANDLE hndUFR, uint8_t aes_key_no, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
+										uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no,
+										uint8_t uid_enable, uint8_t read_ctr_enable, uint8_t read_ctr_limit_enable, uint8_t enc_file_data_enable,
+										uint8_t meta_data_key_no, uint8_t file_data_read_key_no, uint8_t read_ctr_key_no,
+										uint32_t uid_offset, uint32_t read_ctr_offset, uint32_t picc_data_offset, uint32_t mac_input_offset,
+										uint32_t enc_offset, uint32_t enc_length, uint32_t mac_offset, uint32_t read_ctr_limit,
+										uint8_t tt_status_enable, uint32_t tt_status_offset);
+UFR_STATUS DL_API nt4h_tt_get_file_settingsM(UFR_HANDLE hndUFR, uint8_t file_no, VAR uint8_t *file_type, VAR uint8_t *communication_mode, VAR uint8_t *sdm_enable, VAR uint32_t *file_size,
+										VAR uint8_t *read_key_no, VAR uint8_t *write_key_no, VAR uint8_t *read_write_key_no, VAR uint8_t *change_key_no,
+										VAR uint8_t *uid_enable, VAR uint8_t *read_ctr_enable, VAR uint8_t *read_ctr_limit_enable, VAR uint8_t *enc_file_data_enable,
+										VAR uint8_t *meta_data_key_no, VAR uint8_t *file_data_read_key_no, VAR uint8_t *read_ctr_key_no,
+										VAR uint32_t *uid_offset, VAR uint32_t *read_ctr_offset, VAR uint32_t *picc_data_offset, VAR uint32_t *mac_input_offset,
+										VAR uint32_t *enc_offset, VAR uint32_t *enc_length, VAR uint32_t *mac_offset, VAR uint32_t *read_ctr_limit,
+										VAR uint8_t *tt_status_enable, VAR uint32_t *tt_status_offset);
+UFR_STATUS DL_API nt4h_rid_read_ecc_signature_pkM(UFR_HANDLE hndUFR, IN uint8_t *auth_key, uint8_t key_no, OUT uint8_t *uid,
+										OUT uint8_t *ecc_signature, VAR uint8_t *dlogic_card_type);
+UFR_STATUS DL_API nt4h_rid_read_ecc_signatureM(UFR_HANDLE hndUFR, uint8_t auth_key_nr, uint8_t key_no, OUT uint8_t *uid,
+										OUT uint8_t *ecc_signature, OUT uint8_t *dlogic_card_type);
+UFR_STATUS DL_API nt4h_get_tt_status_pkM(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint8_t key_no, VAR uint8_t *tt_perm_status, VAR uint8_t *tt_curr_status);
+UFR_STATUS DL_API nt4h_get_tt_statusM(UFR_HANDLE hndUFR, uint8_t aes_key_nr, uint8_t key_no, VAR uint8_t *tt_perm_status, VAR uint8_t *tt_curr_status);
+UFR_STATUS DL_API nt4h_get_tt_status_no_authM(UFR_HANDLE hndUFR, VAR uint8_t *tt_perm_status, VAR uint8_t *tt_curr_status);
+UFR_STATUS DL_API nt4h_enable_tt_pkM(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint8_t tt_status_key_no);
+UFR_STATUS DL_API nt4h_enable_ttM(UFR_HANDLE hndUFR, uint8_t aes_key_no, uint8_t tt_status_key_no);
 UFR_STATUS DL_API dfl_change_file_settings_pkM(UFR_HANDLE hndUFR, IN uint8_t *aes_key_ext, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
 									uint8_t new_communication_mode, uint8_t read_key_no, uint8_t write_key_no, uint8_t read_write_key_no, uint8_t change_key_no);
 UFR_STATUS DL_API dfl_change_file_settingsM(UFR_HANDLE hndUFR, uint8_t aes_key_no, uint8_t file_no, uint8_t key_no, uint8_t curr_communication_mode,
@@ -6161,6 +6250,14 @@ JNIEnv *global_env;
 jclass global_class;
 void DL_API initVM(JNIEnv *env, jclass class1);
 #endif
+
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+void setNFCMessage(char* message);
+#endif
+#endif
+
 
 #ifdef __cplusplus
 }
