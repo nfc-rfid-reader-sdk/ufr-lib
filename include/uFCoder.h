@@ -1,7 +1,7 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.44
+ * library version: 5.0.45
  *
  * Created on:  2009-01-14
  * Last edited: 2020-10-15
@@ -3011,6 +3011,24 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateTransMacFile3k3desAuth(
 								uint8_t communication_settings, IN uint8_t *trans_mac_key,
 								VAR uint16_t *card_status, VAR uint16_t *exec_time);
 
+UFR_STATUS DL_API uFR_int_DesfireUidReadECCSignature(OUT uint8_t *lpucECCSignature, OUT uint8_t *card_uid, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_des_PK(IN uint8_t *auth_key_ext, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_2k3des_PK(IN uint8_t *auth_key_ext, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_3k3des_PK(IN uint8_t *auth_key_ext, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_aes_PK(IN uint8_t *auth_key_ext, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_des(uint8_t auth_key_nr, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_2k3des(uint8_t auth_key_nr, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_3k3des(uint8_t auth_key_nr, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_aes(uint8_t auth_key_nr, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+
 
 /////////////////////////////////////////////////////////////////////
 
@@ -3225,6 +3243,7 @@ UFR_STATUS DL_API nt4h_get_tt_status(uint8_t aes_key_nr, uint8_t key_no, VAR uin
 UFR_STATUS DL_API nt4h_get_tt_status_no_auth(VAR uint8_t *tt_perm_status, VAR uint8_t *tt_curr_status);
 UFR_STATUS DL_API nt4h_enable_tt_pk(IN uint8_t *aes_key_ext, uint8_t tt_status_key_no);
 UFR_STATUS DL_API nt4h_enable_tt(uint8_t aes_key_no, uint8_t tt_status_key_no);
+
 
 
 //Desfire light
@@ -5835,6 +5854,24 @@ UFR_STATUS DL_API uFR_SAM_DesfireCreateTransMacFile3k3desAuthM(UFR_HANDLE hndUFR
 													uint8_t read_key_no, uint8_t commit_reader_id_key_no, uint8_t change_key_no,
 													uint8_t communication_settings, IN uint8_t *trans_mac_key,
 													VAR uint16_t *card_status, VAR uint16_t *exec_time);
+
+UFR_STATUS DL_API uFR_int_DesfireUidReadECCSignatureM(UFR_HANDLE hndUFR, OUT uint8_t *lpucECCSignature, OUT uint8_t *card_uid, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_des_PK_M(UFR_HANDLE hndUFR, IN uint8_t *auth_key_ext, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_2k3des_PK_M(UFR_HANDLE hndUFR, IN uint8_t *auth_key_ext, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_3k3des_PK_M(UFR_HANDLE hndUFR, IN uint8_t *auth_key_ext, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_aes_PK_M(UFR_HANDLE hndUFR, IN uint8_t *auth_key_ext, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_desM(UFR_HANDLE hndUFR, uint8_t auth_key_nr, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_2k3desM(UFR_HANDLE hndUFR, uint8_t auth_key_nr, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_3k3desM(UFR_HANDLE hndUFR, uint8_t auth_key_nr, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
+UFR_STATUS DL_API uFR_int_DesfireRidReadECCSignature_aesM(UFR_HANDLE hndUFR, uint8_t auth_key_nr, uint32_t aid, uint8_t aid_key_nr,
+										OUT uint8_t *card_uid, OUT uint8_t *lpucECCSignature, VAR uint8_t *lpucDlogicCardType);
 //---------------------------------------------------------------------------------------------
 
 UFR_STATUS DL_API GreenLedBlinkingTurnOnM(UFR_HANDLE hndUFR);
