@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.45
+ * library version: 5.0.46
  *
  * Created on:  2009-01-14
- * Last edited: 2020-10-15
+ * Last edited: 2020-12-15
  *
  * Author: D-Logic
  */
@@ -16,7 +16,7 @@
 #include <stddef.h>
 
 #define IN //array that you pass to function
-#define OUT //array that you receive from funciton
+#define OUT //array that you receive from function
 #define VAR //first element of array that you receive from function (single variable)
 
 ////////////////////////////////////////////////////////////////////
@@ -122,6 +122,8 @@ typedef void * UFR_HANDLE;
 #define DL_GENERIC_ISO14443_4			0x40
 #define DL_GENERIC_ISO14443_4_TYPE_B	0x41
 #define	DL_GENERIC_ISO14443_3_TYPE_B	0x42
+#define DL_MIFARE_PLUS_EV1_2K_SL0       0x43
+#define DL_MIFARE_PLUS_EV1_4K_SL0       0x44
 #define DL_IMEI_UID						0x80
 
 // ST Product ID-s:
