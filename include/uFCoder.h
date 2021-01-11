@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.47
+ * library version: 5.0.48
  *
  * Created on:  2009-01-14
- * Last edited: 2020-12-17
+ * Last edited: 2021-01-11
  *
  * Author: D-Logic
  */
@@ -1298,6 +1298,7 @@ UFR_STATUS DL_API UfrXrcRelayState(uint8_t state);
 UFR_STATUS DL_API UfrXrcGetIoState(VAR uint8_t *intercom, VAR uint8_t *door, VAR uint8_t *relay_state);
 UFR_STATUS DL_API UfrRedLightControl(uint8_t light_status);
 UFR_STATUS DL_API UfrRgbLightControl(uint8_t red, uint8_t green, uint8_t blue, uint8_t intensity, uint8_t enable);
+UFR_STATUS DL_API UfrRgbExtLightControl(uint8_t enable);
 
 UFR_STATUS DL_API UfrSetBadSelectCardNrMax(uint8_t bad_select_nr_max);
 UFR_STATUS DL_API UfrGetBadSelectCardNrMax(VAR uint8_t *bad_select_nr_max);
@@ -3112,6 +3113,8 @@ UFR_STATUS DL_API SAM_change_key_entry_aes_AV2_plain_host_key(uint8_t key_entry_
 UFR_STATUS DL_API WriteSamUnlockKey(uint8_t key_no, uint8_t key_ver, IN uint8_t *aes_key);
 UFR_STATUS DL_API CheckUidChangeable(void);
 UFR_STATUS DL_API ReaderRfReset(void);
+UFR_STATUS DL_API ReaderRfOn(void);
+UFR_STATUS DL_API ReaderRfOff(void);
 UFR_STATUS DL_API WriteReaderId(IN uint8_t *reader_id);
 
 //MIFARE PLUS
@@ -3887,6 +3890,8 @@ UFR_STATUS DL_API UfrXrcGetIoStateM(UFR_HANDLE hndUFR, VAR uint8_t *intercom, VA
 UFR_STATUS DL_API UfrRedLightControlM(UFR_HANDLE hndUFR, uint8_t light_status);
 
 UFR_STATUS DL_API UfrRgbLightControlM(UFR_HANDLE hndUFR, uint8_t red, uint8_t green, uint8_t blue, uint8_t intensity, uint8_t enable);
+
+UFR_STATUS DL_API UfrRgbExtLightControlM(UFR_HANDLE hndUFR, uint8_t enable);
 
 UFR_STATUS DL_API UfrSetBadSelectCardNrMaxM(UFR_HANDLE hndUFR, uint8_t bad_select_nr_max);
 
@@ -5971,6 +5976,8 @@ UFR_STATUS DL_API SAM_change_key_entry_aes_AV2_plain_host_keyM(UFR_HANDLE hndUFR
 UFR_STATUS DL_API WriteSamUnlockKeyM(UFR_HANDLE hndUFR, uint8_t key_no, uint8_t key_ver, IN uint8_t *aes_key);
 UFR_STATUS DL_API CheckUidChangeableM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API ReaderRfResetM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API ReaderRfOnM(UFR_HANDLE hndUFR);
+UFR_STATUS DL_API ReaderRfOffM(UFR_HANDLE hndUFR);
 UFR_STATUS DL_API WriteReaderIdM(UFR_HANDLE hndUFR,uint8_t *reader_id);
 
 //MIFARE PLUS
