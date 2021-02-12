@@ -6047,6 +6047,7 @@ UFR_STATUS DL_API EspSetReaderTime(IN uint8_t *password, IN uint8_t *time);
 UFR_STATUS DL_API EspSetIOState(uint8_t pin, uint8_t state);
 UFR_STATUS DL_API EspGetIOState(OUT uint8_t *state);
 UFR_STATUS DL_API EspSetTransparentReader(uint8_t reader);
+UFR_STATUS DL_API EspGetReaderSerialNumber(uint32_t *SerialNumber);
 
 //NDEF MESSAGES
 //----------------------------------------------------------
