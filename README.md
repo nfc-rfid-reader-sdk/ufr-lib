@@ -24,7 +24,7 @@ uFR Series reader.
 
 ## License
 
-This project is licensed under the ..... License - see the [a /ufr-lib/licence/uFR_library_license.md](LICENSE.md) file for details
+This project is licensed under the ..... License - see the [uFR_library_license.md](/ufr-lib/licence/uFR_library_license.md) file for details
 
 ## Acknowledgments
 
