@@ -1,10 +1,10 @@
 /*
  * uFCoder.h
  *
- * library version: 5.0.53
+ * library version: 5.0.54
  *
  * Created on:  2009-01-14
- * Last edited: 2021-07-27
+ * Last edited: 2021-07-30
  *
  * Author: D-Logic
  */
@@ -142,6 +142,11 @@ typedef void * UFR_HANDLE;
 #define DLSigner30	0xA2
 #define DLSigner10	0xA3
 #define DLSigner145	0xAA
+
+enum E_CARD_IN_SAM_SLOT {
+	SAM_SLOT_MIFARE_SAM_AV2 = 1,
+	SAM_SLOT_GENERIC = 4
+};
 
 // DLJavaCardSignerAlgorithmTypes:
 enum E_SIGNER_CIPHERS {
@@ -1360,6 +1365,7 @@ UFR_STATUS DL_API uart_transceive(IN uint8_t *send_data, uint8_t send_len, OUT u
                                   VAR uint32_t *rcv_len);
 
 UFR_STATUS DL_API open_ISO7816_interface(OUT uint8_t *atr_data, VAR uint8_t *atr_len);
+UFR_STATUS DL_API Open_ISO7816_Generic(OUT uint8_t *atr_data, VAR uint8_t *atr_len);
 UFR_STATUS DL_API APDU_switch_to_ISO7816_interface(void);
 UFR_STATUS DL_API close_ISO7816_interface_no_APDU(void);
 UFR_STATUS DL_API close_ISO7816_interface_APDU_ISO14443_4(void);
@@ -3964,6 +3970,8 @@ UFR_STATUS DL_API uart_transceiveM(UFR_HANDLE hndUFR, IN uint8_t *send_data, uin
                                    uint32_t bytes_to_receive, VAR uint32_t *rcv_len);
 
 UFR_STATUS DL_API open_ISO7816_interfaceM(UFR_HANDLE hndUFR, OUT uint8_t *atr_data, VAR uint8_t *atr_len);
+
+UFR_STATUS DL_API Open_ISO7816_GenericM(UFR_HANDLE hndUFR, OUT uint8_t *atr_data, VAR uint8_t *atr_len);
 
 UFR_STATUS DL_API APDU_switch_to_ISO7816_interfaceM(UFR_HANDLE hndUFR);
 
